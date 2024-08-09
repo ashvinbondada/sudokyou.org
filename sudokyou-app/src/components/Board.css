@@ -1,0 +1,70 @@
+:root {
+    --board-size: 333px; /* Total size of the Sudoku board */
+    --square-size: calc(var(--board-size) / 9); /* Size of each Sudoku square */
+    --note-box-size: calc(var(--square-size) / 3); /* Size of each note box within a square */
+    --offset: 2px;
+    --gap-size: 1px ; 
+    --bold-line-size: 2px; /* Thickness for bold lines */
+}
+
+.board-square {
+    display: grid;
+    grid-template-columns: repeat(9, var(--square-size));
+    grid-template-rows: repeat(9, var(--square-size));
+    gap: calc(var(--gap-size) + var(--offset));
+    width: calc(var(--board-size) + 10*var(--gap-size) + 8*var(--offset));
+    height: calc(var(--board-size) + 10*var(--gap-size) + 8*var(--offset));
+    border: 2px solid green;
+    user-select: none; /* Prevent text selection */
+    outline: none; /* Remove default outline */
+}
+
+.notes-square, .regular-square {
+    height: calc(var(--square-size) + 2*var(--gap-size));
+    width: calc(var(--square-size) + 2*var(--gap-size));
+    background-color: #f9f9f9;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1px;
+    user-select: none; /* Prevent text selection */
+    outline: none; /* Remove default outline */
+}
+
+.notes-square {
+    display: grid;
+    grid-template-columns: repeat(3, var(--note-box-size));
+    grid-template-rows: repeat(3, var(--note-box-size));
+}
+
+
+.regular-square:hover {
+    /* The RGB values for Benjamin Moore's 2021-40 Yellow Highlighter are 255, 212, and 101, and its hex code is #FFD465. */
+    background-color: #FFD465; /* Change to desired hover background color */
+}
+
+.note-box {
+    width: var(--note-box-size);
+    height: var(--note-box-size);
+    border: 0px solid #000;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* font-size: 10px; */
+    font-size: 0.5rem; /* Adjust font size as needed */
+    /* padding: 0; */
+    user-select: none; /* Prevent text selection */
+    outline: none; /* Remove default outline */
+
+
+}
+
+.note-box:hover {
+    /* The RGB values for Benjamin Moore's 2021-40 Yellow Highlighter are 255, 212, and 101, and its hex code is #FFD465. */
+    background-color: #FFD465; /* Change to desired hover background color */
+}
+
