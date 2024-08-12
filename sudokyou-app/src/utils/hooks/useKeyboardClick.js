@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 export function useShiftClick() {
    const [shiftDown, setShiftDown] = useState(false);
-   
     useEffect(() => {
 
         const handleShiftDown = (e) => {

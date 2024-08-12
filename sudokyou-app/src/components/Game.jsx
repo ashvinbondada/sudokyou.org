@@ -12,9 +12,9 @@ export default function Game() {
     isShiftDown: false,
     inputValue: undefined,
     boardValues: Array(81).fill({
-      isEditable: false, 
-      squareValue: 0,
-      squareNotes: Array(10).fill(undefined)
+      isEditable: true, 
+      squareValue: '',
+      squareNotes: Array(9).fill(undefined)
     }), 
   });
 

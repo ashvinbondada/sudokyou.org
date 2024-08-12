@@ -6,8 +6,8 @@ export const BoardContext = createContext({
     boardValues: Array(81).fill(
         {
             isEditable: false, 
-            squareValue: 0,
-            squareNotes: Array(10).fill(undefined)
+            squareValue: '',
+            squareNotes: Array(9).fill(undefined)
         }
     ), 
     setBoardContext: () => {}

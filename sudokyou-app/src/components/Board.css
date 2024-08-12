@@ -19,7 +19,7 @@
     outline: none; /* Remove default outline */
 }
 
-.notes-square, .regular-square {
+.notes-square, .editable-regular-square {
     height: calc(var(--square-size) + 2*var(--gap-size));
     width: calc(var(--square-size) + 2*var(--gap-size));
     background-color: #f9f9f9;
@@ -39,7 +39,7 @@
 }
 
 
-.regular-square:hover {
+.editable-regular-square:hover {
     /* The RGB values for Benjamin Moore's 2021-40 Yellow Highlighter are 255, 212, and 101, and its hex code is #FFD465. */
     background-color: #FFD465; /* Change to desired hover background color */
 }

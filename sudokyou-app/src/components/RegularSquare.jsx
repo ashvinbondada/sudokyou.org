@@ -2,46 +2,31 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useButtonHovered } from '../utils/hooks/useIsHovered';
 
-export default function RegularSquare({ value, isEditable }) {
-  const [cellValue, setCellValue] = useState(value);
+export default function RegularSquare({ isEditable, squareValue}) {
+  // const [cellValue, setCellValue] = useState(value);
 
-  const { buttonRef, isButtonHovered } = useButtonHovered();
+  // const { buttonRef, isButtonHovered } = useButtonHovered();
 
-  useEffect(() => {
-    if (isButtonHovered) {
-      if (value === cellValue) {
-        setCellValue(null);
-      } else if (value > 0) {
-        setCellValue(value);
-      }
-    }
-  }, [isButtonHovered, value, cellValue]);
+  // useEffect(() => {
+  //   if (isButtonHovered) {
+  //     if (value === cellValue) {
+  //       setCellValue(null);
+  //     } else if (value > 0) {
+  //       setCellValue(value);
+  //     }
+  //   }
+  // }, [isButtonHovered, value, cellValue]);
 
   return (
     isEditable ? (
-      <button
-        className="regular-square"
-        ref={buttonRef}
-        onClick={() => {
-          console.log("clicked");
-          if (value === cellValue) {
-            setCellValue(null);
-          } else if (value > 0) {
-            setCellValue(value);
-          }
-        }}
-      >
-        {cellValue}
-      </button>
+      <button className="editable-regular-square">{squareValue}</button>
     ) : (
-      <div className="regular-square">
-        {cellValue}
-      </div>
+      <div className="uneditable-regular-square">{squareValue}</div>
     )
   );
 }
 
 RegularSquare.propTypes = {
-  value: PropTypes.number.isRequired,
   isEditable: PropTypes.bool.isRequired,
+  inputValue: PropTypes.number,
 };

@@ -1,24 +1,19 @@
-// import React from 'react'
-// import { useEffect, useState } from "react";
-// import Square from "./Square";
-// import "./Board.css"
-// import { BoardContext } from "../utils/contexts/BoardContext";
-// import { useContext } from "react";
-
-// import React, { useContext } from 'react';
-// import { BoardContext } from '../utils/contexts/BoardContext';
-// import Square from './Square'; // Assuming you have a Square component
+import React from 'react';
+import Square from './Square'; // Assuming you have a Square component
+import './Board.css'; // Assuming you have some styles for the board
 
 export default function Board() {
+  // Generate an array of 81 Square components
+  // const squares = Array.from({ length: 81 }, (_, index) => (
+  //   <Square 
+  //     key={index} 
+  //   />
+  // ));
 
-  //  TODO: make this an array of squares
-  //    and do not consume the context here. 
   return (
-    // <div className="board-square">
-    //   {boardValues.map((cellData, index) => (
-    //     <Square key={index} uid={index} />
-    //   ))}
-    // </div>
-    <></>
+    <div className="board-square">
+      {/* {squares} */}
+      <Square uid={0}/>
+    </div>
   );
 }
