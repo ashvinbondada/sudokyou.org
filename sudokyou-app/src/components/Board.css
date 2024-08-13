@@ -1,5 +1,5 @@
 :root {
-    --board-size: 333px; /* Total size of the Sudoku board */
+    --board-size: 666px; /* Total size of the Sudoku board */
     --square-size: calc(var(--board-size) / 9); /* Size of each Sudoku square */
     --note-box-size: calc(var(--square-size) / 3); /* Size of each note box within a square */
     --offset: 2px;
@@ -22,6 +22,7 @@
 .notes-square, .editable-regular-square {
     height: calc(var(--square-size) + 2*var(--gap-size));
     width: calc(var(--square-size) + 2*var(--gap-size));
+    font-size: 2rem;
     background-color: #f9f9f9;
     border: 1px solid #000;
     box-sizing: border-box;
@@ -41,7 +42,11 @@
 
 .editable-regular-square:hover {
     /* The RGB values for Benjamin Moore's 2021-40 Yellow Highlighter are 255, 212, and 101, and its hex code is #FFD465. */
-    background-color: #FFD465; /* Change to desired hover background color */
+    /* Change to desired hover background color */
+    background-color: #FFD465; 
+    /* background-color: crimson;  */
+    /* 50% opacity crimson */
+    /* background-color: rgba(220, 20, 60, 0.5);  */
 }
 
 .note-box {
@@ -55,7 +60,7 @@
     align-items: center;
     justify-content: center;
     /* font-size: 10px; */
-    font-size: 0.5rem; /* Adjust font size as needed */
+    font-size: 1rem; /* Adjust font size as needed */
     /* padding: 0; */
     user-select: none; /* Prevent text selection */
     outline: none; /* Remove default outline */
@@ -65,6 +70,9 @@
 
 .note-box:hover {
     /* The RGB values for Benjamin Moore's 2021-40 Yellow Highlighter are 255, 212, and 101, and its hex code is #FFD465. */
-    background-color: #FFD465; /* Change to desired hover background color */
+    /* Change to desired hover background color */
+    background-color: #FFD465; 
+    /* background-color: crimson;  */
+    /* background-color: rgba(220, 20, 60, 0.5);  */
 }
 
