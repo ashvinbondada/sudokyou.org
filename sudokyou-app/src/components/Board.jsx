@@ -4,17 +4,17 @@ import './Board.css'; // Assuming you have some styles for the board
 
 export default function Board() {
   // Generate an array of 81 Square components
-  // const squares = Array.from({ length: 81 }, (_, index) => (
-  //   <Square 
-  //     key={index} 
-  //     uid={index}
-  //   />
-  // ));
+  const squares = Array.from({ length: 81 }, (_, index) => (
+    <Square 
+      key={index} 
+      uid={index}
+    />
+  ));
 
   return (
-    <div>
-      {/* {squares} */}
-      <Square uid={0}/>
+    <div className='board-square'>
+      {squares}
+      {/* <Square uid={0}/> */}
     </div>
   );
 }
