@@ -1,8 +1,8 @@
 :root {
-    --board-size: 450px; /* Total size of the Sudoku board */
+    --board-size: 500px; /* Total size of the Sudoku board */
     --square-size: calc(var(--board-size) / 9); /* Size of each Sudoku square */
     --note-box-size: calc(var(--square-size) / 3); /* Size of each note box within a square */
-    --offset: 3px;
+    --offset: 2px;
     --gap-size: 1px ; 
     --bold-line-size: 2px; /* Thickness for bold lines */
 }
@@ -26,7 +26,7 @@
     width: calc(var(--square-size) + 2*var(--gap-size));
     font-size: 1.5rem;
     background-color: #f9f9f9;
-    border: 1px solid #000;
+    border: 0.5px solid #000;
     box-sizing: border-box;
     align-items: center;
     justify-content: center;
