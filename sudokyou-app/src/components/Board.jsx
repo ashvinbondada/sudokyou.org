@@ -7,11 +7,12 @@ export default function Board() {
   // const squares = Array.from({ length: 81 }, (_, index) => (
   //   <Square 
   //     key={index} 
+  //     uid={index}
   //   />
   // ));
 
   return (
-    <div className="board-square">
+    <div>
       {/* {squares} */}
       <Square uid={0}/>
     </div>

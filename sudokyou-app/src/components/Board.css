@@ -27,7 +27,7 @@
     box-sizing: border-box;
     align-items: center;
     justify-content: center;
-    border-radius: 1px;
+    border-radius: 2px;
     user-select: none; /* Prevent text selection */
     outline: none; /* Remove default outline */
 }

@@ -1,0 +1,19 @@
+/* h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+}
+.press-start {
+    font-family: 'Press Start 2P', cursive;
+} */
+* {
+    font-family: "Andika", sans-serif;
+}
+body {
+    font-style: italic;
+    background-color: beige;
+    color:crimson;
+}
+
+.home {
+    display: grid;
+    place-items: center;
+}

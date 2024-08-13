@@ -43,54 +43,63 @@ export function useKeyboardClick() {
                 case 'q':
                 case 'Q':
                 case '1':
+                case '!':
                     setKeyDown(1);
                     break;
                 
                 case 'w':
                 case 'W':
                 case '2':
+                case '@':
                     setKeyDown(2);
                     break;
                 
                 case 'e':
                 case 'E':
                 case '3':
+                case '#':
                     setKeyDown(3);
                     break;
 
                 case 'a':
                 case 'A':
                 case '4':
+                case '$':
                     setKeyDown(4);
                     break;
 
                 case 's':
                 case 'S':
                 case '5':
+                case '%':
                     setKeyDown(5);
                     break;
 
                 case 'd':
                 case 'D':
                 case '6':
+                case '&':
                     setKeyDown(6);
                     break;
 
                 case 'z':
                 case 'Z':
                 case '7':
+                case '*':
                     setKeyDown(7);
                     break;
                 
                 case 'x':
                 case 'X':
                 case '8':
+                case '*':
                     setKeyDown(8);
                     break;
                 
                 case 'c':
                 case 'C':
                 case '9':
+                case '(':
                     setKeyDown(9);
                     break;
             }
