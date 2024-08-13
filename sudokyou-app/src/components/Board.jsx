@@ -8,6 +8,7 @@ export default function Board() {
     <Square 
       key={index} 
       uid={index}
+      sqClassName={`square-${index + 1}`} // Assign unique class name
     />
   ));
 

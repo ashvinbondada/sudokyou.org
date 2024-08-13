@@ -7,7 +7,7 @@ import RegularSquare from "./RegularSquare";
 import NotesSquare from "./NotesSquare";
 import { BoardContext } from "../utils/contexts/BoardContext";
 
-export default function Square({uid}) {
+export default function Square({uid, sqClassName}) {
     const [hasNotes, setHasNotes] = useState(false);
     // const {divRef, isDivHovered} = useDivHovered();
     const [isDivHovered, setIsDivHovered] = useState(false);
@@ -98,7 +98,8 @@ export default function Square({uid}) {
     
 
     return (
-        <div  /* ref={divRef} */
+        <div
+            className={sqClassName}
             onPointerEnter={handleMouseEnter}
             onPointerLeave={handleMouseLeave}
         >
