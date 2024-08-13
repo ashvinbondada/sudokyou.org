@@ -16,6 +16,7 @@ export function useShiftClick() {
 
         const handleShiftUp = (e) => {
             if (e.key == 'Shift') {
+                e.preventDefault();
                 setShiftDown(false);
             }
         }
@@ -38,6 +39,7 @@ export function useKeyboardClick() {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
+            e.preventDefault();
             // console.log("pressed", e.key);
             switch (e.key) {
                 case 'q':
@@ -102,10 +104,14 @@ export function useKeyboardClick() {
                 case '(':
                     setKeyDown(9);
                     break;
+                default:
+                    setKeyDown(0);
+                    break;
             }
         }        
-        const handleKeyUp = () => {
-            setKeyDown(0);
+        const handleKeyUp = (e) => {
+            e.preventDefault();
+            setKeyDown(0); // might be a performance hit
         }        
 
         window.addEventListener('keydown', handleKeyDown);
