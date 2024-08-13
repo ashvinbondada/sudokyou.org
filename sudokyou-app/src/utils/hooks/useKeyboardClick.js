@@ -9,14 +9,14 @@ export function useShiftClick() {
 
         const handleShiftDown = (e) => {
             if (e.key == 'Shift') {
-                e.preventDefault();
+                // e.preventDefault();
                 setShiftDown(true);
             }
         }
 
         const handleShiftUp = (e) => {
             if (e.key == 'Shift') {
-                e.preventDefault();
+                // e.preventDefault();
                 setShiftDown(false);
             }
         }
@@ -39,7 +39,7 @@ export function useKeyboardClick() {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            e.preventDefault();
+            // e.preventDefault();
             // console.log("pressed", e.key);
             switch (e.key) {
                 case 'q':
@@ -80,14 +80,14 @@ export function useKeyboardClick() {
                 case 'd':
                 case 'D':
                 case '6':
-                case '&':
+                case '^':
                     setKeyDown(6);
                     break;
 
                 case 'z':
                 case 'Z':
                 case '7':
-                case '*':
+                case '&':
                     setKeyDown(7);
                     break;
                 
@@ -104,13 +104,13 @@ export function useKeyboardClick() {
                 case '(':
                     setKeyDown(9);
                     break;
+
                 default:
-                    setKeyDown(0);
                     break;
             }
         }        
         const handleKeyUp = (e) => {
-            e.preventDefault();
+            // e.preventDefault();
             setKeyDown(0); // might be a performance hit
         }        
 
