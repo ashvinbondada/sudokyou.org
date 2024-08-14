@@ -1,6 +1,6 @@
 // responsible for handling number clicks
 // and sending them to the Board component, which
-// will propogate this down
+// will propagate this down
 import { useEffect, useState } from "react";
 
 export function useShiftClick() {
