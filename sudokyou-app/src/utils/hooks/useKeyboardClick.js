@@ -109,7 +109,7 @@ export function useKeyboardClick() {
                     break;
             }
         }        
-        const handleKeyUp = (e) => {
+        const handleKeyUp = () => {
             // e.preventDefault();
             setKeyDown(0); // might be a performance hit
         }        

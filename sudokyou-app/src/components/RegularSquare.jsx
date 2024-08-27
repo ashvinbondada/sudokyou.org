@@ -1,6 +1,4 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import { useButtonHovered } from '../utils/hooks/useIsHovered';
 
 export default function RegularSquare({ isEditable, squareValue}) {
   // const [cellValue, setCellValue] = useState(value);
@@ -29,4 +27,5 @@ export default function RegularSquare({ isEditable, squareValue}) {
 RegularSquare.propTypes = {
   isEditable: PropTypes.bool.isRequired,
   inputValue: PropTypes.number,
+  squareValue: PropTypes.number
 };

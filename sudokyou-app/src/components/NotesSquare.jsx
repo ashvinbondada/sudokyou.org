@@ -1,5 +1,4 @@
 // import React from 'react'
-import { useState } from "react";
 import NoteBox from "./NoteBox";
 import PropTypes from 'prop-types'
 // import { BoardContext } from "../utils/contexts/BoardContext";

@@ -1,4 +1,3 @@
-import React from 'react';
 import Square from './Square'; // Assuming you have a Square component
 import './Board.css'; // Assuming you have some styles for the board
 

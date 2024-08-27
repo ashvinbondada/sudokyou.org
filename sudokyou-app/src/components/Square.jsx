@@ -1,7 +1,6 @@
 // import React from 'react'
 import {useContext, useEffect, useState } from "react"
 import PropTypes from 'prop-types';
-// import {useDivHovered} from "../utils/hooks/useIsHovered";
 import { debounce } from 'lodash';
 import RegularSquare from "./RegularSquare";
 import NotesSquare from "./NotesSquare";
@@ -121,4 +120,5 @@ export default function Square({uid, sqClassName}) {
 
 Square.propTypes = {
     uid: PropTypes.number.isRequired,
+    sqClassName: PropTypes.string.isRequired
 }
