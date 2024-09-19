@@ -1,7 +1,6 @@
 interface Tile {
     isEditable: boolean;
     squareValue: number;
-    isDivHovered: boolean;
     squareNotes:(number | undefined)[]; // 9 note boxes
 }
 

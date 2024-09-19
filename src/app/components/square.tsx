@@ -2,7 +2,6 @@
 'use client'
 
 import {useContext, useEffect, useState } from "react"
-import { debounce } from 'lodash';
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
 import { BoardContext, GameContext } from "../../lib/context";
@@ -13,35 +12,10 @@ type Props = {
 
 export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
-    const [isODivHovered, setIsODivHovered] = useState(false);
-
-
-
-    const {isShiftDown, inputValue, updateGameInterface} = useContext(GameContext)
+    const {isShiftDown, inputValue, selectedCell, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface} = useContext(BoardContext);
 
-    const {isEditable, squareValue, isDivHovered, squareNotes} = boardValues[uid]
-
-    const handleMouseEnter = debounce(() => {
-        const nextBoardValues = boardValues.slice();
-        nextBoardValues[uid] = {
-            ...boardValues[uid],
-            isDivHovered: true
-        }
-
-        updateGameInterface({selectedCell: uid}) 
-        updateSudokuInterface({boardValues: nextBoardValues})
-    }, 0);
-    
-    const handleMouseLeave = debounce(() => {
-        const nextBoardValues = boardValues.slice();
-        nextBoardValues[uid] = {
-            ...boardValues[uid],
-            isDivHovered: false
-        }
-        updateGameInterface({selectedCell: undefined}) 
-        updateSudokuInterface({boardValues: nextBoardValues})
-    }, 0);
+    const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
     function handleSquareNotesInput(index: number) {
         const nextSquareNotes = squareNotes.slice();
@@ -53,46 +27,44 @@ export default function Square({uid}: Props) {
             squareNotes: nextSquareNotes
         }
         updateSudokuInterface({boardValues: nextBoardValues})
-        // OLD UPDATED FUNCTION
-        // setBoardContext((currentBoardContext: Tile[]) => ({
-        //     ...currentBoardContext,
-        //     boardValues: nextBoardValues 
-        // }));
-
+        console.log("selectedCell", selectedCell)
+        console.log("uid", uid)
+        console.log("input", index+1)
+        console.log("isShiftDown", isShiftDown)
 
     };
 
 
     // function handle RegularSquareClickInput
     function handleRegularSquareInput(input: number) {
-        const nextValue = (squareValue === input) ? 0 : input;
-        const nextBoardValues = boardValues.slice();
-        nextBoardValues[uid] = {
-            ...boardValues[uid],
-            squareValue: nextValue,
-            squareNotes: Array(9).fill(undefined)
-        }
-        updateSudokuInterface({boardValues: nextBoardValues})
+        // if (selectedCell && selectedCell === uid) {
+            const nextValue = (squareValue === input) ? 0 : input;
+            const nextBoardValues = boardValues.slice();
+            nextBoardValues[uid] = {
+                ...boardValues[uid],
+                squareValue: nextValue,
+                squareNotes: Array(9).fill(undefined)
+            }
+            updateSudokuInterface({boardValues: nextBoardValues})
+        // } else {
+            console.log("selectedCell", selectedCell)
+            console.log("uid", uid)
+            console.log("input", input)
+        // }
     }
 
     // Hovering Over Note Box Use Effect
     useEffect(() => {
-            if (isDivHovered && isShiftDown && inputValue && inputValue > 0) {
-                const index = inputValue - 1;
-                handleSquareNotesInput(index);
-            }
-            else if (isDivHovered && !isShiftDown && inputValue && inputValue > 0) {
-                handleRegularSquareInput(inputValue);
-            }
-    }, [isShiftDown, isDivHovered, inputValue]);
-
-    // useEffect(() => {
-    //     if (!hasNotes && !isShiftDown && isDivHovered && inputValue &&inputValue > 0) {
-    //         console.log("regular square input useEffect")
-    //         handleRegularSquareInput(inputValue);
-    //     }
-    // },[isShiftDown, isDivHovered, inputValue])
-
+            // if (selectedCell && selectedCell === uid) {
+                if ((selectedCell === uid ) && isShiftDown && inputValue && inputValue > 0) {
+                    const index = inputValue - 1;
+                    handleSquareNotesInput(index);
+                }
+                else if ((selectedCell === uid ) && !isShiftDown && inputValue && inputValue > 0) {
+                    handleRegularSquareInput(inputValue);
+                }
+            // }
+    }, [isShiftDown, inputValue]);
 
     // handling hasNotes variable
     useEffect(() => {
@@ -100,23 +72,19 @@ export default function Square({uid}: Props) {
         // TODO: make the Regular Square value '' if it hasNotes
     }, [squareNotes]);
 
-
-    // useEffect(() => {
-    //     console.log("hasNotes: ",hasNotes)
-    // }, [hasNotes])
-    
-
     return (
         <div
             className="w-full h-full"
-            onPointerEnter={handleMouseEnter}
-            onPointerLeave={handleMouseLeave}
+            onPointerEnter={() => updateGameInterface({selectedCell: uid})}
+            onPointerLeave={() => updateGameInterface({selectedCell: undefined})
+            }
         >
             {
-                ((isEditable) && ((isDivHovered && isShiftDown) || hasNotes)) ? (
+                ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
                     // passing in handleSquareNotesInput function because 
                     // we should be able to click on the boxes,
                     // and not just rely on hover input
+
                     <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
                 ) : (
                     <RegularSquare isEditable={isEditable} squareValue={squareValue} />

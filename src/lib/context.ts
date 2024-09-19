@@ -5,7 +5,6 @@ const defaultBoardState = {
     boardValues: Array(81).fill({
         isEditable: false,
         squareValue: 0,
-        isDivHovered: false,
         squareNotes: Array(9).fill(undefined),
     }),
     updateSudokuInterface: () => {}

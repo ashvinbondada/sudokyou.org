@@ -16,7 +16,6 @@ export default function Game() {
     boardValues: Array(81).fill({
       isEditable: true, 
       squareValue: 0,
-      isDivHovered: false,
       squareNotes: Array(9).fill(undefined)
     }), 
     updateSudokuInterface: () => {}
@@ -67,7 +66,8 @@ export default function Game() {
 
   useEffect(() => {
     console.log("hey", boardData)
-  },[boardData])
+    console.log("bye", gameData)
+  },[boardData, gameData])
 
   useEffect(() => {
     setGameData((currentGameData) => ({

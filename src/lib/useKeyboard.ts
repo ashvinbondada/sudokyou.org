@@ -35,7 +35,7 @@ export function useShiftClick() {
 
 
 export function useKeyboardClick() {
-    const [keyDown, setKeyDown] = useState(-1);
+    const [keyDown, setKeyDown] = useState(0);
 
     useEffect(() => {
         function handleKeyDown (this: Window, ev: WindowEventMap["keydown"]) {
