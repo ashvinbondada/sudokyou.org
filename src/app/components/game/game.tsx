@@ -10,7 +10,7 @@ import useKeyboardShortcut from "use-keyboard-shortcut";
 export default function Game() {
   const isShiftDown = useShiftClick();
   const keyDown = useKeyboardClick();
-  // const arrowKey = useArrowMovement();
+  const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
 
 
   const [boardData, setBoardData] = useState<SudokuInterface>({
@@ -54,6 +54,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell - 9,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["k"], () => {
@@ -63,6 +64,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell - 9,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["ArrowDown"], () => {
@@ -72,6 +74,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell + 9,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["j"], () => {
@@ -81,6 +84,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell + 9,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["ArrowLeft"], () => {
@@ -90,6 +94,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell - 1,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["h"], () => {
@@ -99,6 +104,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell - 1,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["ArrowRight"], () => {
@@ -108,6 +114,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell + 1,
       }));
     }
+    setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["l"], () => {
@@ -117,6 +124,7 @@ export default function Game() {
         selectedCell: prevState.selectedCell + 1,
       }));
     }
+    setInputSource("keyboard")
   });
 
   // cleanes state and prevents any further action for small time
@@ -134,6 +142,41 @@ export default function Game() {
     console.log("cleaned")
   },50) 
 
+  const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
+    
+    // Mouse position relative to the center of the component
+    const x = e.clientX - offsetLeft - offsetWidth / 2;
+    const y = e.clientY - offsetTop - offsetHeight / 2;
+
+    // Invert the shadow to be on the opposite side of the mouse position
+    const shadowX = -(x / offsetWidth) * 15; // Negative sign to invert
+    const shadowY = -(y / offsetHeight) * 15;
+
+    // Set the new shadow
+    setShadow(`${shadowX}px ${shadowY}px 30px rgba(0, 0, 0, 0.5)`);
+    setInputSource("mouse");
+  };
+
+  useEffect(() => {
+    if (inputSource === "keyboard") {
+      const centerCell = Math.floor(81 / 2); // Center of the grid (cell 40)
+      const selectedRow = Math.floor(gameData.selectedCell / 9);
+      const selectedCol = gameData.selectedCell % 9;
+      const centerRow = Math.floor(centerCell / 9);
+      const centerCol = centerCell % 9;
+
+      // Calculate the distance from the center and adjust shadow
+      const shadowX = -(selectedCol - centerCol) * 2;
+      const shadowY = -(selectedRow - centerRow) * 2;
+
+      setShadow(`${shadowX}px ${shadowY}px 20px rgba(0, 0, 0, 0.5)`);
+    }
+  }, [gameData.selectedCell, inputSource]);
+
+
 
   useEffect(() => {
     setGameData((currentGameData) => ({
@@ -147,7 +190,10 @@ export default function Game() {
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
           <div className="h-full w-full"
-          onMouseLeave={handleMouseLeave}>
+          onMouseLeave={handleMouseLeave}
+          onMouseMove={handleMouseMove}
+          style={{ boxShadow: shadow }}
+          >
             <Board />
           </div>
         </BoardContext.Provider>

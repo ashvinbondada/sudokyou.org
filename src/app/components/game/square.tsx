@@ -67,12 +67,7 @@ export default function Square({uid}: Props) {
     return (
         <div
             className="w-full h-full"
-            onPointerEnter={() => updateGameInterface({selectedCell: uid})}
-            onPointerLeave={() => 
-                console.log("left", uid)
-                // updateGameInterface({selectedCell: undefined})
-            }
-        >
+            onPointerEnter={() => updateGameInterface({selectedCell: uid})}>
             {
                 ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
                     // passing in handleSquareNotesInput function because 
