@@ -3,7 +3,7 @@
 import {useContext, useEffect, useState } from "react"
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
-import { BoardContext, GameContext } from "../../lib/context";
+import { BoardContext, GameContext } from "../../../lib/context";
 
 type Props = {
     uid: number,

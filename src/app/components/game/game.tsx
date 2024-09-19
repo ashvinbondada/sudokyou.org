@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { GameStatus, BoardContext, GameContext } from "../../lib/context";
+import { GameStatus, BoardContext, GameContext } from "../../../lib/context";
 import { useKeyboardClick, useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
 import { debounce } from "lodash";
