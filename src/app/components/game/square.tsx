@@ -41,7 +41,7 @@ export default function Square({uid}: Props) {
         nextBoardValues[uid] = {
             ...boardValues[uid],
             squareValue: nextValue,
-            squareNotes: Array(9).fill(undefined)
+            squareNotes: Array(9).fill(0)
         }
         updateSudokuInterface({boardValues: nextBoardValues})
     }
@@ -61,7 +61,7 @@ export default function Square({uid}: Props) {
 
     // handling hasNotes variable
     useEffect(() => {
-        setHasNotes(squareNotes.some((note: number | undefined) => note !== undefined));
+        setHasNotes(squareNotes.some((note: number) => note !== 0));
     }, [squareNotes]);
 
     return (

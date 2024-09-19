@@ -17,7 +17,7 @@ export default function Game() {
     boardValues: Array(81).fill({
       isEditable: true, 
       squareValue: 0,
-      squareNotes: Array(9).fill(undefined)
+      squareNotes: Array(9).fill(0)
     }), 
     updateSudokuInterface: () => {}
   });
@@ -33,6 +33,9 @@ export default function Game() {
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,
+    highlightedCells: [30, 31, 32, 
+                       39, 40, 41, 
+                       48, 49, 50],
     gameStatus: GameStatus.WOMB, 
     timer: undefined,
     mistakesCount: 0,
@@ -127,6 +130,55 @@ export default function Game() {
     setInputSource("keyboard")
   });
 
+  const calculateBlockCells = (selectedCell: number, gridSize = 9): number[] => {
+    const selectedRow = Math.floor(selectedCell / gridSize);
+    const selectedCol = selectedCell % gridSize;
+  
+    // Calculate the start of the 3x3 block for rows and columns
+    const blockRowStart = Math.floor(selectedRow / 3) * 3;
+    const blockColStart = Math.floor(selectedCol / 3) * 3;
+  
+    const blockCells: number[] = [];
+    const rowCells: number[] = [];
+    const colCells: number[] = [];
+  
+    // Get all the cells in the current 3x3 block
+    for (let row = blockRowStart; row < blockRowStart + 3; row++) {
+      for (let col = blockColStart; col < blockColStart + 3; col++) {
+        blockCells.push(row * gridSize + col); // Convert row and column back to cell index
+      }
+    }
+  
+    // Get all the cells in the current row
+    for (let col = 0; col < gridSize; col++) {
+      rowCells.push(selectedRow * gridSize + col);
+    }
+  
+    // Get all the cells in the current column
+    for (let row = 0; row < gridSize; row++) {
+      colCells.push(row * gridSize + selectedCol);
+    }
+  
+    // Combine all cells into a single array and ensure uniqueness using a Set
+    const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
+  
+    return combinedCells;
+  };
+  
+
+  useEffect(() => {
+      const newHightlightedCells = calculateBlockCells(gameData.selectedCell)
+      setGameData((prevState) => ({
+        ...prevState,
+        highlightedCells: newHightlightedCells
+      }))
+
+  }, [gameData.selectedCell])
+
+
+
+
+
   // cleanes state and prevents any further action for small time
   const handleMouseLeave = debounce(() => {
     const updatedBoardValues = boardData.boardValues.map(square => ({
@@ -143,7 +195,6 @@ export default function Game() {
   },50) 
 
   const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
     

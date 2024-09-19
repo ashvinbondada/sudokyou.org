@@ -8,7 +8,9 @@ export default function NoteBox({noteValue, onNoteBoxClick}: Props)
 {
   return (
     <div className='h-full w-full text-xs flex items-center justify-center text-black'>
-      <button onClick={onNoteBoxClick}>
+      <button 
+        onClick={onNoteBoxClick}
+      >
       {(noteValue > 0) ? noteValue : ''}
       </button>
     </div>

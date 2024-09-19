@@ -13,6 +13,7 @@ interface GameInterface {
     isShiftDown: boolean;
     inputValue: number;
     selectedCell: number;  //  probably an index in the boardValues Array
+    highlightedCells: number[];
     gameStatus: GameStatus;
     timer?: number; // idk about this one
     mistakesCount: number; // max 3

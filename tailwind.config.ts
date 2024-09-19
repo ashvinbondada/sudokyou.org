@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        'custom-inner': 'inset 0 4px 6px rgba(0, 0, 0, 0.2)', // Custom inner shadow
+      },
       colors: {
         "off-white": "#DDE6ED",
         "theme-1" : {
@@ -30,7 +33,15 @@ const config: Config = {
           "dull-dk-blue": "#395B64",
           "dull-light-blue": "#A5C9CA",
           "blue-white": "#E7F6F2"
+        },
+        "dark-mode-2": {
+          "dk-blue": "#27374D",
+          "matte-blue":"#526D82",
+          "dull-grey-blue": "#9DB2BF",
+          // off white theme is general
+
         }
+
       },
     },
   },

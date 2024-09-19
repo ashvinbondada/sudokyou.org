@@ -5,7 +5,7 @@ import { BoardContext, GameContext } from '@/lib/context';
 
 export default function Board() {
   const {boardValues} = useContext(BoardContext)
-  const {selectedCell} = useContext(GameContext)
+  const {selectedCell, highlightedCells} = useContext(GameContext)
   const squares = boardValues.map((_, index) => {
   
     const isTopBold = index < 9; // First row
@@ -25,8 +25,8 @@ export default function Board() {
     return (
       <div
         key={index}
-        className={`border-1 border-theme-2-berkeley-blue w-full h-full 
-        ${selectedCell === index ? 'bg-theme-2-non-photo-blue' : 'bg-theme-2-honeydew'} aspect-square flex items-center justify-center ${borderClasses}`}
+        className={`border-1 border-theme-2-berkeley-blue w-full h-full
+          ${highlightedCells.includes(index) ? (index !== selectedCell) ? 'bg-dark-mode-2-dull-grey-blue/60' : 'bg-theme-1-pacific-cyan/50 shadow-custom-inner' : (index === selectedCell) ? 'bg-theme-2-non-photo-blue' : 'bg-off-white'}  aspect-square flex items-center justify-center ${borderClasses}`}
       >
         <Square uid={index}/>
       </div>

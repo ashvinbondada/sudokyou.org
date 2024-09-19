@@ -7,8 +7,6 @@
 //       </div>
 //   );
 // }
-'use client'
-import { useState } from "react";
 import Game from "./components/game/game";
 
 export default function Home() {
