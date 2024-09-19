@@ -1,7 +1,3 @@
-// import React from 'react'
-// import { useState } from "react"
-import PropTypes from 'prop-types'
-
 type Props = {
     value: number | undefined,
     onNoteBoxClick: () => void
@@ -17,7 +13,3 @@ export default function NoteBox({value, onNoteBoxClick}: Props)
   )
 }
 
-NoteBox.propTypes = {
-  value: PropTypes.number,
-  onNoteBoxClick: PropTypes.func.isRequired,
-}
