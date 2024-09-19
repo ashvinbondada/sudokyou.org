@@ -1,7 +1,9 @@
+
 type Props = {
     value: number | undefined,
     onNoteBoxClick: () => void
 }
+
 export default function NoteBox({value, onNoteBoxClick}: Props) 
 {
   return (

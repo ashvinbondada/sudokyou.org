@@ -1,28 +1,3 @@
-// import NoteBox from "./notebox";
-
-// type Props = {
-//     squareNotes: (number | undefined)[]
-//     handleSquareNotesInput: (index: number) => void
-// }
-
-// export default function NotesSquare({squareNotes, handleSquareNotesInput}: Props) {
-
-//     return (
-//       <div className="h-full w-full border-4 border-orange-500 grid grid-cols-3">
-//         {squareNotes.map((value, index) => (
-//           <div key={index} className="bg-theme-1-jonquil aspect-square border-2">
-//             <NoteBox
-//               // className="note-box"
-//               value={value}
-//               onNoteBoxClick={() => handleSquareNotesInput(index)} 
-//             />
-//             </div>
-//         ))}
-//       </div>
-//     );
-//   }
-
-
 import NoteBox from "./notebox";
 
 type Props = {

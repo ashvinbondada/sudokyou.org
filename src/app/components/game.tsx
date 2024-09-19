@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { GameStatus, BoardContext, GameContext } from "../../lib/context";
 import { useKeyboardClick, useShiftClick } from "@/lib/useKeyboard";
-// import { useKeyboardClick } from "../utils/hooks/useKeyboardClick";
-// import { useShiftClick } from "../utils/hooks/useKeyboardClick";
 import Board from "./board";
 import { debounce } from "lodash";
 
@@ -45,6 +43,7 @@ export default function Game() {
     }))
   }
 
+  // cleanes state and prevents any further action for small time
   const handleMouseLeave = debounce(() => {
     const updatedBoardValues = boardData.boardValues.map(square => ({
       ...square,
@@ -61,13 +60,8 @@ export default function Game() {
       selectedCell: undefined
     }))
     console.log("cleaned")
-  },50) // cleanes state and prevents any further action for small time
+  },50) 
 
-
-  useEffect(() => {
-    console.log("hey", boardData)
-    console.log("bye", gameData)
-  },[boardData, gameData])
 
   useEffect(() => {
     setGameData((currentGameData) => ({

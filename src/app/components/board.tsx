@@ -1,18 +1,13 @@
 'use client'
 import { useContext } from 'react';
-import Square from './square'; // Assuming you have a Square component
+import Square from './square';
 import { BoardContext } from '@/lib/context';
 
 export default function Board() {
   const {boardValues} = useContext(BoardContext)
 
-  // Generate an array of 81 Square components
-  // const squares = Array.from({ length: 27 }, (_, index) => {
   const squares = boardValues.map((_, index) => {
   
-  
-  
-  // })
     const isTopBold = index < 9; // First row
     const isBottomBold = index >= 72; // Last row
     const isLeftBold = index % 9 === 0; // First column of each row
