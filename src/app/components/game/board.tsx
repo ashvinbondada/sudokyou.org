@@ -1,11 +1,11 @@
 'use client'
 import { useContext } from 'react';
 import Square from './square';
-import { BoardContext } from '@/lib/context';
+import { BoardContext, GameContext } from '@/lib/context';
 
 export default function Board() {
   const {boardValues} = useContext(BoardContext)
-
+  const {selectedCell} = useContext(GameContext)
   const squares = boardValues.map((_, index) => {
   
     const isTopBold = index < 9; // First row
@@ -25,7 +25,8 @@ export default function Board() {
     return (
       <div
         key={index}
-        className={`border-1 border-theme-2-berkeley-blue bg-theme-2-honeydew w-full h-full hover:bg-theme-2-non-photo-blue aspect-square flex items-center justify-center ${borderClasses}`}
+        className={`border-1 border-theme-2-berkeley-blue w-full h-full 
+        ${selectedCell === index ? 'bg-theme-2-non-photo-blue' : 'bg-theme-2-honeydew'} aspect-square flex items-center justify-center ${borderClasses}`}
       >
         <Square uid={index}/>
       </div>

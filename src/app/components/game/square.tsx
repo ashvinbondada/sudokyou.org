@@ -18,7 +18,7 @@ export default function Square({uid}: Props) {
 
     function handleSquareNotesInput(index: number) {
         const nextSquareNotes = squareNotes.slice();
-        nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? undefined : index + 1;
+        nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
         const nextBoardValues = boardValues.slice();
         nextBoardValues[uid] = {
             ...boardValues[uid],
@@ -68,7 +68,10 @@ export default function Square({uid}: Props) {
         <div
             className="w-full h-full"
             onPointerEnter={() => updateGameInterface({selectedCell: uid})}
-            onPointerLeave={() => updateGameInterface({selectedCell: undefined})}
+            onPointerLeave={() => 
+                console.log("left", uid)
+                // updateGameInterface({selectedCell: undefined})
+            }
         >
             {
                 ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
