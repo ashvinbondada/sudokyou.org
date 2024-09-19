@@ -11,7 +11,7 @@ interface SudokuInterface {
 
 interface GameInterface {
     isShiftDown: boolean;
-    inputValue: number | undefined;
+    inputValue: number;
     selectedCell: number | undefined ;  //  probably an index in the boardValues Array
     gameStatus: GameStatus;
     timer?: number; // idk about this one

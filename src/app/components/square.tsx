@@ -11,9 +11,9 @@ type Props = {
 
 export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
+    
     const {isShiftDown, inputValue, selectedCell, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface} = useContext(BoardContext);
-
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
     function handleSquareNotesInput(index: number) {
@@ -48,20 +48,20 @@ export default function Square({uid}: Props) {
 
     // Hovering Over Note Box Use Effect
     useEffect(() => {
-        if ((selectedCell === uid ) && isShiftDown && inputValue && inputValue > 0) {
-            const index = inputValue - 1;
-            handleSquareNotesInput(index);
+        if ((selectedCell === uid ) && inputValue > 0) {
+            if (isShiftDown) {
+                const index = inputValue - 1;
+                handleSquareNotesInput(index);
+            } else {
+                handleRegularSquareInput(inputValue);
+            }
         }
-        else if ((selectedCell === uid ) && !isShiftDown && inputValue && inputValue > 0) {
-            handleRegularSquareInput(inputValue);
-        }
-    }, [isShiftDown, inputValue]);
+    }, [uid, isShiftDown, inputValue]);
 
 
     // handling hasNotes variable
     useEffect(() => {
         setHasNotes(squareNotes.some((note: number | undefined) => note !== undefined));
-        // TODO: make the Regular Square value '' if it hasNotes
     }, [squareNotes]);
 
     return (

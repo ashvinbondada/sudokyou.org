@@ -28,9 +28,9 @@ export default function Game() {
 
   const [gameData, setGameData] = useState<GameInterface>({
     isShiftDown: false,
-    inputValue: undefined,
+    inputValue: 0,
     selectedCell: undefined,
-    gameStatus: GameStatus.WOMB, // Assuming GameStatus is an enum
+    gameStatus: GameStatus.WOMB, 
     timer: undefined,
     mistakesCount: 0,
     updateGameInterface: () => {}

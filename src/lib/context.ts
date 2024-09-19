@@ -22,7 +22,7 @@ export enum GameStatus {
 // Define the initial default state for the game
 const defaultGameState = {
     isShiftDown: false,
-    inputValue: undefined,
+    inputValue: 0,
     selectedCell: undefined,
     gameStatus: GameStatus.WOMB, // Assuming GameStatus is an enum
     timer: undefined,

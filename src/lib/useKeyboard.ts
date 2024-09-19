@@ -1,6 +1,3 @@
-// responsible for handling number clicks
-// and sending them to the Board component, which
-// will propagate this down
 import { useEffect, useState } from "react";
 
 export function useShiftClick() {
@@ -9,14 +6,12 @@ export function useShiftClick() {
 
         function handleShiftDown (this: Window, ev: WindowEventMap["keydown"]) {
             if (ev.key == 'Shift') {
-                // e.preventDefault();
                 setShiftDown(true);
             }
         }
 
         function handleShiftUp (this: Window, ev: WindowEventMap["keyup"]) {
             if (ev.key == 'Shift') {
-                // e.preventDefault();
                 setShiftDown(false);
             }
         }
@@ -39,8 +34,6 @@ export function useKeyboardClick() {
 
     useEffect(() => {
         function handleKeyDown (this: Window, ev: WindowEventMap["keydown"]) {
-            // e.preventDefault();
-            // console.log("pressed", e.key);
             switch (ev.key) {
                 case 'q':
                 case 'Q':
@@ -110,9 +103,8 @@ export function useKeyboardClick() {
             }
         }        
 
-        function handleKeyUp(this: Window, ev: WindowEventMap["keyup"]){
-            // e.preventDefault();
-            setKeyDown(0); // might be a performance hit
+        function handleKeyUp(this: Window){
+            setKeyDown(0); 
         }        
 
         window.addEventListener('keydown', handleKeyDown);
