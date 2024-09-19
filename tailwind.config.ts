@@ -9,11 +9,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        "theme-1" : {
+          "pacific-cyan" :"#06AED5",
+          "cerulean" : "#086788",
+          "jonquil": "#f0c808",
+          "papaya-whip": "FFF1D0",
+          "rojo": "DD1C1A"
+        },
+
+        "theme-2": {
+          "pantone": "#E63946",
+          "honeydew": "#F1FAEE",
+          "non-photo-blue": "#A8DADC",
+          "cerulean": "#457B9D",
+          "berkeley-blue": "#1D3557"
+        }
+       
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')
+  ],
 };
 export default config;
