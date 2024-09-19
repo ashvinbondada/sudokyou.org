@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "./components/navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,21 +13,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="flex h-screen">
-        {/* Left component: Can shrink */}
-        <div className="border-2 border-blue-400 w-[20%]">
-          controls instructions
-        </div>
+    <html lang="en" className="h-screen ">
+      <body className="h-screen overflow-hidden bg-off-white dark:bg-dark-mode-1-matte-black">
+      <Navbar />
+        <div className="flex h-full">
+          {/* Left component: Can shrink */}
+          <div className="border-2 border-blue-400 w-[20%]">
+            controls instructions
+          </div>
 
-        {/* Middle component: Has a min-width but can grow */}
-        <div className="border-2 border-green-400 flex-grow flex justify-center items-center">
-          {children}
-        </div>
+          {/* Middle component: Has a min-width but can grow */}
+          <div className="border-2 border-green-400 flex-grow flex justify-center items-center">
+            {children}
+          </div>
 
-        {/* Right component: Can shrink */}
-        <div className="border-2 border-red-400 w-[20%]">
-          leaderboard
+          {/* Right component: Can shrink */}
+          <div className="border-2 border-red-400 w-[20%]">
+            leaderboard
+          </div>
         </div>
       </body>
     </html>
