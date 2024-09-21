@@ -9,8 +9,12 @@ interface SudokuInterface {
     updateSudokuInterface   : (newState: Partial<SudokuInterface>) => void
 }
 
+type directionIndex = {
+    direction: string,
+    index: number
+}
 type HighlightedCells = {
-    shadowBlock     : (string | number)[][]
+    shadowBlock     : directionIndex[] 
     neighborhood    : number[] 
     sameNumbers     : number[];
 }

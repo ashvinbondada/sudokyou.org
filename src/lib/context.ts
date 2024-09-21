@@ -26,14 +26,14 @@ const defaultGameState = {
     selectedCell: 40,
     highlightedCells: { 
         shadowBlock : [
-            ["top-left", 30],
-            ["top", 31],
-            ["top-right", 32],
-            ["left", 39],
-            ["right", 41],
-            ["bottom-left", 48],
-            ["bottom", 49],
-            ["bottom-right", 50]
+            { direction: "top-left", index: 30 },
+            { direction: "top", index: 31 },
+            { direction: "top-right", index: 32 },
+            { direction: "left", index: 39 },
+            { direction: "right", index: 41 },
+            { direction: "bottom-left", index: 48 },
+            { direction: "bottom", index: 49 },
+            { direction: "bottom-right", index: 50 }
         ],
         neighborhood: [4, 13, 22, 36, 37, 38, 58, 67, 76, 42, 43, 44],
         sameNumbers: []

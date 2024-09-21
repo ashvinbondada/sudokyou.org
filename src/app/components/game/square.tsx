@@ -65,9 +65,9 @@ export default function Square({uid}: Props) {
     }, [squareNotes]);
 
     // SHADOW IN SQUARE
-    const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
+    const [shadow, setShadow] = useState("none");
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        // if (selectedCell === uid) { // Only apply the effect to the selectedCell
+        if (selectedCell === uid) { // Only apply the effect to the selectedCell
           const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
     
           // Mouse position relative to the center of the component
@@ -75,26 +75,21 @@ export default function Square({uid}: Props) {
           const y = e.clientY - offsetTop - offsetHeight / 2;
     
           // Invert the shadow to be on the opposite side of the mouse position
-          const shadowX = -(x / offsetWidth) * 3; // Negative sign to invert
-          const shadowY = -(y / offsetHeight) * 3;
+          const shadowX = -(x / offsetWidth) * 8; // Negative sign to invert
+          const shadowY = -(y / offsetHeight) * 8;
     
           // Set the new shadow
           setShadow(`${shadowX}px ${shadowY}px 15px rgba(0, 0, 0, 0.5)`);
-        // }
+        }
       };
     
-    //   useEffect(() => {
-    //     if (selectedCell !== uid) {
-    //       setShadow("0px 0px 15px rgba(0, 0, 0, 0.5)");
-    //     }
-    //   }, [selectedCell, uid]);
-
     return (
         <div
-            className="w-full h-full"
+            className={`w-full h-full`}
             onMouseMove={handleMouseMove}
             onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
             style={{ boxShadow: selectedCell === uid ? shadow : "none" }} // Apply shadow only for selected cell
+
             >
             {
                 ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
