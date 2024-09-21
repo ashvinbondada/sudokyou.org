@@ -44,7 +44,7 @@ export default function Game() {
                         { direction: "bottom-right",  index: 50 }
                       ],
                         neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-                        sameNumbers: [60] 
+                        sameNumbers: [] 
                     },
     gameStatus: GameStatus.WOMB, 
     timer: undefined,
