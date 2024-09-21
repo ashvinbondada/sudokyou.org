@@ -31,6 +31,9 @@ export default function Board() {
       : selectedCellBG
 
     }
+    // else if (highlightedCells.shadowBlock.includes(index)) {
+    //   // pass since we need to handle in square component
+    // }
     else if (highlightedCells.neighborhood.includes(index)) {
       return index === selectedCell
         ? selectedCellBG

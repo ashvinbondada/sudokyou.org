@@ -33,13 +33,22 @@ export default function Game() {
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,
-    highlightedCells: { neighborhood : [30, 31, 32, 
-                                        39, 40, 41, 
-                                        48, 49, 50,
-                                        4, 13, 22, 36, 37,
-                                        38, 58, 67, 76,
-                                        42, 43, 44 
-                                      ],
+    highlightedCells: { shadowBlock : [
+                        ["top-left", 30],
+                        ["top", 31],
+                        ["top-right", 32],
+                        ["left", 39],
+                        ["right", 41],
+                        ["bottom-left", 48],
+                        ["bottom", 49],
+                        ["bottom-right", 50]
+                      ],
+                        neighborhood: [30, 31, 32, 
+                                      39, 40, 41, 
+                                      48, 49, 50,
+                                      4, 13, 22, 36, 37,
+                                      38, 58, 67, 76,
+                                      42, 43, 44],
                         sameNumbers: [] 
                     },
     gameStatus: GameStatus.WOMB, 
@@ -137,7 +146,7 @@ export default function Game() {
   });
 
   useEffect(() => {
-  const calculateBlockCells = (selectedCell: number, gridSize = 9): [number[], number[]] => {
+  const calculateHighlightCells = (selectedCell: number, gridSize = 9): [[string, number][], number[], number[]] => {
     const selectedRow = Math.floor(selectedCell / gridSize);
     const selectedCol = selectedCell % gridSize;
   
@@ -174,15 +183,28 @@ export default function Game() {
   
     // Combine all cells into a single array and ensure uniqueness using a Set
     const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
-  
-    return [combinedCells, sameNumCells]
+
+    const shadowBlock: { [key: string]: number } = {
+      "top-left": selectedCell - 10,
+      "top": selectedCell - 9,
+      "top-right": selectedCell - 8,
+      "left": selectedCell - 1,
+      "right": selectedCell + 1,
+      "bottom-left": selectedCell + 8,
+      "bottom": selectedCell + 9,
+      "bottom-right": selectedCell + 10
+    };
+
+    const validShadowBlock = Object.entries(shadowBlock).filter(([, index]) => index >= 0 && index <= 80);
+
+    return [validShadowBlock, combinedCells, sameNumCells]
   };
   
 
-      const [neighborhood, sameNumbers] = calculateBlockCells(gameData.selectedCell)
+      const [shadowBlock, neighborhood, sameNumbers] = calculateHighlightCells(gameData.selectedCell)
       setGameData((prevState) => ({
         ...prevState,
-        highlightedCells: { neighborhood, sameNumbers}
+        highlightedCells: { shadowBlock, neighborhood, sameNumbers}
       }))
 
   }, [gameData.selectedCell, boardData])
