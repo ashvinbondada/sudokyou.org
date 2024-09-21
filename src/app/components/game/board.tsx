@@ -1,36 +1,53 @@
 'use client'
 import { useContext } from 'react';
 import Square from './square';
-import { BoardContext } from '@/lib/context';
+import { BoardContext, GameContext } from '@/lib/context';
 
 export default function Board() {
-  const {boardValues} = useContext(BoardContext)
+  const { boardValues } = useContext(BoardContext);
+  const { selectedCell, highlightedCells } = useContext(GameContext);
 
-  const squares = boardValues.map((_, index) => {
-  
-    const isTopBold = index < 9; // First row
-    const isBottomBold = index >= 72; // Last row
-    const isLeftBold = index % 9 === 0; // First column of each row
-    const isRightBold = (index + 1) % 9 === 0; // Last column of each row
-    const isVerticalBold = index % 3 === 0; // Every 3rd column (for vertical bold lines)
-    const isHorizontalBold = Math.floor(index / 9) % 3 === 0; // Every 3rd row (for horizontal bold lines)
+  const getBorderClasses = (index: number) => {
+    const isTopBold = index < 9;
+    const isBottomBold = index >= 72;
+    const isLeftBold = index % 9 === 0;
+    const isRightBold = (index + 1) % 9 === 0;
+    const isVerticalBold = index % 3 === 0;
+    const isHorizontalBold = Math.floor(index / 9) % 3 === 0;
 
-    const borderClasses = `
-      ${isTopBold || isHorizontalBold ? 'border-t-4' : 'border-t'} 
-      ${isBottomBold ? 'border-b-4' : 'border-b'} 
-      ${isLeftBold || isVerticalBold ? 'border-l-4' : 'border-l'} 
+    return `
+      ${isTopBold || isHorizontalBold ? 'border-t-4' : 'border-t'}
+      ${isBottomBold ? 'border-b-4' : 'border-b'}
+      ${isLeftBold || isVerticalBold ? 'border-l-4' : 'border-l'}
       ${isRightBold ? 'border-r-4' : 'border-r'}
     `;
+  };
 
-    return (
-      <div
-        key={index}
-        className={`border-1 border-theme-2-berkeley-blue bg-theme-2-honeydew w-full h-full hover:bg-theme-2-non-photo-blue aspect-square flex items-center justify-center ${borderClasses}`}
-      >
-        <Square uid={index}/>
-      </div>
-    );
-  });
+  const getBackgroundClasses = (index: number) => {
+    const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner'
+    if (highlightedCells.sameNumbers.includes(index)) {
+      return index !== selectedCell 
+      ? 'bg-theme-1-pacific-cyan/50 shadow-custom-inner'
+      : selectedCellBG
+
+    }
+    else if (highlightedCells.neighborhood.includes(index)) {
+      return index === selectedCell
+        ? selectedCellBG
+        : 'bg-theme-1-pacific-cyan/30'
+    }
+    return 'bg-white-3'
+  };
+
+  const squares = boardValues.map((_, index) => (
+    <div
+      key={index}
+      className={`border-1 border-theme-2-berkeley-blue w-full h-full
+        ${getBackgroundClasses(index)} aspect-square flex items-center justify-center ${getBorderClasses(index)}`}
+    >
+      <Square uid={index} />
+    </div>
+  ));
 
   return (
     <div className='grid grid-cols-9 w-full'>

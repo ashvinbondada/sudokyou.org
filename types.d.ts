@@ -1,7 +1,7 @@
 interface Tile {
     isEditable: boolean;
     squareValue: number;
-    squareNotes:(number | undefined)[]; // 9 note boxes
+    squareNotes: number[]; // 9 note boxes
 }
 
 interface SudokuInterface {
@@ -9,10 +9,16 @@ interface SudokuInterface {
     updateSudokuInterface: (newState: Partial<SudokuInterface>) => void
 }
 
+type HighlightedCells = {
+    neighborhood: number[];
+    sameNumbers: number[];
+}
+
 interface GameInterface {
     isShiftDown: boolean;
     inputValue: number;
-    selectedCell: number | undefined ;  //  probably an index in the boardValues Array
+    selectedCell: number;  //  probably an index in the boardValues Array
+    highlightedCells: HighlightedCells;
     gameStatus: GameStatus;
     timer?: number; // idk about this one
     mistakesCount: number; // max 3

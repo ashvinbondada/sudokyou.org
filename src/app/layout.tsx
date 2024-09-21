@@ -14,21 +14,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-screen ">
-      <body className="h-screen overflow-hidden bg-off-white dark:bg-dark-mode-1-matte-black">
+      <body className="h-screen overflow-hidden bg-white dark:bg-dark-mode-1-matte-black">
       <Navbar />
         <div className="flex h-full">
           {/* Left component: Can shrink */}
-          <div className="border-2 border-blue-400 w-[20%]">
+          <div 
+            className="border-2 border-blue-400 w-[20%]"
+          >
             controls instructions
           </div>
 
           {/* Middle component: Has a min-width but can grow */}
-          <div className="border-2 border-green-400 flex-grow flex justify-center items-center">
+          <div 
+            className=" flex-grow flex justify-center items-center"
+          >
             {children}
           </div>
 
           {/* Right component: Can shrink */}
-          <div className="border-2 border-red-400 w-[20%]">
+          <div 
+          className="border-2 border-red-400 w-[20%]"
+          >
             leaderboard
           </div>
         </div>

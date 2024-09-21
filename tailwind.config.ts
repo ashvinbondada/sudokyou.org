@@ -8,8 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        'custom-inner': 'inset 0 4px 6px rgba(0, 0, 0, 0.2)', // Custom inner shadow
+      },
       colors: {
         "off-white": "#DDE6ED",
+        "off-white-2": "#EDEFED",
+        "off-white-3": "#DCE3E7",
         "theme-1" : {
           "pacific-cyan" :"#06AED5",
           "cerulean" : "#086788",
@@ -30,7 +35,15 @@ const config: Config = {
           "dull-dk-blue": "#395B64",
           "dull-light-blue": "#A5C9CA",
           "blue-white": "#E7F6F2"
+        },
+        "dark-mode-2": {
+          "dk-blue": "#27374D",
+          "matte-blue":"#526D82",
+          "dull-grey-blue": "#9DB2BF",
+          // off white theme is general
+
         }
+
       },
     },
   },

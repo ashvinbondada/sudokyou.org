@@ -18,7 +18,7 @@ export default function Square({uid}: Props) {
 
     function handleSquareNotesInput(index: number) {
         const nextSquareNotes = squareNotes.slice();
-        nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? undefined : index + 1;
+        nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
         const nextBoardValues = boardValues.slice();
         nextBoardValues[uid] = {
             ...boardValues[uid],
@@ -41,7 +41,7 @@ export default function Square({uid}: Props) {
         nextBoardValues[uid] = {
             ...boardValues[uid],
             squareValue: nextValue,
-            squareNotes: Array(9).fill(undefined)
+            squareNotes: Array(9).fill(0)
         }
         updateSudokuInterface({boardValues: nextBoardValues})
     }
@@ -61,15 +61,13 @@ export default function Square({uid}: Props) {
 
     // handling hasNotes variable
     useEffect(() => {
-        setHasNotes(squareNotes.some((note: number | undefined) => note !== undefined));
+        setHasNotes(squareNotes.some((note: number) => note !== 0));
     }, [squareNotes]);
 
     return (
         <div
             className="w-full h-full"
-            onPointerEnter={() => updateGameInterface({selectedCell: uid})}
-            onPointerLeave={() => updateGameInterface({selectedCell: undefined})}
-        >
+            onPointerEnter={() => updateGameInterface({selectedCell: uid})}>
             {
                 ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
                     // passing in handleSquareNotesInput function because 

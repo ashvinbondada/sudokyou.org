@@ -1,7 +1,7 @@
 import NoteBox from "./notebox";
 
 type Props = {
-  squareNotes: (number | undefined)[];
+  squareNotes: number[];
   handleSquareNotesInput: (index: number) => void;
 };
 
@@ -15,7 +15,7 @@ export default function NotesSquare({ squareNotes, handleSquareNotesInput }: Pro
           onClick={() => handleSquareNotesInput(index)}
         >
           <NoteBox
-              value={value}
+              noteValue={value}
               onNoteBoxClick={() => handleSquareNotesInput(index)} 
             />
         </div>
