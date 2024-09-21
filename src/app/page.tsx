@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <div 
-      className="w-[80%] max-w-[700px] min-w-[400px] place-self-center z-100"
+      className="w-[60%] max-w-[700px] min-w-[400px] place-self-center z-100"
       // onMouseMove={handleMouseMove}
       // style={{ boxShadow: shadow }}
     >

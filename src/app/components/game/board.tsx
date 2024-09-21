@@ -50,7 +50,7 @@ export default function Board() {
   ));
 
   return (
-    <div className='grid grid-cols-9 w-full'>
+    <div className='grid grid-cols-9 w-full border-4 border-theme-2-berkeley-blue rounded-md'>
       {squares}
     </div>
   );

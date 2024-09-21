@@ -35,7 +35,11 @@ export default function Game() {
     selectedCell: 40,
     highlightedCells: { neighborhood : [30, 31, 32, 
                                         39, 40, 41, 
-                                        48, 49, 50],
+                                        48, 49, 50,
+                                        4, 13, 22, 36, 37,
+                                        38, 58, 67, 76,
+                                        42, 43, 44 
+                                      ],
                         sameNumbers: [] 
                     },
     gameStatus: GameStatus.WOMB, 
@@ -248,7 +252,7 @@ export default function Game() {
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          <div className="h-full w-full"
+          <div className="h-full w-full rounded-md"
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
           style={{ boxShadow: shadow }}
