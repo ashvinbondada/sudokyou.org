@@ -11,7 +11,7 @@ export default function NotesSquare({ squareNotes, handleSquareNotesInput }: Pro
       {squareNotes.map((value, index) => (
         <div
           key={index}
-          className="hover:bg-theme-1-jonquil rounded-[1px] aspect-square flex items-center justify-center"
+          className="hover:bg-theme-1-jonquil rounded-[2px] aspect-square flex items-center justify-center"
           onClick={() => handleSquareNotesInput(index)}
         >
           <NoteBox
