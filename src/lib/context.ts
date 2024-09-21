@@ -24,9 +24,11 @@ const defaultGameState = {
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,
-    highlightedCells:  [30, 31, 32, 
-                        39, 40, 41, 
-                        48, 49, 50],
+    highlightedCells: { neighborhood : [30, 31, 32, 
+                                            39, 40, 41, 
+                                            48, 49, 50],
+                        sameNumbers: [] 
+                    },
     gameStatus: GameStatus.WOMB, // Assuming GameStatus is an enum
     timer: undefined,
     mistakesCount: 0,

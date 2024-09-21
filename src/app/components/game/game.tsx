@@ -33,9 +33,11 @@ export default function Game() {
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,
-    highlightedCells: [30, 31, 32, 
-                       39, 40, 41, 
-                       48, 49, 50],
+    highlightedCells: { neighborhood : [30, 31, 32, 
+                                        39, 40, 41, 
+                                        48, 49, 50],
+                        sameNumbers: [] 
+                    },
     gameStatus: GameStatus.WOMB, 
     timer: undefined,
     mistakesCount: 0,
@@ -130,7 +132,8 @@ export default function Game() {
     setInputSource("keyboard")
   });
 
-  const calculateBlockCells = (selectedCell: number, gridSize = 9): number[] => {
+  useEffect(() => {
+  const calculateBlockCells = (selectedCell: number, gridSize = 9): [number[], number[]] => {
     const selectedRow = Math.floor(selectedCell / gridSize);
     const selectedCol = selectedCell % gridSize;
   
@@ -158,22 +161,27 @@ export default function Game() {
     for (let row = 0; row < gridSize; row++) {
       colCells.push(row * gridSize + selectedCol);
     }
+
+    // get all the cells that match the number
+    const sameNumCells = boardData.boardValues
+    .map((tile: Tile, index) => [tile.squareValue, index]) // Pair squareValue with index
+    .filter(([value]) => value > 0 && value === boardData.boardValues[selectedCell].squareValue) // Filter based on squareValue
+    .map(([, index]) => index); // Extract just the index
   
     // Combine all cells into a single array and ensure uniqueness using a Set
     const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
   
-    return combinedCells;
+    return [combinedCells, sameNumCells]
   };
   
 
-  useEffect(() => {
-      const newHightlightedCells = calculateBlockCells(gameData.selectedCell)
+      const [neighborhood, sameNumbers] = calculateBlockCells(gameData.selectedCell)
       setGameData((prevState) => ({
         ...prevState,
-        highlightedCells: newHightlightedCells
+        highlightedCells: { neighborhood, sameNumbers}
       }))
 
-  }, [gameData.selectedCell])
+  }, [gameData.selectedCell, boardData])
 
 
 

@@ -13,6 +13,8 @@ const config: Config = {
       },
       colors: {
         "off-white": "#DDE6ED",
+        "off-white-2": "#EDEFED",
+        "off-white-3": "#DCE3E7",
         "theme-1" : {
           "pacific-cyan" :"#06AED5",
           "cerulean" : "#086788",

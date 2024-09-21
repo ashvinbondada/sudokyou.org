@@ -9,11 +9,16 @@ interface SudokuInterface {
     updateSudokuInterface: (newState: Partial<SudokuInterface>) => void
 }
 
+type HighlightedCells = {
+    neighborhood: number[];
+    sameNumbers: number[];
+}
+
 interface GameInterface {
     isShiftDown: boolean;
     inputValue: number;
     selectedCell: number;  //  probably an index in the boardValues Array
-    highlightedCells: number[];
+    highlightedCells: HighlightedCells;
     gameStatus: GameStatus;
     timer?: number; // idk about this one
     mistakesCount: number; // max 3
