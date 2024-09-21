@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       boxShadow: {
-        'custom-inner': 'inset 0 4px 6px rgba(0, 0, 0, 0.2)', // Custom inner shadow
+        'custom-inner': 'inset 0 0 10px rgba(0, 0, 0, 0.2)', // Custom inner shadow
       },
       colors: {
         "off-white": "#DDE6ED",

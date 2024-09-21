@@ -33,13 +33,17 @@ export default function Game() {
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,
-    highlightedCells: { neighborhood : [30, 31, 32, 
-                                        39, 40, 41, 
-                                        48, 49, 50,
-                                        4, 13, 22, 36, 37,
-                                        38, 58, 67, 76,
-                                        42, 43, 44 
-                                      ],
+    highlightedCells: { shadowBlock : [
+                        { direction: "top-left",      index: 30 },
+                        { direction: "top",           index: 31 },
+                        { direction: "top-right",     index: 32 },
+                        { direction: "left",          index: 39 },
+                        { direction: "right",         index: 41 },
+                        { direction: "bottom-left",   index: 48 },
+                        { direction: "bottom",        index: 49 },
+                        { direction: "bottom-right",  index: 50 }
+                      ],
+                        neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
                         sameNumbers: [] 
                     },
     gameStatus: GameStatus.WOMB, 
@@ -137,58 +141,69 @@ export default function Game() {
   });
 
   useEffect(() => {
-  const calculateBlockCells = (selectedCell: number, gridSize = 9): [number[], number[]] => {
-    const selectedRow = Math.floor(selectedCell / gridSize);
-    const selectedCol = selectedCell % gridSize;
-  
-    // Calculate the start of the 3x3 block for rows and columns
-    const blockRowStart = Math.floor(selectedRow / 3) * 3;
-    const blockColStart = Math.floor(selectedCol / 3) * 3;
-  
-    const blockCells: number[] = [];
-    const rowCells: number[] = [];
-    const colCells: number[] = [];
-  
-    // Get all the cells in the current 3x3 block
-    for (let row = blockRowStart; row < blockRowStart + 3; row++) {
-      for (let col = blockColStart; col < blockColStart + 3; col++) {
-        blockCells.push(row * gridSize + col); // Convert row and column back to cell index
+    const calculateHighlightCells = (selectedCell: number, gridSize = 9): [directionIndex[], number[], number[]] => {
+      const selectedRow = Math.floor(selectedCell / gridSize);
+      const selectedCol = selectedCell % gridSize;
+    
+      // Calculate the start of the 3x3 block for rows and columns
+      const blockRowStart = Math.floor(selectedRow / 3) * 3;
+      const blockColStart = Math.floor(selectedCol / 3) * 3;
+    
+      const blockCells: number[] = [];
+      const rowCells: number[] = [];
+      const colCells: number[] = [];
+    
+      // Get all the cells in the current 3x3 block
+      for (let row = blockRowStart; row < blockRowStart + 3; row++) {
+        for (let col = blockColStart; col < blockColStart + 3; col++) {
+          blockCells.push(row * gridSize + col); // Convert row and column back to cell index
+        }
       }
-    }
-  
-    // Get all the cells in the current row
-    for (let col = 0; col < gridSize; col++) {
-      rowCells.push(selectedRow * gridSize + col);
-    }
-  
-    // Get all the cells in the current column
-    for (let row = 0; row < gridSize; row++) {
-      colCells.push(row * gridSize + selectedCol);
-    }
+    
+      // Get all the cells in the current row
+      for (let col = 0; col < gridSize; col++) {
+        rowCells.push(selectedRow * gridSize + col);
+      }
+    
+      // Get all the cells in the current column
+      for (let row = 0; row < gridSize; row++) {
+        colCells.push(row * gridSize + selectedCol);
+      }
 
-    // get all the cells that match the number
-    const sameNumCells = boardData.boardValues
-    .map((tile: Tile, index) => [tile.squareValue, index]) // Pair squareValue with index
-    .filter(([value]) => value > 0 && value === boardData.boardValues[selectedCell].squareValue) // Filter based on squareValue
-    .map(([, index]) => index); // Extract just the index
-  
-    // Combine all cells into a single array and ensure uniqueness using a Set
-    const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
-  
-    return [combinedCells, sameNumCells]
-  };
+      // get all the cells that match the number
+      const sameNumCells = boardData.boardValues
+      .map((tile: Tile, index) => [tile.squareValue, index]) // Pair squareValue with index
+      .filter(([value]) => value > 0 && value === boardData.boardValues[selectedCell].squareValue) // Filter based on squareValue
+      .map(([, index]) => index); // Extract just the index
+    
+      // Combine all cells into a single array and ensure uniqueness using a Set
+      const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
+
+      const shadowBlock: directionIndex[] = [
+        { direction: "top-left",      index: selectedCell - 10 },
+        { direction: "top",           index: selectedCell - 9 },
+        { direction: "top-right",     index: selectedCell - 8 },
+        { direction: "left",          index: selectedCell - 1 },
+        { direction: "right",         index: selectedCell + 1 },
+        { direction: "bottom-left",   index: selectedCell + 8 },
+        { direction: "bottom",        index: selectedCell + 9 },
+        { direction: "bottom-right",  index: selectedCell + 10 }
+      ];
+      const validShadowBlock = shadowBlock.filter((dirIdx: directionIndex) => {
+        return dirIdx.index > -1 && dirIdx.index < 81
+      });
+
+      return [validShadowBlock, combinedCells, sameNumCells]
+    };
   
 
-      const [neighborhood, sameNumbers] = calculateBlockCells(gameData.selectedCell)
-      setGameData((prevState) => ({
-        ...prevState,
-        highlightedCells: { neighborhood, sameNumbers}
-      }))
+    const [shadowBlock, neighborhood, sameNumbers] = calculateHighlightCells(gameData.selectedCell)
+    setGameData((prevState) => ({
+      ...prevState,
+      highlightedCells: { shadowBlock, neighborhood, sameNumbers}
+    }))
 
   }, [gameData.selectedCell, boardData])
-
-
-
 
 
   // cleanes state and prevents any further action for small time
@@ -238,7 +253,6 @@ export default function Game() {
       setShadow(`${shadowX}px ${shadowY}px 20px rgba(0, 0, 0, 0.5)`);
     }
   }, [gameData.selectedCell, inputSource]);
-
 
 
   useEffect(() => {
