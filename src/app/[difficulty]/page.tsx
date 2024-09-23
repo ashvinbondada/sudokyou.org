@@ -1,3 +1,4 @@
+import Game from "../components/game/game";
 type Props = {
     params: {
         difficulty: string
@@ -7,8 +8,11 @@ type Props = {
 export default function Difficultypage({params: {difficulty}}: Props) {
 
   return (
-    <div>
-        sudoku level: {difficulty}
-    </div>
-  )
+    // <div className="w-full h-full flex flex-col items-center">
+      <div className=" w-full h-full flex flex-col items-center justify-start sm:justify-center">
+        {difficulty}
+        <Game />
+      </div>
+    // </div>
+);
 }

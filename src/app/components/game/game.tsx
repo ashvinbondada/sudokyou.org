@@ -6,6 +6,7 @@ import { useKeyboardClick, useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
 import { debounce } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
+import DifficultySelector from "../difficultyTimer";
 
 export default function Game() {
   const isShiftDown = useShiftClick();
@@ -274,20 +275,42 @@ export default function Game() {
     }))
   }, [isShiftDown, keyDown]);
 
+  // return (
+  //     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
+  //       <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+  //         <div className=" w-[60%] max-w-[700px] min-w-[400px] flex flex-col sm:items-center justify-center">
+  //           <DifficultySelector />
+  //           <div className="w-full aspect-square rounded-md"
+  //           onMouseLeave={handleMouseLeave}
+  //           onMouseMove={handleMouseMove}
+  //           style={{ boxShadow: shadow }}
+  //           >
+  //             <Board />
+  //           </div>
+  //         </div>  
+  //       </BoardContext.Provider>
+  //     </GameContext.Provider>
+  // );
   return (
-      <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
-        <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          <div>
-            interface
+    <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
+      <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+        {/* Outer wrapper for both DifficultySelector and Board */}
+        <div className=" w-[60%] max-w-[700px] min-w-[400px] flex flex-col items-center justify-center">
+          {/* Timer and difficulty selector with full width */}
+          <div className="w-full mb-4">
+            <DifficultySelector />
           </div>
-          <div className="w-[60%] max-w-[700px] min-w-[400px] aspect-square rounded-md"
-          onMouseLeave={handleMouseLeave}
-          onMouseMove={handleMouseMove}
-          style={{ boxShadow: shadow }}
+          {/* Sudoku board with full width */}
+          <div
+            className="w-full aspect-square rounded-md"
+            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseMove}
+            style={{ boxShadow: shadow }}
           >
             <Board />
           </div>
-        </BoardContext.Provider>
-      </GameContext.Provider>
-  );
+        </div>
+      </BoardContext.Provider>
+    </GameContext.Provider>
+);
 }

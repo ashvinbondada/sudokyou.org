@@ -27,10 +27,6 @@ export default function Square({uid}: Props) {
             squareNotes: nextSquareNotes
         }
         updateSudokuInterface({boardValues: nextBoardValues})
-        console.log("selectedCell", selectedCell)
-        console.log("uid", uid)
-        console.log("input", index+1)
-        console.log("isShiftDown", isShiftDown)
 
     };
 
@@ -112,7 +108,7 @@ export default function Square({uid}: Props) {
             onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
         >
             <div
-                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-450 ease-in-out`}
+                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-400 ease-in-out`}
                 >
                 {
                     ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
