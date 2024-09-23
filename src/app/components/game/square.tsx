@@ -12,7 +12,7 @@ type Props = {
 export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
     
-    const {isShiftDown, inputValue, selectedCell, updateGameInterface} = useContext(GameContext)
+    const {isShiftDown, inputValue, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
     const [shadow, setShadow] = useState("none");
@@ -65,42 +65,68 @@ export default function Square({uid}: Props) {
         setHasNotes(squareNotes.some((note: number) => note !== 0));
     }, [squareNotes]);
 
-    // SHADOW IN SQUARE
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
-          const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
+            const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
+            
+            // Mouse position relative to the square's top-left corner
+            const x = e.clientX - offsetLeft;
+            const y = e.clientY - offsetTop;
     
-          // Mouse position relative to the center of the component
-          const x = e.clientX - offsetLeft - offsetWidth / 2;
-          const y = e.clientY - offsetTop - offsetHeight / 2;
+            // Calculate the shadow based on mouse position relative to the center of the square
+            const centerX = offsetWidth / 2;
+            const centerY = offsetHeight / 2;
     
-          // Invert the shadow to be on the opposite side of the mouse position
-          const shadowX = -(x / offsetWidth) * 8; // Negative sign to invert
-          const shadowY = -(y / offsetHeight) * 8;
+            // Compute the shadow values based on the distance from the center of the square
+            const shadowX = -((x - centerX) / offsetWidth) * 8; // Control the strength of the shadow here
+            const shadowY = -((y - centerY) / offsetHeight) * 8;
     
-          // Set the new shadow
-          setShadow(`${shadowX}px ${shadowY}px 15px rgba(0, 0, 0, 0.5)`);
+            // Set the new shadow
+            setShadow(`${shadowX}px ${shadowY}px 15px rgba(0, 0, 0, 0.5)`);
         }
-      };
-    
-    return (
-        <div
-            className={`w-full h-full`}
-            onMouseMove={handleMouseMove}
-            onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
-            style={{ boxShadow: selectedCell === uid ? shadow : "none" }} // Apply shadow only for selected cell
+    };
 
-            >
-            {
-                ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
-                    // passing in handleSquareNotesInput function because 
-                    // we should be able to click on the boxes,
-                    // and not just rely on hover input
-                    <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
-                ) : (
-                    <RegularSquare squareValue={squareValue} />
-                )
-            }
+    const getBackgroundClasses = (index: number) => {
+        const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
+
+        if (highlightedCells.sameNumbers.includes(index)) {
+        return index !== selectedCell 
+            ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
+            : selectedCellBG;
+        } else if (highlightedCells.neighborhood.includes(index)) {
+        return index === selectedCell
+            ? selectedCellBG
+            : 'bg-theme-1-pacific-cyan/30';
+        }
+
+        return 'bg-gray-100'; // Default square background
+    };
+
+    return (
+        <div className="w-full h-full bg-white"
+            onMouseMove={handleMouseMove}
+            style={{
+                boxShadow: selectedCell === uid ? shadow : 'none',
+                zIndex: selectedCell === uid ? 10 : 1, // Elevate the selected cell
+              }} // Apply shadow and z-index only for the selected cell
+        >
+            <div
+                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-450 ease-in-out`}
+                // onMouseMove={handleMouseMove}
+                onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
+                // style={{ boxShadow: selectedCell === uid ? shadow : "none" }} // Apply shadow only for selected cell
+                >
+                {
+                    ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
+                        // passing in handleSquareNotesInput function because 
+                        // we should be able to click on the boxes,
+                        // and not just rely on hover input
+                        <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
+                    ) : (
+                        <RegularSquare squareValue={squareValue} />
+                    )
+                }
+            </div>
         </div>
     )
 }

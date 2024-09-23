@@ -224,6 +224,10 @@ export default function Game() {
       ...prevBoardData,
       boardValues: updatedBoardValues
     }))
+    setGameData(prevGameData => ({
+      ...prevGameData,
+      isShiftDown: false
+    }))
 
     console.log("cleaned")
   },50) 
@@ -273,6 +277,9 @@ export default function Game() {
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+          <div>
+            interface
+          </div>
           <div className="w-[60%] max-w-[700px] min-w-[400px] aspect-square rounded-md"
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
