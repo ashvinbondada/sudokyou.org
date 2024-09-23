@@ -15,6 +15,7 @@ export default function Square({uid}: Props) {
     const {isShiftDown, inputValue, selectedCell, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
+    const [shadow, setShadow] = useState("none");
 
     function handleSquareNotesInput(index: number) {
         const nextSquareNotes = squareNotes.slice();
@@ -48,7 +49,7 @@ export default function Square({uid}: Props) {
 
     // Hovering Over Note Box Use Effect
     useEffect(() => {
-        if ((selectedCell === uid ) && inputValue > 0) {
+        if ((selectedCell === uid ) && inputValue > -1) {
             if (isShiftDown) {
                 const index = inputValue - 1;
                 handleSquareNotesInput(index);
@@ -65,7 +66,6 @@ export default function Square({uid}: Props) {
     }, [squareNotes]);
 
     // SHADOW IN SQUARE
-    const [shadow, setShadow] = useState("none");
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
           const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;

@@ -18,23 +18,17 @@ export default function RootLayout({
       <Navbar />
         <div className="flex min-h-full">
           {/* Left component: Can shrink */}
-          <div 
-            className="border-2 border-blue-400 w-[20%]"
-          >
+          <div className="border-2 border-blue-400 w-[20%] hidden md:block lg:block">
             controls instructions
           </div>
 
           {/* Middle component: Has a min-width but can grow */}
-          <div 
-            className=" flex-grow flex justify-center"
-          >
+          <div className="flex-grow flex">
             {children}
           </div>
 
           {/* Right component: Can shrink */}
-          <div 
-          className="border-2 border-red-400 w-[20%]"
-          >
+          <div className="border-2 border-red-400 w-[20%] hidden md:block lg:block">
             leaderboard
           </div>
         </div>

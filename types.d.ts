@@ -1,33 +1,81 @@
+// Interface responsible for a tile
+// containing relevant value, notes, 
+// and meta data regarding its state.
 interface Tile {
+    // given or user entered status
     isEditable  : boolean;
+    // current value of square ranging from -1 (backspace), 0 (default) and 1-9 numbers
     squareValue : number;
+    // current notes applied on square
     squareNotes : number[]; // 9 note boxes
 }
 
+// Interface responsible for informing and 
+// tracking current state of sudoku puzzle
 interface SudokuInterface {
+    // initial state of the board
+    initial: string;
+    // final state of the board
+    solution                : string;
+    // current board values
     boardValues             : Tile[];
-    updateSudokuInterface   : (newState: Partial<SudokuInterface>) => void
+    // helper function to update Sudoku data
+    updateSudokuInterface   : (newState: Partial<SudokuInterface>) => void;
 }
 
+// Meta data responsible for informing how
+// to shadow cells surrounding selectedCell
 type directionIndex = {
+    // location of tile with respect to selectedCell
     direction: string,
+    // index of cell from 0-80
     index: number
 }
+
+
+// Meta data responsible for contain information
+// about all tiles to shadow, highlight and apply
+// special affect to
 type HighlightedCells = {
+    // blocks with directional shadow towards selectedCell
     shadowBlock     : directionIndex[] 
+    // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
+    // tiles which have the same number as selectedCell
     sameNumbers     : number[];
 }
 
+
+// Interface responsible for definin
 interface GameInterface {
+    // id retrieved from database
+    id                  : string 
+    // notes mode toggle
     isShiftDown         : boolean;
+    // input value entered in selected tile
     inputValue          : number;
-    selectedCell        : number;  //  probably an index in the boardValues Array
+    // tile that user is choosing to edit
+    selectedCell        : number;  
+    // tiles higlighted for user, unable to edit atm
     highlightedCells    : HighlightedCells;
+    // status of the game 
     gameStatus          : GameStatus;
-    timer              ?: number; // idk about this one
+    // time user takes to complete puzzle
+    timer              ?: number; 
+    // mistakes before game is terminated
     mistakesCount       : number; // max 3
-    updateGameInterface : (newState: Partial<GameInterface>) => void
+    // helper function to update Game data
+    updateGameInterface : (newState: Partial<GameInterface>) => void;
 }
 
-
+// Representation of a Puzzle in Firebase
+interface PuzzleString {
+    // id retrieved from data base format 'level-number'
+    id: string;
+    // difficulty of the sudoku puzzle 
+    level: string;
+    // initial state of the board
+    initial: string;
+    // final state of the board
+    solution: string;
+}

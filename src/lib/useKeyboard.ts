@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+// import { BiReplyAll } from "react-icons/bi";
 
 export function useShiftClick() {
    const [shiftDown, setShiftDown] = useState(false);
@@ -97,6 +98,10 @@ export function useKeyboardClick() {
                 case '(':
                     setKeyDown(9);
                     break;
+                
+                case 'Backspace':
+                    setKeyDown(0);
+                    break;
 
                 default:
                     break;
@@ -104,7 +109,7 @@ export function useKeyboardClick() {
         }        
 
         function handleKeyUp(this: Window){
-            setKeyDown(0); 
+            setKeyDown(-1); 
         }        
 
         window.addEventListener('keydown', handleKeyDown);
