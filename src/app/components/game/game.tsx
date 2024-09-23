@@ -14,6 +14,8 @@ export default function Game() {
 
 
   const [boardData, setBoardData] = useState<SudokuInterface>({
+    initial: "",
+    solution: "",
     boardValues: Array(81).fill({
       isEditable: true, 
       squareValue: 0,
@@ -30,6 +32,7 @@ export default function Game() {
   }
 
   const [gameData, setGameData] = useState<GameInterface>({
+    id: "",
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,
@@ -141,6 +144,10 @@ export default function Game() {
   });
 
   useEffect(() => {
+    console.log("key", keyDown)
+  },[keyDown])
+
+  useEffect(() => {
     const calculateHighlightCells = (selectedCell: number, gridSize = 9): [directionIndex[], number[], number[]] => {
       const selectedRow = Math.floor(selectedCell / gridSize);
       const selectedCol = selectedCell % gridSize;
@@ -217,6 +224,10 @@ export default function Game() {
       ...prevBoardData,
       boardValues: updatedBoardValues
     }))
+    setGameData(prevGameData => ({
+      ...prevGameData,
+      isShiftDown: false
+    }))
 
     console.log("cleaned")
   },50) 
@@ -266,7 +277,10 @@ export default function Game() {
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          <div className="h-full w-full rounded-md"
+          <div>
+            interface
+          </div>
+          <div className="w-[60%] max-w-[700px] min-w-[400px] aspect-square rounded-md"
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
           style={{ boxShadow: shadow }}

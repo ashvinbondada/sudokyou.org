@@ -2,6 +2,8 @@ import { createContext} from "react";
 
 // Define the initial default state for the Sudoku board
 const defaultBoardState = {
+    initial: "",
+    solution: "",
     boardValues: Array(81).fill({
         isEditable: false,
         squareValue: 0,
@@ -21,6 +23,7 @@ export enum GameStatus {
 
 // Define the initial default state for the game
 const defaultGameState = {
+    id: "",
     isShiftDown: false,
     inputValue: 0,
     selectedCell: 40,

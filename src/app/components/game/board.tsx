@@ -1,82 +1,66 @@
 'use client'
-import { useContext } from 'react';
+import { useContext,} from 'react';
 import Square from './square';
-import { BoardContext, GameContext } from '@/lib/context';
+import { BoardContext } from '@/lib/context';
 
 export default function Board() {
   const { boardValues } = useContext(BoardContext);
-  const { selectedCell, highlightedCells } = useContext(GameContext);
 
-  const getBorderClasses = (index: number) => {
-    const isTopBold = index < 9;
-    const isBottomBold = index >= 72;
-    const isLeftBold = index % 9 === 0;
-    const isRightBold = (index + 1) % 9 === 0;
-    const isVerticalBold = index % 3 === 0;
-    const isHorizontalBold = Math.floor(index / 9) % 3 === 0;
-
-    return `
-      ${isTopBold || isHorizontalBold ? 'border-t-4' : 'border-t'}
-      ${isBottomBold ? 'border-b-4' : 'border-b'}
-      ${isLeftBold || isVerticalBold ? 'border-l-4' : 'border-l'}
-      ${isRightBold ? 'border-r-4' : 'border-r'}
-    `;
-  };
-
-  const getBackgroundClasses = (index: number) => {
-    const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner'
-    if (highlightedCells.sameNumbers.includes(index)) {
-      return index !== selectedCell 
-      ? 'bg-theme-1-pacific-cyan/50 shadow-custom-inner'
-      : selectedCellBG
-
-    }
-    else if (highlightedCells.neighborhood.includes(index)) {
-      return index === selectedCell
-        ? selectedCellBG
-        : 'bg-theme-1-pacific-cyan/30'
-    }
-
-    return 'bg-white'
-  };
-  const getShadowClass = (index: number) => {
-    // Find the block in shadowBlock
-    const shadowBlockItem = highlightedCells.shadowBlock.find(block => block.index === index);
-    
-    if (!shadowBlockItem) {
-      return ''; // Default to no shadow if the index is not in shadowBlock
-    }
-  
-    // Apply shadow based on the direction 
-    // TODO: have not figured out corners properly.
-    switch (shadowBlockItem.direction) {
-      case 'top':
-        return 'shadow-[0px_-5px_10px_rgba(0,0,0,0.2)_inset]'; // Shadow to top
-      case 'left':
-        return 'shadow-[-5px_0px_10px_rgba(0,0,0,0.2)_inset]'; // Shadow to left
-      case 'right':
-        return 'shadow-[5px_0px_10px_rgba(0,0,0,0.2)_inset]'; // Shadow to right
-      case 'bottom':
-        return 'shadow-[0px_5px_10px_rgba(0,0,0,0.2)_inset]'; // Shadow to bottom
-      default:
-        return ''; // Default to no shadow
-    }
-  };
-
-
+  // Generate the squares
   const squares = boardValues.map((_, index) => (
     <div
       key={index}
-      className={`border-theme-2-berkeley-blue w-full h-full transition-colors duration-300 ease-in-out
-        ${getBackgroundClasses(index)} ${getShadowClass(index)} aspect-square flex items-center justify-center ${getBorderClasses(index)}`}
+      className={`w-full h-full
+        aspect-square flex items-center justify-center`}
     >
       <Square uid={index} />
     </div>
   ));
 
+  // Group squares into 3x3 grids (3 rows, 3 cols)
+  const blocks: React.ReactNode[][] = [];
+  // Loop through each row of the board
+  for (let row = 0; row < 9; row++) {
+    // Determine which block this row belongs to (3 blocks per row of blocks)
+    const currentBlockRow = Math.floor(row / 3);
+  
+    // Fill each block in the current block row
+    for (let blockInRow = 0; blockInRow < 3; blockInRow++) {
+      const blockIndex = currentBlockRow * 3 + blockInRow;
+  
+      // Initialize block if not already created
+      if (!blocks[blockIndex]) {
+        blocks[blockIndex] = [];
+      }
+  
+      // Fill 3 squares from the current row into this block
+      for (let i = 0; i < 3; i++) {
+        const squareIndex = row * 9 + blockInRow * 3 + i;
+        blocks[blockIndex].push(squares[squareIndex]);
+      }
+    }
+  }
+  
+  // Map the filled blocks into the grid
+  const blockDivs = blocks.map((blockSquares, block) => (
+    // div responsible for blocking thick grid line from mixing
+    // with thin grid lines
+    <div key={block} className='bg-white'>
+    {/* // div responsible for the grid lines between squares */}
+      <div  className="grid grid-cols-3 gap-[1px] bg-theme-1-cerulean/50">
+          {blockSquares}
+      </div>
+    </div>
+  ));
+
   return (
-    <div className='grid grid-cols-9 w-full border-4 border-theme-2-berkeley-blue'>
-      {squares}
+    // Outer grid for the 3x3 blocks, responsible for the border thickness and color
+    <div className='p-[3px] bg-theme-2-berkeley-blue'>
+      {/* div responsible for the color and thickness of grid lines */}
+        <div className='grid grid-cols-3 gap-[2px] bg-theme-2-berkeley-blue'>
+          {blockDivs}
+        </div>
     </div>
   );
 }
+

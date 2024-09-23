@@ -5,6 +5,7 @@ type Props = {
 }
 
 export default function Difficultypage({params: {difficulty}}: Props) {
+
   return (
     <div>
         sudoku level: {difficulty}

@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@firebase/firestore": "^4.7.2",
     "@types/lodash": "^4.17.7",
     "eslint-plugin-react-hooks": "^5.1.0-rc-a99d8e8d-20240916",
+    "firebase": "^10.13.2",
+    "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "next": "14.2.11",
     "react": "^18",
