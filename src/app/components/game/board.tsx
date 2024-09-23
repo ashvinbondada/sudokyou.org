@@ -54,9 +54,9 @@ export default function Board() {
   ));
 
   return (
-    // Outer grid for the 3x3 blocks, responsible for the border
+    // Outer grid for the 3x3 blocks, responsible for the border thickness and color
     <div className='p-[3px] bg-theme-2-berkeley-blue'>
-      {/* div responsible for the grid lines */}
+      {/* div responsible for the color and thickness of grid lines */}
         <div className='grid grid-cols-3 gap-[2px] bg-theme-2-berkeley-blue'>
           {blockDivs}
         </div>

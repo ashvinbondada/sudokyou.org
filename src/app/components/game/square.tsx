@@ -107,14 +107,12 @@ export default function Square({uid}: Props) {
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: selectedCell === uid ? shadow : 'none',
-                zIndex: selectedCell === uid ? 10 : 1, // Elevate the selected cell
-              }} // Apply shadow and z-index only for the selected cell
+                zIndex: selectedCell === uid ? 10 : 1,
+              }} 
+            onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
         >
             <div
                 className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-450 ease-in-out`}
-                // onMouseMove={handleMouseMove}
-                onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
-                // style={{ boxShadow: selectedCell === uid ? shadow : "none" }} // Apply shadow only for selected cell
                 >
                 {
                     ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
