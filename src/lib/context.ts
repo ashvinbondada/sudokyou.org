@@ -23,7 +23,6 @@ export enum GameStatus {
 
 // Define the initial default state for the game
 const defaultGameState = {
-    // id: "",
     notesMode: false,
     inputValue: 0,
     selectedCell: 40,

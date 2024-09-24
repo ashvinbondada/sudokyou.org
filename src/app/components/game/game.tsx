@@ -51,6 +51,7 @@ export default function Game({newSudoku, newGame}: Props) {
         notesMode: !prevState.notesMode
       }));
   })
+
   // Define your movement handlers using the custom hook
   useKeyboardShortcut(["ArrowUp"], () => {
     if (gameData.selectedCell >= 9) {
@@ -208,10 +209,6 @@ export default function Game({newSudoku, newGame}: Props) {
     setBoardData(prevBoardData => ({
       ...prevBoardData,
       boardValues: updatedBoardValues
-    }))
-    setGameData(prevGameData => ({
-      ...prevGameData,
-      notesMode: false
     }))
 
     console.log("cleaned")

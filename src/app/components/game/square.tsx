@@ -55,6 +55,7 @@ export default function Square({uid}: Props) {
 
     // Hovering Over Note Box Use Effect
     useEffect(() => {
+        // console.log("input", inputValue)
         if (isEditable && (selectedCell === uid ) && inputValue > -1) {
             if (notesMode) {
                 const index = inputValue - 1;
@@ -63,8 +64,7 @@ export default function Square({uid}: Props) {
                 handleRegularSquareInput(inputValue);
             }
         }
-    }, [uid, notesMode, inputValue]);
-
+    }, [uid, notesMode, inputValue, selectedCell]);
 
     // handling hasNotes variable
     useEffect(() => {

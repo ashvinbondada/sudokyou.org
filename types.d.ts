@@ -48,8 +48,6 @@ type HighlightedCells = {
 
 // Interface responsible for definin
 interface GameInterface {
-    // id retrieved from database
-    // id                  : string 
     // notes mode toggle
     notesMode           : boolean;
     // input value entered in selected tile
