@@ -94,7 +94,7 @@ export default async function Difficultypage({ params: { difficulty } }: Props) 
   // const newPuzzle: PuzzleString = await response.json();
   // const newSudoku = PuzzleStringToSudokuInterface(newPuzzle);
   // const newGame = newGameInterface(newPuzzle);
-  const newSudoku = await getNewPuzzle("easy")
+  const newSudoku = await getNewPuzzle(difficulty)
   if (!newSudoku) {
     notFound()
   }
