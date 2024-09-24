@@ -13,9 +13,10 @@ export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
     
     const {isShiftDown, inputValue, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
-    const {boardValues, updateSudokuInterface} = useContext(BoardContext);
+    const {boardValues, updateSudokuInterface, solution} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
     const [shadow, setShadow] = useState("none");
+    const [right, setRight] = useState(true)
 
     function handleSquareNotesInput(index: number) {
         const nextSquareNotes = squareNotes.slice();
@@ -26,17 +27,20 @@ export default function Square({uid}: Props) {
             squareValue: 0,
             squareNotes: nextSquareNotes
         }
-        updateSudokuInterface({boardValues: nextBoardValues})
-        console.log("selectedCell", selectedCell)
-        console.log("uid", uid)
-        console.log("input", index+1)
-        console.log("isShiftDown", isShiftDown)
-
+        if (updateSudokuInterface) {
+            updateSudokuInterface({ boardValues: nextBoardValues });
+          }
+        setRight(true)
     };
 
 
     // function handle RegularSquareClickInput
     function handleRegularSquareInput(input: number) {
+        if (input > 0 && input !== Number(solution.charAt(uid))) {
+            setRight(false);
+        } else {
+            setRight(true);
+        }
         const nextValue = (squareValue === input) ? 0 : input;
         const nextBoardValues = boardValues.slice();
         nextBoardValues[uid] = {
@@ -44,12 +48,14 @@ export default function Square({uid}: Props) {
             squareValue: nextValue,
             squareNotes: Array(9).fill(0)
         }
-        updateSudokuInterface({boardValues: nextBoardValues})
+        if (updateSudokuInterface) {
+            updateSudokuInterface({ boardValues: nextBoardValues });
+          }
     }
 
     // Hovering Over Note Box Use Effect
     useEffect(() => {
-        if ((selectedCell === uid ) && inputValue > -1) {
+        if (isEditable && (selectedCell === uid ) && inputValue > -1) {
             if (isShiftDown) {
                 const index = inputValue - 1;
                 handleSquareNotesInput(index);
@@ -109,10 +115,14 @@ export default function Square({uid}: Props) {
                 boxShadow: selectedCell === uid ? shadow : 'none',
                 zIndex: selectedCell === uid ? 10 : 1,
               }} 
-            onPointerEnter={() => updateGameInterface({ selectedCell: uid })}
+              onPointerEnter={() => {
+                if (updateGameInterface) {
+                  updateGameInterface({ selectedCell: uid });
+                }
+              }}
         >
             <div
-                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-450 ease-in-out`}
+                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-400 ease-in-out`}
                 >
                 {
                     ((isEditable) && (((selectedCell == uid) && isShiftDown) || hasNotes)) ? (
@@ -121,7 +131,7 @@ export default function Square({uid}: Props) {
                         // and not just rely on hover input
                         <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
                     ) : (
-                        <RegularSquare squareValue={squareValue} />
+                        <RegularSquare squareValue={squareValue} isEditable={isEditable} isRight={right} />
                     )
                 }
             </div>

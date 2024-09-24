@@ -1,26 +1,36 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { GameStatus, BoardContext, GameContext } from "../../../lib/context";
+import { BoardContext, GameContext } from "../../../lib/context";
 import { useKeyboardClick, useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
 import { debounce } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
+import DifficultySelector from "../difficultyTimer";
 
-export default function Game() {
+
+type Props = {
+    newSudoku: SudokuInterface,
+    newGame: GameInterface
+}
+
+export default function Game({newSudoku, newGame}: Props) {
+  // const BoardContext = createContext(newSudoku);
+  // const GameContext = createContext(newGame);
   const isShiftDown = useShiftClick();
   const keyDown = useKeyboardClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
 
 
   const [boardData, setBoardData] = useState<SudokuInterface>({
-    initial: "",
-    solution: "",
-    boardValues: Array(81).fill({
-      isEditable: true, 
-      squareValue: 0,
-      squareNotes: Array(9).fill(0)
-    }), 
+    // initial: "",
+    // solution: "",
+    // boardValues: Array(81).fill({
+    //   isEditable: true, 
+    //   squareValue: 0,
+    //   squareNotes: Array(9).fill(0)
+    // }), 
+    ...newSudoku,
     updateSudokuInterface: () => {}
   });
 
@@ -32,26 +42,27 @@ export default function Game() {
   }
 
   const [gameData, setGameData] = useState<GameInterface>({
-    id: "",
-    isShiftDown: false,
-    inputValue: 0,
-    selectedCell: 40,
-    highlightedCells: { shadowBlock : [
-                        { direction: "top-left",      index: 30 },
-                        { direction: "top",           index: 31 },
-                        { direction: "top-right",     index: 32 },
-                        { direction: "left",          index: 39 },
-                        { direction: "right",         index: 41 },
-                        { direction: "bottom-left",   index: 48 },
-                        { direction: "bottom",        index: 49 },
-                        { direction: "bottom-right",  index: 50 }
-                      ],
-                        neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-                        sameNumbers: [] 
-                    },
-    gameStatus: GameStatus.WOMB, 
-    timer: undefined,
-    mistakesCount: 0,
+    ...newGame,
+    // id: "",
+    // isShiftDown: false,
+    // inputValue: 0,
+    // selectedCell: 40,
+    // highlightedCells: { shadowBlock : [
+    //                     { direction: "top-left",      index: 30 },
+    //                     { direction: "top",           index: 31 },
+    //                     { direction: "top-right",     index: 32 },
+    //                     { direction: "left",          index: 39 },
+    //                     { direction: "right",         index: 41 },
+    //                     { direction: "bottom-left",   index: 48 },
+    //                     { direction: "bottom",        index: 49 },
+    //                     { direction: "bottom-right",  index: 50 }
+    //                   ],
+    //                     neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
+    //                     sameNumbers: [] 
+    //                 },
+    // gameStatus: GameStatus.WOMB, 
+    // timer: undefined,
+    // mistakesCount: 0,
     updateGameInterface: () => {}
   })
 
@@ -142,10 +153,6 @@ export default function Game() {
     }
     setInputSource("keyboard")
   });
-
-  useEffect(() => {
-    console.log("key", keyDown)
-  },[keyDown])
 
   useEffect(() => {
     const calculateHighlightCells = (selectedCell: number, gridSize = 9): [directionIndex[], number[], number[]] => {
@@ -267,6 +274,7 @@ export default function Game() {
 
 
   useEffect(() => {
+    console.log("hello")
     setGameData((currentGameData) => ({
       ...currentGameData,
       isShiftDown: isShiftDown,
@@ -274,20 +282,42 @@ export default function Game() {
     }))
   }, [isShiftDown, keyDown]);
 
+  // return (
+  //     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
+  //       <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+  //         <div className=" w-[60%] max-w-[700px] min-w-[400px] flex flex-col sm:items-center justify-center">
+  //           <DifficultySelector />
+  //           <div className="w-full aspect-square rounded-md"
+  //           onMouseLeave={handleMouseLeave}
+  //           onMouseMove={handleMouseMove}
+  //           style={{ boxShadow: shadow }}
+  //           >
+  //             <Board />
+  //           </div>
+  //         </div>  
+  //       </BoardContext.Provider>
+  //     </GameContext.Provider>
+  // );
   return (
-      <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
-        <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          <div>
-            interface
+    <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
+      <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+        {/* Outer wrapper for both DifficultySelector and Board */}
+        <div className=" w-[60%] max-w-[700px] min-w-[400px] flex flex-col items-center justify-center">
+          {/* Timer and difficulty selector with full width */}
+          <div className="w-full mb-4">
+            <DifficultySelector />
           </div>
-          <div className="w-[60%] max-w-[700px] min-w-[400px] aspect-square rounded-md"
-          onMouseLeave={handleMouseLeave}
-          onMouseMove={handleMouseMove}
-          style={{ boxShadow: shadow }}
+          {/* Sudoku board with full width */}
+          <div
+            className="w-full aspect-square rounded-md"
+            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseMove}
+            style={{ boxShadow: shadow }}
           >
             <Board />
           </div>
-        </BoardContext.Provider>
-      </GameContext.Provider>
-  );
+        </div>
+      </BoardContext.Provider>
+    </GameContext.Provider>
+);
 }
