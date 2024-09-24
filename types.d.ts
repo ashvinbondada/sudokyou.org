@@ -49,7 +49,7 @@ type HighlightedCells = {
 // Interface responsible for definin
 interface GameInterface {
     // id retrieved from database
-    id                  : string 
+    // id                  : string 
     // notes mode toggle
     isShiftDown         : boolean;
     // input value entered in selected tile

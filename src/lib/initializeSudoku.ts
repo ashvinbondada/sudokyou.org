@@ -1,7 +1,10 @@
 // import { GameStatus } from "./context"
 
+import { doc, DocumentData, getDoc } from "@firebase/firestore";
+import { db } from '../app/firebase'; // Import Firestore instance
+
 // function converts PuzzleString into a SudokuInterface
-export function PuzzleStringToSudokuInterface(puzzlestring: PuzzleString) {
+function PuzzleStringToSudokuInterface(puzzlestring: DocumentData) {
     const sudoku: SudokuInterface = {
         initial: puzzlestring.initial,
         solution: puzzlestring.solution,
@@ -24,9 +27,8 @@ enum GameStatus {
 }
 
 // function generates a new game state GameInterface
-export function newGameInterface(puzzlestring: PuzzleString) {
+export function newGameInterface() {
     const newGame: GameInterface = {
-        id: puzzlestring.id,
         isShiftDown: false,
         inputValue: 0,
         selectedCell: 40,
@@ -50,4 +52,40 @@ export function newGameInterface(puzzlestring: PuzzleString) {
     }
 
     return newGame
+}
+
+export async function getNewPuzzle(difficulty: string): Promise<SudokuInterface | undefined> {
+    try {
+        // Assuming you have generated the docId and know the collection (difficulty)
+        const index = Math.floor(Math.random() * 500) + 1;
+        const docId = `${difficulty}-${index}`; // Replace with your generated ID
+
+        // Get the specific document from the collection
+        const puzzleDocRef = doc(db, difficulty, docId); // Collection name is "difficulty", docId is the document ID
+        const puzzleDoc = await getDoc(puzzleDocRef); // Fetch the document
+
+        if (!puzzleDoc.exists()) {
+            // return new Response("Puzzle not found", { status: 404 });
+            return undefined
+        }
+
+
+    // Return the document data
+        const puzzleData = puzzleDoc.data();
+        const newPuzzle: SudokuInterface = PuzzleStringToSudokuInterface(puzzleData)
+        // const puzzle: PuzzleString = {
+        //     id: puzzleDoc.id, // Use the doc ID from Firestore
+        //     level: puzzleData.level, // Ensure these fields exist in your Firestore document
+        //     initial: puzzleData.initial,
+        //     solution: puzzleData.solution,
+        // };
+        return newPuzzle
+        // return new Response(JSON.stringify(puzzleData), { status: 200 });
+
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching document:', error);
+        // return new Response("Internal Server Error", { status: 500 });
+        return undefined
+    }
 }

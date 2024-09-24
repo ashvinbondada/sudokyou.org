@@ -70,7 +70,7 @@
 
 import { notFound } from "next/navigation";
 import Game from "../components/game/game";
-import { newGameInterface, PuzzleStringToSudokuInterface } from "@/lib/initializeSudoku";
+import { getNewPuzzle, newGameInterface } from "@/lib/initializeSudoku";
 // import { PuzzleString } from "@/types"; // Assuming this type is defined
 
 type Props = {
@@ -82,18 +82,23 @@ type Props = {
 // This is now a server component by default in Next.js 13's app/ directory
 export default async function Difficultypage({ params: { difficulty } }: Props) {
   // Construct full URL for API call
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/puzzle/${difficulty}`);
+  // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/puzzle/${difficulty}`);
 
   // Handle if the puzzle is not found
-  if (!response.ok) {
-    notFound();
-    return null; // Stop rendering if the page is not found
-  }
+  // if (!response.ok) {
+  //   notFound();
+  //   return null; // Stop rendering if the page is not found
+  // }
 
   // Fetch the puzzle data and transform it
-  const newPuzzle: PuzzleString = await response.json();
-  const newSudoku = PuzzleStringToSudokuInterface(newPuzzle);
-  const newGame = newGameInterface(newPuzzle);
+  // const newPuzzle: PuzzleString = await response.json();
+  // const newSudoku = PuzzleStringToSudokuInterface(newPuzzle);
+  // const newGame = newGameInterface(newPuzzle);
+  const newSudoku = await getNewPuzzle("easy")
+  if (!newSudoku) {
+    notFound()
+  }
+  const newGame = newGameInterface()
 
   // Render the Game component with the puzzle data
   return (
