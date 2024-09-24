@@ -7,7 +7,7 @@ type Props = {
 export default function NoteBox({noteValue, onNoteBoxClick}: Props) 
 {
   return (
-    <div className='h-full w-full text-xs flex items-center justify-center text-black'>
+    <div className='h-full w-full text-xs flex items-center justify-center text-editable-num'>
       <button 
         className="select-none"
         onClick={onNoteBoxClick}

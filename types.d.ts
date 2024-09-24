@@ -20,7 +20,7 @@ interface SudokuInterface {
     // current board values
     boardValues             : Tile[];
     // helper function to update Sudoku data
-    updateSudokuInterface   : (newState: Partial<SudokuInterface>) => void;
+    updateSudokuInterface   ?: (newState: Partial<SudokuInterface>) => void;
 }
 
 // Meta data responsible for informing how
@@ -65,7 +65,7 @@ interface GameInterface {
     // mistakes before game is terminated
     mistakesCount       : number; // max 3
     // helper function to update Game data
-    updateGameInterface : (newState: Partial<GameInterface>) => void;
+    updateGameInterface ?: (newState: Partial<GameInterface>) => void;
 }
 
 // Representation of a Puzzle in Firebase

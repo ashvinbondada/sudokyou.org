@@ -37,7 +37,7 @@ export default function DifficultySelector() {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
-  const difficulties = ['Easy', 'Medium', 'Hard', 'Expert', 'Master', 'Extreme'];
+  const difficulties = ['Easy', 'Medium', 'Hard', 'Unfair', 'Extreme'];
 
   // Function to handle difficulty selection
   const handleDifficultySelection = (level: string) => {
