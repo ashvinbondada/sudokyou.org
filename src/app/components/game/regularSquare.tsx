@@ -1,18 +1,3 @@
-// type Props = {
-//   squareValue: number,
-//   isEditable: boolean,
-//   isRight: boolean
-// }
-
-// export default function RegularSquare({squareValue, isEditable, isRight}: Props) {
-
-//   return (
-//     <div className={`h-full w-full flex place-content-center items-center ${isEditable ? 'text-editable-num text-xl' : 'text-black text-xl'}`}>
-//       {(squareValue > 0) ? squareValue : ''}
-//     </div>
-//   );
-// }
-
 type Props = {
   squareValue: number;
   isEditable: boolean;

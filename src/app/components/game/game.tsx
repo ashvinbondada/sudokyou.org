@@ -15,21 +15,12 @@ type Props = {
 }
 
 export default function Game({newSudoku, newGame}: Props) {
-  // const BoardContext = createContext(newSudoku);
-  // const GameContext = createContext(newGame);
   const isShiftDown = useShiftClick();
   const keyDown = useKeyboardClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
 
 
   const [boardData, setBoardData] = useState<SudokuInterface>({
-    // initial: "",
-    // solution: "",
-    // boardValues: Array(81).fill({
-    //   isEditable: true, 
-    //   squareValue: 0,
-    //   squareNotes: Array(9).fill(0)
-    // }), 
     ...newSudoku,
     updateSudokuInterface: () => {}
   });
@@ -43,26 +34,6 @@ export default function Game({newSudoku, newGame}: Props) {
 
   const [gameData, setGameData] = useState<GameInterface>({
     ...newGame,
-    // id: "",
-    // isShiftDown: false,
-    // inputValue: 0,
-    // selectedCell: 40,
-    // highlightedCells: { shadowBlock : [
-    //                     { direction: "top-left",      index: 30 },
-    //                     { direction: "top",           index: 31 },
-    //                     { direction: "top-right",     index: 32 },
-    //                     { direction: "left",          index: 39 },
-    //                     { direction: "right",         index: 41 },
-    //                     { direction: "bottom-left",   index: 48 },
-    //                     { direction: "bottom",        index: 49 },
-    //                     { direction: "bottom-right",  index: 50 }
-    //                   ],
-    //                     neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-    //                     sameNumbers: [] 
-    //                 },
-    // gameStatus: GameStatus.WOMB, 
-    // timer: undefined,
-    // mistakesCount: 0,
     updateGameInterface: () => {}
   })
 
@@ -282,22 +253,6 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
   }, [isShiftDown, keyDown]);
 
-  // return (
-  //     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
-  //       <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-  //         <div className=" w-[60%] max-w-[700px] min-w-[400px] flex flex-col sm:items-center justify-center">
-  //           <DifficultySelector />
-  //           <div className="w-full aspect-square rounded-md"
-  //           onMouseLeave={handleMouseLeave}
-  //           onMouseMove={handleMouseMove}
-  //           style={{ boxShadow: shadow }}
-  //           >
-  //             <Board />
-  //           </div>
-  //         </div>  
-  //       </BoardContext.Provider>
-  //     </GameContext.Provider>
-  // );
   return (
     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
       <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
