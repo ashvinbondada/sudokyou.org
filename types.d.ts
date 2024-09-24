@@ -51,7 +51,7 @@ interface GameInterface {
     // id retrieved from database
     // id                  : string 
     // notes mode toggle
-    isShiftDown         : boolean;
+    notesMode           : boolean;
     // input value entered in selected tile
     inputValue          : number;
     // tile that user is choosing to edit

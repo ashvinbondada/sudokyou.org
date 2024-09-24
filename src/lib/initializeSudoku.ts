@@ -29,7 +29,7 @@ enum GameStatus {
 // function generates a new game state GameInterface
 export function newGameInterface() {
     const newGame: GameInterface = {
-        isShiftDown: false,
+        notesMode: false,
         inputValue: 0,
         selectedCell: 40,
         highlightedCells: { shadowBlock : [

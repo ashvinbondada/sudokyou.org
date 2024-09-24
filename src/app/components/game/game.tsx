@@ -15,7 +15,7 @@ type Props = {
 }
 
 export default function Game({newSudoku, newGame}: Props) {
-  const isShiftDown = useShiftClick();
+  const shiftPressIsShiftDown = useShiftClick();
   const keyDown = useKeyboardClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
 
@@ -44,6 +44,13 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
   }
 
+  // notes toggle
+  useKeyboardShortcut(["n"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        notesMode: !prevState.notesMode
+      }));
+  })
   // Define your movement handlers using the custom hook
   useKeyboardShortcut(["ArrowUp"], () => {
     if (gameData.selectedCell >= 9) {
@@ -204,7 +211,7 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
     setGameData(prevGameData => ({
       ...prevGameData,
-      isShiftDown: false
+      notesMode: false
     }))
 
     console.log("cleaned")
@@ -243,15 +250,24 @@ export default function Game({newSudoku, newGame}: Props) {
     }
   }, [gameData.selectedCell, inputSource]);
 
-
+  // responsible for updating global key data
   useEffect(() => {
-    console.log("hello")
     setGameData((currentGameData) => ({
       ...currentGameData,
-      isShiftDown: isShiftDown,
       inputValue: keyDown
     }))
-  }, [isShiftDown, keyDown]);
+  }, [keyDown]);
+
+  // responsible for updating Shift Pressed Notes Event
+  useEffect(() => {
+    setGameData((prevGameData) => (
+      {
+        ...prevGameData,
+        notesMode: shiftPressIsShiftDown
+      }
+    ))
+  }, [shiftPressIsShiftDown])
+
 
   return (
     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
