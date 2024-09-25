@@ -23,22 +23,11 @@ interface SudokuInterface {
     updateSudokuInterface   ?: (newState: Partial<SudokuInterface>) => void;
 }
 
-// Meta data responsible for informing how
-// to shadow cells surrounding selectedCell
-type directionIndex = {
-    // location of tile with respect to selectedCell
-    direction: string,
-    // index of cell from 0-80
-    index: number
-}
-
 
 // Meta data responsible for contain information
 // about all tiles to shadow, highlight and apply
 // special affect to
 type HighlightedCells = {
-    // blocks with directional shadow towards selectedCell
-    // shadowBlock     : directionIndex[] 
     // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
     // tiles which have the same number as selectedCell
