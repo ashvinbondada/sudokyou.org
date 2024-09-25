@@ -29,19 +29,10 @@ enum GameStatus {
 // function generates a new game state GameInterface
 export function newGameInterface() {
     const newGame: GameInterface = {
-        isShiftDown: false,
-        inputValue: 0,
+        notesMode: false,
+        inputValue: -1,
         selectedCell: 40,
-        highlightedCells: { shadowBlock : [
-                            { direction: "top-left",      index: 30 },
-                            { direction: "top",           index: 31 },
-                            { direction: "top-right",     index: 32 },
-                            { direction: "left",          index: 39 },
-                            { direction: "right",         index: 41 },
-                            { direction: "bottom-left",   index: 48 },
-                            { direction: "bottom",        index: 49 },
-                            { direction: "bottom-right",  index: 50 }
-                        ],
+        highlightedCells: { 
                             neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
                             sameNumbers: [] 
                         },
