@@ -1,9 +1,16 @@
 // Interface responsible for a tile
 // containing relevant value, notes, 
 // and meta data regarding its state.
+
+// enum tileType {
+//     GIVEN, // black
+//     WRONG, // red
+//     RIGHT // blue
+// }
+
 interface Tile {
     // given or user entered status
-    isEditable  : boolean;
+    isEditable  : any;
     // current value of square ranging from -1 (backspace), 0 (default) and 1-9 numbers
     squareValue : number;
     // current notes applied on square

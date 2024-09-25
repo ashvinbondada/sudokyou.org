@@ -2,6 +2,7 @@
 
 import { doc, DocumentData, getDoc } from "@firebase/firestore";
 import { db } from '../app/firebase'; // Import Firestore instance
+import { tileType, GameStatus } from "./common";
 
 // function converts PuzzleString into a SudokuInterface
 function PuzzleStringToSudokuInterface(puzzlestring: DocumentData) {
@@ -9,21 +10,13 @@ function PuzzleStringToSudokuInterface(puzzlestring: DocumentData) {
         initial: puzzlestring.initial,
         solution: puzzlestring.solution,
         boardValues: puzzlestring.initial.split('').map((char: string) => ({
-            isEditable: char === '.' ? true : false, // Assuming these tiles are not editable
+            isEditable: char === '.' ? tileType.WRONG : tileType.GIVEN, // Assuming these tiles are not editable
             squareValue: char === '.' ? 0 : Number(char), // Handle '-' for empty squares as 0, otherwise convert char to number
             squareNotes:  Array(9).fill(0) // Default notes as an empty array
         })),
         // updateSudokuInterface: () => {}
     }
     return sudoku
-}
-
-enum GameStatus {
-    WOMB,
-    BORN,
-    ALIVE,
-    COMA,
-    DEAD,
 }
 
 // function generates a new game state GameInterface

@@ -8,6 +8,7 @@ import { debounce } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells } from "@/lib/tileEffects";
+import { tileType } from "@/lib/common";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -434,16 +435,17 @@ export default function Game({newSudoku, newGame}: Props) {
       console.log("input", input)
       const {solution, boardValues} = boardData
       const {squareValue} = boardValues[gameData.selectedCell]
-      if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
-        // setRight(false);
-      } else {
-        // setRight(true);
-      }
+      // if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
+      //   // setRight(false);
+      // } else {
+      //   // setRight(true);
+      // }
   
       const nextValue = (squareValue === input) ? 0 : input;
       const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
       nextBoardValues[gameData.selectedCell] = {
       ...boardValues[gameData.selectedCell],
+      isEditable: nextValue === Number(solution[gameData.selectedCell]) ? tileType.RIGHT : tileType.WRONG,
       squareValue: nextValue,
       squareNotes: Array(9).fill(0), // Reset notes when entering a value
       };
@@ -459,7 +461,7 @@ export default function Game({newSudoku, newGame}: Props) {
     useEffect(() => {
         const {inputValue, selectedCell, notesMode} = gameData
         const {isEditable} = boardData.boardValues[selectedCell]
-        if (isEditable && inputValue > 0) {
+        if (isEditable === tileType.WRONG && inputValue > 0) {
             if (notesMode) {
                 const index = inputValue - 1;
                 handleSquareNotesInput(index);
