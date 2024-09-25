@@ -38,7 +38,7 @@ type directionIndex = {
 // special affect to
 type HighlightedCells = {
     // blocks with directional shadow towards selectedCell
-    shadowBlock     : directionIndex[] 
+    // shadowBlock     : directionIndex[] 
     // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
     // tiles which have the same number as selectedCell

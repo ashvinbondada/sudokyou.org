@@ -12,13 +12,16 @@ type Props = {
 export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
     
-    const {notesMode, inputValue, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
-    const {boardValues, updateSudokuInterface, solution} = useContext(BoardContext);
+    const {notesMode, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
+    const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
     const [shadow, setShadow] = useState("none");
     const [right, setRight] = useState(true)
 
-    function handleSquareNotesInput(index: number) {
+    // need this function because this function
+    // has encoded the uid of the square component
+    // of whos squareNotes we are editing
+    const handleSquareNotesInput = (index: number) => {
         const nextSquareNotes = squareNotes.slice();
         nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
         const nextBoardValues = boardValues.slice();
@@ -32,39 +35,6 @@ export default function Square({uid}: Props) {
           }
         setRight(true)
     };
-
-
-    // function handle RegularSquareClickInput
-    function handleRegularSquareInput(input: number) {
-        if (input > 0 && input !== Number(solution.charAt(uid))) {
-            setRight(false);
-        } else {
-            setRight(true);
-        }
-        const nextValue = (squareValue === input) ? 0 : input;
-        const nextBoardValues = boardValues.slice();
-        nextBoardValues[uid] = {
-            ...boardValues[uid],
-            squareValue: nextValue,
-            squareNotes: Array(9).fill(0)
-        }
-        if (updateSudokuInterface) {
-            updateSudokuInterface({ boardValues: nextBoardValues });
-          }
-    }
-
-    // Hovering Over Note Box Use Effect
-    useEffect(() => {
-        // console.log("input", inputValue)
-        if (isEditable && (selectedCell === uid ) && inputValue > -1) {
-            if (notesMode) {
-                const index = inputValue - 1;
-                handleSquareNotesInput(index);
-            } else {
-                handleRegularSquareInput(inputValue);
-            }
-        }
-    }, [uid, notesMode, inputValue, selectedCell]);
 
     // handling hasNotes variable
     useEffect(() => {
@@ -125,7 +95,15 @@ export default function Square({uid}: Props) {
                 className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-400 ease-in-out`}
                 >
                 {
-                    ((isEditable) && (((selectedCell == uid) && notesMode) || hasNotes)) ? (
+                    (
+                        (isEditable) // notes irrelevant on givens
+                        && (
+                            // on the current tile & engaged notes mode
+                            // or already has notes
+                            ((selectedCell == uid) && notesMode) 
+                            || hasNotes
+                            )
+                    ) ? (
                         // passing in handleSquareNotesInput function because 
                         // we should be able to click on the boxes,
                         // and not just rely on hover input
