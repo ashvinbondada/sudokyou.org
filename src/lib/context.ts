@@ -1,25 +1,17 @@
 import { createContext} from "react";
-
+import { tileType, GameStatus } from "./common";
 // Define the initial default state for the Sudoku board
 const defaultBoardState = {
     initial: "",
     solution: "",
     boardValues: Array(81).fill({
-        isEditable: false,
+        isEditable: tileType.GIVEN,
         squareValue: 0,
         squareNotes: Array(9).fill(0),
     }),
     updateSudokuInterface: () => {}
 };
 
-
-export enum GameStatus {
-    WOMB,
-    BORN,
-    ALIVE,
-    COMA,
-    DEAD,
-}
 
 // Define the initial default state for the game
 const defaultGameState = {
