@@ -38,7 +38,7 @@ type directionIndex = {
 // special affect to
 type HighlightedCells = {
     // blocks with directional shadow towards selectedCell
-    shadowBlock     : directionIndex[] 
+    // shadowBlock     : directionIndex[] 
     // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
     // tiles which have the same number as selectedCell
@@ -48,10 +48,8 @@ type HighlightedCells = {
 
 // Interface responsible for definin
 interface GameInterface {
-    // id retrieved from database
-    // id                  : string 
     // notes mode toggle
-    isShiftDown         : boolean;
+    notesMode           : boolean;
     // input value entered in selected tile
     inputValue          : number;
     // tile that user is choosing to edit

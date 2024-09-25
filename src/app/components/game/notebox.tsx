@@ -1,3 +1,5 @@
+import { BoardContext, GameContext } from "@/lib/context"
+import { useContext } from "react"
 
 type Props = {
     noteValue: number,
@@ -6,8 +8,12 @@ type Props = {
 
 export default function NoteBox({noteValue, onNoteBoxClick}: Props) 
 {
+  const {selectedCell} = useContext(GameContext)
+  const {boardValues} = useContext(BoardContext)
   return (
-    <div className='h-full w-full text-xs flex items-center justify-center text-editable-num'>
+    <div className={`h-full w-full text-md flex items-center justify-center text-editable-num
+      ${noteValue > 0 && noteValue === boardValues[selectedCell].squareValue ? 'font-bold bg-theme-1-jonquil/50 rounded-[2px]' : 'font-normal'}
+    `}>
       <button 
         className="select-none"
         onClick={onNoteBoxClick}

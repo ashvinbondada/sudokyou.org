@@ -10,6 +10,7 @@ type Props = {
 
 // This is now a server component by default in Next.js 13's app/ directory
 export default async function Difficultypage({ params: { difficulty } }: Props) {
+  
   const newSudoku = await getNewPuzzle(difficulty)
   if (!newSudoku) {
     notFound()

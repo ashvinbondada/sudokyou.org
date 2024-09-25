@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "../../../lib/context";
-import { useKeyboardClick, useShiftClick } from "@/lib/useKeyboard";
+import { useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
 import { debounce } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
-
+import { calculateHighlightCells } from "@/lib/tileEffects";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -15,11 +15,12 @@ type Props = {
 }
 
 export default function Game({newSudoku, newGame}: Props) {
-  const isShiftDown = useShiftClick();
-  const keyDown = useKeyboardClick();
+  const shiftPressIsShiftDown = useShiftClick();
+  // const keyDown = useKeyboardClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
+  const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
 
-
+  // CONTEXT SETUP
   const [boardData, setBoardData] = useState<SudokuInterface>({
     ...newSudoku,
     updateSudokuInterface: () => {}
@@ -44,7 +45,235 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
   }
 
-  // Define your movement handlers using the custom hook
+  useEffect(() => {
+    function handleKeyUp(event: KeyboardEvent) {
+      if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
+        setGameData((prevState) => ({
+          ...prevState,
+          inputValue: 0
+        }))
+      }
+    }
+
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  // SHIFT PRESS NOTES SOFT TOGGLE UPDATE
+  useEffect(() => {
+    setGameData((prevGameData) => (
+      {
+        ...prevGameData,
+        notesMode: shiftPressIsShiftDown
+      }
+    ))
+  }, [shiftPressIsShiftDown])
+
+
+  // NUMBER INPUT HANDLING
+  useKeyboardShortcut(["1"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 1
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["2"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 2
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["3"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 3
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["4"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 4
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["5"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 5
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["6"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 6
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["7"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 7
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["8"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 8
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["9"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 9
+      }));
+  }, {repeatOnHold: true})
+
+  // LEFT GRID (INCLUDES CAPITAL VERSION Ex: q & Q)
+  useKeyboardShortcut(["q"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 1
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["w"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 2
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["e"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 3
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["a"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 4
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["s"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 5
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["d"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 6
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["z"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 7
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["x"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 8
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["c"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 9
+      }));
+  }, {repeatOnHold: true})
+
+  // NOTES CHARACTER INPUT
+  useKeyboardShortcut(["!"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 1
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["@"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 2
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["#"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 3
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["$"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 4
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["%"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 5
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["^"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 6
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["&"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 7
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["*"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 8
+      }));
+  }, {repeatOnHold: true})
+
+  useKeyboardShortcut(["("], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        inputValue: 9
+      }));
+  }, {repeatOnHold: true})
+
+  // n PRESS NOTES PERM TOGGLE
+  useKeyboardShortcut(["n"], () => {
+      setGameData((prevState) => ({
+        ...prevState,
+        notesMode: !prevState.notesMode
+      }));
+  })
+
+  // MOVEMENT INPUT HANDLING
   useKeyboardShortcut(["ArrowUp"], () => {
     if (gameData.selectedCell >= 9) {
       setGameData((prevState) => ({
@@ -125,108 +354,7 @@ export default function Game({newSudoku, newGame}: Props) {
     setInputSource("keyboard")
   });
 
-  useEffect(() => {
-    const calculateHighlightCells = (selectedCell: number, gridSize = 9): [directionIndex[], number[], number[]] => {
-      const selectedRow = Math.floor(selectedCell / gridSize);
-      const selectedCol = selectedCell % gridSize;
-    
-      // Calculate the start of the 3x3 block for rows and columns
-      const blockRowStart = Math.floor(selectedRow / 3) * 3;
-      const blockColStart = Math.floor(selectedCol / 3) * 3;
-    
-      const blockCells: number[] = [];
-      const rowCells: number[] = [];
-      const colCells: number[] = [];
-    
-      // Get all the cells in the current 3x3 block
-      for (let row = blockRowStart; row < blockRowStart + 3; row++) {
-        for (let col = blockColStart; col < blockColStart + 3; col++) {
-          blockCells.push(row * gridSize + col); // Convert row and column back to cell index
-        }
-      }
-    
-      // Get all the cells in the current row
-      for (let col = 0; col < gridSize; col++) {
-        rowCells.push(selectedRow * gridSize + col);
-      }
-    
-      // Get all the cells in the current column
-      for (let row = 0; row < gridSize; row++) {
-        colCells.push(row * gridSize + selectedCol);
-      }
-
-      // get all the cells that match the number
-      const sameNumCells = boardData.boardValues
-      .map((tile: Tile, index) => [tile.squareValue, index]) // Pair squareValue with index
-      .filter(([value]) => value > 0 && value === boardData.boardValues[selectedCell].squareValue) // Filter based on squareValue
-      .map(([, index]) => index); // Extract just the index
-    
-      // Combine all cells into a single array and ensure uniqueness using a Set
-      const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
-
-      const shadowBlock: directionIndex[] = [
-        { direction: "top-left",      index: selectedCell - 10 },
-        { direction: "top",           index: selectedCell - 9 },
-        { direction: "top-right",     index: selectedCell - 8 },
-        { direction: "left",          index: selectedCell - 1 },
-        { direction: "right",         index: selectedCell + 1 },
-        { direction: "bottom-left",   index: selectedCell + 8 },
-        { direction: "bottom",        index: selectedCell + 9 },
-        { direction: "bottom-right",  index: selectedCell + 10 }
-      ];
-      const validShadowBlock = shadowBlock.filter((dirIdx: directionIndex) => {
-        return dirIdx.index > -1 && dirIdx.index < 81
-      });
-
-      return [validShadowBlock, combinedCells, sameNumCells]
-    };
-  
-
-    const [shadowBlock, neighborhood, sameNumbers] = calculateHighlightCells(gameData.selectedCell)
-    setGameData((prevState) => ({
-      ...prevState,
-      highlightedCells: { shadowBlock, neighborhood, sameNumbers}
-    }))
-
-  }, [gameData.selectedCell, boardData])
-
-
-  // cleanes state and prevents any further action for small time
-  const handleMouseLeave = debounce(() => {
-    const updatedBoardValues = boardData.boardValues.map(square => ({
-      ...square,
-      isDivHovered: false
-    }))
-
-    setBoardData(prevBoardData => ({
-      ...prevBoardData,
-      boardValues: updatedBoardValues
-    }))
-    setGameData(prevGameData => ({
-      ...prevGameData,
-      isShiftDown: false
-    }))
-
-    console.log("cleaned")
-  },50) 
-
-  const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
-    
-    // Mouse position relative to the center of the component
-    const x = e.clientX - offsetLeft - offsetWidth / 2;
-    const y = e.clientY - offsetTop - offsetHeight / 2;
-
-    // Invert the shadow to be on the opposite side of the mouse position
-    const shadowX = -(x / offsetWidth) * 15; // Negative sign to invert
-    const shadowY = -(y / offsetHeight) * 15;
-
-    // Set the new shadow
-    setShadow(`${shadowX}px ${shadowY}px 30px rgba(0, 0, 0, 0.5)`);
-    setInputSource("mouse");
-  };
-
+  // BOARD SHADOW EFFECT
   useEffect(() => {
     if (inputSource === "keyboard") {
       const centerCell = Math.floor(81 / 2); // Center of the grid (cell 40)
@@ -243,15 +371,137 @@ export default function Game({newSudoku, newGame}: Props) {
     }
   }, [gameData.selectedCell, inputSource]);
 
+  useEffect(() => {
+    const {neighborhood, sameNumbers} = calculateHighlightCells(gameData.selectedCell, boardData)
+    setGameData((prevState) => ({
+      ...prevState,
+      highlightedCells: {neighborhood, sameNumbers}
+    }))
+
+  }, [gameData.selectedCell, boardData])
 
   useEffect(() => {
-    console.log("hello")
-    setGameData((currentGameData) => ({
-      ...currentGameData,
-      isShiftDown: isShiftDown,
-      inputValue: keyDown
+    const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
+    const { boardValues } = boardData;
+  
+    // Check if the input is valid, notes mode is off, and neighborhood exists
+    if (inputValue > 0 && !notesMode && highlightedCells?.neighborhood) {
+      const nextBoardValues = boardValues.slice(); // Create a copy of boardValues
+  
+      // Iterate over the neighborhood and remove inputValue from their notes
+      highlightedCells.neighborhood.forEach((cellIndex) => {
+        // Skip the currently selected cell
+        if (cellIndex !== selectedCell) {
+          const cell = nextBoardValues[cellIndex];
+          const nextSquareNotes = cell.squareNotes.map(note => (note === inputValue ? 0 : note)); // Remove the input from the notes
+          nextBoardValues[cellIndex] = {
+            ...cell,
+            squareNotes: nextSquareNotes,
+          };
+        }
+      });
+
+      // Update the board values without affecting the selected cell
+      setBoardData((prevState) => ({
+        ...prevState,
+        boardValues: nextBoardValues,
+      }));
+    }
+  }, [gameData.inputValue, gameData.highlightedCells, gameData.notesMode, gameData.selectedCell]);
+  
+
+  // NOTES SQUARE HANDLING
+  const handleSquareNotesInput = useCallback((index: number) => {
+      const {boardValues } = boardData
+      const {squareNotes} = boardValues[gameData.selectedCell]
+      const nextSquareNotes = squareNotes.slice();
+      nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
+      const nextBoardValues = boardValues.slice();
+      nextBoardValues[gameData.selectedCell] = {
+          ...boardValues[gameData.selectedCell],
+          squareValue: 0,
+          squareNotes: nextSquareNotes
+      }
+      setBoardData((prevState) => ({
+          ...prevState,
+          boardValues: nextBoardValues
+        }))
+      // setRight(true)
+  }, [gameData.selectedCell, boardData]);
+
+  // REGULAR SQUARE HANDLING
+  const handleRegularSquareInput = useCallback((input: number) => {
+      console.log("input", input)
+      const {solution, boardValues} = boardData
+      const {squareValue} = boardValues[gameData.selectedCell]
+      if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
+        // setRight(false);
+      } else {
+        // setRight(true);
+      }
+  
+      const nextValue = (squareValue === input) ? 0 : input;
+      const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
+      nextBoardValues[gameData.selectedCell] = {
+      ...boardValues[gameData.selectedCell],
+      squareValue: nextValue,
+      squareNotes: Array(9).fill(0), // Reset notes when entering a value
+      };
+
+      setBoardData((prevState) => ({
+          ...prevState,
+          boardValues: nextBoardValues
+        }))
+    }, [gameData.selectedCell, boardData]);
+
+
+    // SQUARE INPUT HANDLING
+    useEffect(() => {
+        const {inputValue, selectedCell, notesMode} = gameData
+        const {isEditable} = boardData.boardValues[selectedCell]
+        if (isEditable && inputValue > 0) {
+            if (notesMode) {
+                const index = inputValue - 1;
+                handleSquareNotesInput(index);
+            } else {
+                handleRegularSquareInput(inputValue);
+            }
+        }
+    }, [gameData.selectedCell, gameData.inputValue]);
+    // IMPORTANT - INCLUDING SELECTED CELL MAKES THIS STICKY 
+
+  // RESET GAME STATE
+  const handleMouseLeave = debounce(() => {
+    const updatedBoardValues = boardData.boardValues.map(square => ({
+      ...square,
+      isDivHovered: false
     }))
-  }, [isShiftDown, keyDown]);
+
+    setBoardData(prevBoardData => ({
+      ...prevBoardData,
+      boardValues: updatedBoardValues
+    }))
+
+    console.log("cleaned")
+  },50) 
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
+    
+    // Mouse position relative to the center of the component
+    const x = e.clientX - offsetLeft - offsetWidth / 2;
+    const y = e.clientY - offsetTop - offsetHeight / 2;
+
+    // Invert the shadow to be on the opposite side of the mouse position
+    const shadowX = -(x / offsetWidth) * 15; // Negative sign to invert
+    const shadowY = -(y / offsetHeight) * 15;
+
+    // Set the new shadow
+    setShadow(`${shadowX}px ${shadowY}px 30px rgba(0, 0, 0, 0.5)`);
+    setInputSource("mouse");
+  };
+
+  
 
   return (
     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
