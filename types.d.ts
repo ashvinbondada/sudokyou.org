@@ -9,8 +9,8 @@
 // }
 
 interface Tile {
-    // given or user entered status
-    isEditable  : any;
+    // given or user entered status 
+    isEditable  : any; // tileType in lib/common.ts
     // current value of square ranging from -1 (backspace), 0 (default) and 1-9 numbers
     squareValue : number;
     // current notes applied on square
