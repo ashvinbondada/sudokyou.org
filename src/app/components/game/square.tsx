@@ -13,10 +13,10 @@ export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
     
     const {notesMode, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
-    const {boardValues, updateSudokuInterface} = useContext(BoardContext);
+    const {boardValues, updateSudokuInterface, solution} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
     const [shadow, setShadow] = useState("none");
-    const [right, setRight] = useState(true)
+    // const [right, setRight] = useState(true)
 
     // need this function because this function
     // has encoded the uid of the square component
@@ -33,7 +33,7 @@ export default function Square({uid}: Props) {
         if (updateSudokuInterface) {
             updateSudokuInterface({ boardValues: nextBoardValues });
           }
-        setRight(true)
+        // setRight(true)
     };
 
     // handling hasNotes variable
@@ -109,7 +109,7 @@ export default function Square({uid}: Props) {
                         // and not just rely on hover input
                         <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
                     ) : (
-                        <RegularSquare squareValue={squareValue} isEditable={isEditable} isRight={right} />
+                        <RegularSquare squareValue={squareValue} isEditable={isEditable} isRight={solution[uid]} />
                     )
                 }
             </div>
