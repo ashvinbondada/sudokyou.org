@@ -46,7 +46,7 @@ export default function DifficultySelector() {
   };
 
   return (
-    <div className="flex h-12 w-[450px] items-center justify-between border-4 border-black space-x-4 p-2">
+    <div className="flex h-12 w-full items-center justify-between border-4 border-black p-2">
       {/* Timer */}
       <div className="text-lg font-bold text-gray-600">
         {`${formatTime(time)}`}
