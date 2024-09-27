@@ -73,8 +73,3 @@ interface PuzzleString {
     // final state of the board
     solution: string;
 }
-
-
-interface Shilpa {
-    age: number
-}
