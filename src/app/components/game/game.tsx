@@ -130,20 +130,21 @@ export default function Game({newSudoku, newGame}: Props) {
     {keys: ["ArrowRight", "l"], movement: +1}
   ];
   
-  movement_keys.forEach(({keys, movement}) => {
+  movement_keys.forEach(({ keys, movement }) => {
     keys.forEach(key => {
       useKeyboardShortcut([key], () => {
-        if ((gameData.selectedCell + 1) % 9 !== 0) {
+        let newSelectedCell = gameData.selectedCell + movement;
+        if (newSelectedCell >= 0 && newSelectedCell < 81) {
           setGameData((prevState) => ({
             ...prevState,
-            selectedCell: prevState.selectedCell + movement,
+            selectedCell: newSelectedCell,
           }));
         }
-        setInputSource("keyboard")
-      });    
-    })
-  })
-
+        setInputSource("keyboard");
+      });
+    });
+  });
+  
   // BOARD SHADOW EFFECT
   useEffect(() => {
     if (inputSource === "keyboard") {
