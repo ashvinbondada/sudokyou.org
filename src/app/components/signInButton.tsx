@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAuthState } from "react-firebase-hooks/auth";
-import { signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, signOut} from "firebase/auth";
 import { firebaseAuth, googleProvider } from "../firebase";
 import { useRouter } from 'next/navigation';
 
@@ -13,8 +13,8 @@ const SignInButton = () => {
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
       const user = result.user;
       console.log(user.displayName);
       console.log(user.metadata);
@@ -23,8 +23,8 @@ const SignInButton = () => {
     } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      const email = error.customData?.email;
-      const credential = GoogleAuthProvider.credentialFromError(error);
+      // const email = error.customData?.email;
+      // const credential = GoogleAuthProvider.credentialFromError(error);
       console.error(`Error during sign-in: ${errorMessage} (${errorCode})`);
     }
   };
