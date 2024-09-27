@@ -28,7 +28,7 @@ export default function RootLayout({
               </div>
 
               {/* Main content area */}
-              <div className="h-full xl:w-[768px] lg:w-[768px] sm:w-[768px] p-1 border-4 border-green-400">
+              <div className="h-full xl:w-[768px] lg:w-[768px] sm:w-[768px] w-full p-1 border-4 border-green-400">
                 {children}
               </div>
 
