@@ -12,6 +12,9 @@ const config: Config = {
         'custom-inner': 'inset 0 0 10px rgba(0, 0, 0, 0.2)', // Custom inner shadow
       },
       colors: {
+        "shilpa-aqua": "#A8E6CF",
+        "shilpa-pink": "#FFD1DC",
+        "shilpa-ivy-green": "#6B8E23",
         "off-white": "#DDE6ED",
         "off-white-2": "#EDEFED",
         "off-white-3": "#DCE3E7",

@@ -4,6 +4,7 @@ import {useContext, useEffect, useState } from "react"
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
 import { BoardContext, GameContext } from "../../../lib/context";
+import { tileType } from "@/lib/common";
 
 type Props = {
     uid: number,
@@ -11,14 +12,13 @@ type Props = {
 
 export default function Square({uid}: Props) {
     const [hasNotes, setHasNotes] = useState(false);
-    
-    const {notesMode, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
-    const {boardValues, updateSudokuInterface, solution} = useContext(BoardContext);
-    const {isEditable, squareValue, squareNotes} = boardValues[uid]
     const [shadow, setShadow] = useState("none");
-    // const [right, setRight] = useState(true)
 
-    // need this function because this function
+    const {notesMode, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
+    const {boardValues, updateSudokuInterface } = useContext(BoardContext);
+    const {isEditable, squareValue, squareNotes} = boardValues[uid]
+
+    // need this function because it
     // has encoded the uid of the square component
     // of whos squareNotes we are editing
     const handleSquareNotesInput = (index: number) => {
@@ -96,7 +96,9 @@ export default function Square({uid}: Props) {
                 >
                 {
                     (
-                        (isEditable) // notes irrelevant on givens
+                        // show notes only on playable and unfilled squares
+                        // TODO: change to isEditable === tileType.WRONG
+                        (isEditable !== tileType.GIVEN && squareValue < 1)
                         && (
                             // on the current tile & engaged notes mode
                             // or already has notes
@@ -109,7 +111,7 @@ export default function Square({uid}: Props) {
                         // and not just rely on hover input
                         <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
                     ) : (
-                        <RegularSquare squareValue={squareValue} isEditable={isEditable} isRight={solution[uid]} />
+                        <RegularSquare squareValue={squareValue} isEditable={isEditable} />
                     )
                 }
             </div>

@@ -55,7 +55,7 @@ export default function Board() {
 
   return (
     // Outer grid for the 3x3 blocks, responsible for the border thickness and color
-    <div className='p-[3px] bg-theme-2-berkeley-blue'>
+    <div className='p-[2px] bg-theme-2-berkeley-blue'>
       {/* div responsible for the color and thickness of grid lines */}
         <div className='grid grid-cols-3 gap-[2px] bg-theme-2-berkeley-blue'>
           {blockDivs}
@@ -64,3 +64,4 @@ export default function Board() {
   );
 }
 
+// hot pink, light pink, ivy green

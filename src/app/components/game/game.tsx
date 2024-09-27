@@ -8,6 +8,7 @@ import { debounce } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells } from "@/lib/tileEffects";
+import { tileType } from "@/lib/common";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -273,6 +274,10 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
   })
 
+  useKeyboardShortcut(["Control", "z"], () => {
+    console.log("CONTROL + Z pressed.")
+  })
+
   // MOVEMENT INPUT HANDLING
   useKeyboardShortcut(["ArrowUp"], () => {
     if (gameData.selectedCell >= 9) {
@@ -431,21 +436,22 @@ export default function Game({newSudoku, newGame}: Props) {
 
   // REGULAR SQUARE HANDLING
   const handleRegularSquareInput = useCallback((input: number) => {
-      console.log("input", input)
       const {solution, boardValues} = boardData
       const {squareValue} = boardValues[gameData.selectedCell]
-      if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
-        // setRight(false);
-      } else {
-        // setRight(true);
-      }
+      // if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
+      //   // setRight(false);
+      // } else {
+      //   // setRight(true);
+      // }
   
       const nextValue = (squareValue === input) ? 0 : input;
       const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
       nextBoardValues[gameData.selectedCell] = {
       ...boardValues[gameData.selectedCell],
+      isEditable: nextValue === Number(solution[gameData.selectedCell]) ? tileType.RIGHT : tileType.WRONG,
       squareValue: nextValue,
-      squareNotes: Array(9).fill(0), // Reset notes when entering a value
+      // dont reset notes since we cant edit the square once right value is entered anyway - shilpa
+      // squareNotes: Array(9).fill(0), 
       };
 
       setBoardData((prevState) => ({
@@ -459,7 +465,7 @@ export default function Game({newSudoku, newGame}: Props) {
     useEffect(() => {
         const {inputValue, selectedCell, notesMode} = gameData
         const {isEditable} = boardData.boardValues[selectedCell]
-        if (isEditable && inputValue > 0) {
+        if (isEditable === tileType.WRONG && inputValue > 0) {
             if (notesMode) {
                 const index = inputValue - 1;
                 handleSquareNotesInput(index);
@@ -507,19 +513,22 @@ export default function Game({newSudoku, newGame}: Props) {
     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
       <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
         {/* Outer wrapper for both DifficultySelector and Board */}
-        <div className=" w-[60%] max-w-[700px] min-w-[400px] flex flex-col items-center justify-center">
-          {/* Timer and difficulty selector with full width */}
-          <div className="w-full mb-4">
-            <DifficultySelector />
-          </div>
-          {/* Sudoku board with full width */}
-          <div
-            className="w-full aspect-square rounded-md"
-            onMouseLeave={handleMouseLeave}
-            onMouseMove={handleMouseMove}
-            style={{ boxShadow: shadow }}
-          >
-            <Board />
+        <div className="w-full h-max flex md:flex-row justify-center">
+
+          <div className="w-full h-max flex flex-col items-center">
+            {/* Timer and difficulty selector with full width */}
+            {/* <div className="border-4"> */}
+              <DifficultySelector />
+            {/* </div> */}
+            {/* Sudoku board with full width */}
+            <div
+              className="w-full h-max aspect-square"
+              onMouseLeave={handleMouseLeave}
+              onMouseMove={handleMouseMove}
+              style={{ boxShadow: shadow }}
+            >
+              <Board />
+            </div>
           </div>
         </div>
       </BoardContext.Provider>
