@@ -46,6 +46,7 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
   }
 
+  // lifting any of the modifier keys does not affect the inputValueBehavior
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
@@ -116,10 +117,6 @@ export default function Game({newSudoku, newGame}: Props) {
         ...prevState,
         notesMode: !prevState.notesMode
       }));
-  })
-
-  useKeyboardShortcut(["Control", "z"], () => {
-    console.log("CONTROL + Z pressed.")
   })
 
   // MOVEMENT INPUT HANDLING

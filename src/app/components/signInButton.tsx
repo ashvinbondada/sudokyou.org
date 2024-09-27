@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAuthState } from "react-firebase-hooks/auth";
-import { signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, signOut} from "firebase/auth";
 import { firebaseAuth, googleProvider } from "../firebase";
 import { useRouter } from 'next/navigation';
 
