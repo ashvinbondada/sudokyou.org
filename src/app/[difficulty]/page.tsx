@@ -19,8 +19,8 @@ export default async function Difficultypage({ params: { difficulty } }: Props) 
 
   // Render the Game component with the puzzle data
   return (
-    <div className="w-full h-full flex flex-col items-center justify-start sm:justify-center">
+    // <div className="w-full h-full flex flex-col">
       <Game newSudoku={newSudoku} newGame={newGame} />
-    </div>
+    // </div>
   );
 }

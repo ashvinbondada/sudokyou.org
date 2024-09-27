@@ -97,6 +97,7 @@ export default function Square({uid}: Props) {
                 {
                     (
                         // show notes only on playable and unfilled squares
+                        // TODO: change to isEditable === tileType.WRONG
                         (isEditable !== tileType.GIVEN && squareValue < 1)
                         && (
                             // on the current tile & engaged notes mode

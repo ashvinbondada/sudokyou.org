@@ -38,40 +38,5 @@ export const calculateHighlightCells = (
     neighborhood: combinedCells,
     sameNumbers: sameNumCells,
   }
-//   const shadowBlock = [
-//     { direction: "top-left", index: selectedCell - 10 },
-//     { direction: "top", index: selectedCell - 9 },
-//     { direction: "top-right", index: selectedCell - 8 },
-//     { direction: "left", index: selectedCell - 1 },
-//     { direction: "right", index: selectedCell + 1 },
-//     { direction: "bottom-left", index: selectedCell + 8 },
-//     { direction: "bottom", index: selectedCell + 9 },
-//     { direction: "bottom-right", index: selectedCell + 10 }
-//   ].filter((dirIdx) => dirIdx.index > -1 && dirIdx.index < 81);
-
-//   return [combinedCells, sameNumCells];
     return highlightedCells
 };
-
-// export function removeNotes (
-//     inputValue: number, 
-//     selectedCell: number,
-//     boardValues: Tile[], 
-//     highlightedCells: HighlightedCells
-//   ): Tile[] {
-//     const { neighborhood } = highlightedCells;
-//     console.log("passed in", inputValue)
-//     // Create a new array of updated boardValues to avoid mutating the original
-//     const updatedBoardValues = boardValues.map((tile, index) => {
-//       if (index != selectedCell && neighborhood.includes(index)) {
-//         const updatedNotes = tile.squareNotes.map(note => note === inputValue ? 0 : note);
-//         return {
-//           ...tile,
-//           squareNotes: updatedNotes
-//         };
-//       }
-//       return tile; // Return unchanged tile if it's not in the neighborhood
-//     });
-//     console.log(boardValues[selectedCell])
-//     return updatedBoardValues;
-// };

@@ -15,7 +15,7 @@ export default function RegularSquare({ squareValue, isEditable}: Props) {
           : (isEditable === tileType.RIGHT)
           ? 'text-blue-600' // Editable and correct, show blue
           : 'text-red-600' // Editable but incorrect, show red
-      }`}
+      } select-none`}
     >
       {squareValue > 0 ? squareValue : ''}
     </div>
