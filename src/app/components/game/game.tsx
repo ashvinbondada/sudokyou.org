@@ -46,6 +46,7 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
   }
 
+  // lifting any of the modifier keys does not affect the inputValueBehavior
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
@@ -116,10 +117,6 @@ export default function Game({newSudoku, newGame}: Props) {
         ...prevState,
         notesMode: !prevState.notesMode
       }));
-  })
-
-  useKeyboardShortcut(["Control", "z"], () => {
-    console.log("CONTROL + Z pressed.")
   })
 
   // MOVEMENT INPUT HANDLING
@@ -299,7 +296,7 @@ export default function Game({newSudoku, newGame}: Props) {
     <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
       <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
         {/* Outer wrapper for both DifficultySelector and Board */}
-        <div className="w-[450px] h-max flex flex-row">
+        <div className="w-full h-max flex md:flex-row justify-center">
 
           <div className="w-full h-max flex flex-col items-center">
             {/* Timer and difficulty selector with full width */}
@@ -308,14 +305,14 @@ export default function Game({newSudoku, newGame}: Props) {
             {/* </div> */}
             {/* Sudoku board with full width */}
             <div
-              className="w-[450px] h-max aspect-square"
+              className="w-full h-max aspect-square"
               onMouseLeave={handleMouseLeave}
               onMouseMove={handleMouseMove}
               style={{ boxShadow: shadow }}
             >
               <Board />
             </div>
-        </div>
+          </div>
         </div>
       </BoardContext.Provider>
     </GameContext.Provider>

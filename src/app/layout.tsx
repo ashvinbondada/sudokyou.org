@@ -18,17 +18,17 @@ export default function RootLayout({
         <Navbar />
         {/* <div className="flex h-full"> */}
           {/* Outer flex container */}
-          <div className="h-full w-full flex flex-row justify-center ">
+          <div className="h-full w-full flex flex-row justify-center">
             {/* <Navbar /> */}
             {/* Middle component */}
-            <div className="h-full xl:w-[1280px] lg:w-[1024px] min-w-[500px] flex flex-row border-4 border-yellow-500">
+            <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row border-4 justify-center border-yellow-500">
               {/* Left component */}
               <div className="h-full border-4 border-blue-400 lg:w-[256px] hidden xl:block">
                 instructions, rules
               </div>
 
               {/* Main content area */}
-              <div className="h-full xl:w-[768px] lg:w-[768px] sm:w-[768px] p-4 border-4 border-green-400">
+              <div className="h-full xl:w-[768px] lg:w-[768px] sm:w-[768px] w-full p-1 border-4 border-green-400">
                 {children}
               </div>
 

@@ -1,9 +1,0 @@
-{
-    "redirects": [
-      {
-        "source": "https://accounts.sudokyou.org",
-        "destination": "https://sudokyou.org/accounts",
-        "statusCode": 301
-      }
-    ]
-  }
