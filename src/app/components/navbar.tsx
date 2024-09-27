@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaGithub } from "react-icons/fa";
+// import { FaGithub } from "react-icons/fa";
 import SignInButton from "./signInButton";
 // import SignOutButton from "./signOutButton";
 

@@ -11,16 +11,18 @@ export default async function Home() {
   
   return (
     // <div className="flex flex-col items-center">
-      <div >
-        <div className="flex md:flex-row sm:justify-center border-4 border-emerald-600">
-          <Game newSudoku={newSudoku} newGame={newGame}/>
-          <div className="sm:hidden md:block hidden w-full border-4 border-purple-400">
+      <div className="w-full">
+        <div className="w-full flex md:flex-row justify-center ">
+          <div className="w-full border-4 border-emerald-600">
+            <Game newSudoku={newSudoku} newGame={newGame}/>
+          </div>
+          <div className="sm:hidden md:block hidden md:w-[40%] border-4 border-purple-400">
             CONTROLS
           </div>
         </div>
 
         <div className="w-full h-full flex flex-col items-center">
-          <div className="w-[450px] h-full sm:block md:hidden block text-black border-4 border-purple-400">
+          <div className="w-full h-full sm:block md:hidden block text-black border-4 border-purple-400">
             controls, instructions
           </div>
           <div className="w-full h-max flex flex-row">
