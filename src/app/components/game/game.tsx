@@ -63,6 +63,7 @@ export default function Game({newSudoku, newGame}: Props) {
     };
   }, []);
 
+
   // SHIFT PRESS NOTES SOFT TOGGLE UPDATE
   useEffect(() => {
     setGameData((prevGameData) => (
@@ -73,198 +74,41 @@ export default function Game({newSudoku, newGame}: Props) {
     ))
   }, [shiftPressIsShiftDown])
 
-
   // NUMBER INPUT HANDLING
-  useKeyboardShortcut(["1"], () => {
+  for (let i = 1; i<=9; i ++){
+    useKeyboardShortcut([i.toString()], () => {
       setGameData((prevState) => ({
         ...prevState,
-        inputValue: 1
+        inputValue: i
       }));
   }, {repeatOnHold: true})
 
-  useKeyboardShortcut(["2"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 2
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["3"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 3
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["4"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 4
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["5"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 5
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["6"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 6
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["7"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 7
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["8"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 8
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["9"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 9
-      }));
-  }, {repeatOnHold: true})
+}
 
   // LEFT GRID (INCLUDES CAPITAL VERSION Ex: q & Q)
-  useKeyboardShortcut(["q"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 1
-      }));
-  }, {repeatOnHold: true})
 
-  useKeyboardShortcut(["w"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 2
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["e"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 3
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["a"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 4
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["s"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 5
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["d"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 6
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["z"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 7
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["x"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 8
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["c"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 9
-      }));
-  }, {repeatOnHold: true})
+  const leftGridKeys = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'];
+  leftGridKeys.forEach((key, index) => {
+      useKeyboardShortcut([key], () => {
+        setGameData((prevState) => ({
+          ...prevState,
+          inputValue: index + 1
+        }));
+    }, {repeatOnHold: true})
+  })
 
   // NOTES CHARACTER INPUT
-  useKeyboardShortcut(["!"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 1
-      }));
-  }, {repeatOnHold: true})
 
-  useKeyboardShortcut(["@"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 2
-      }));
-  }, {repeatOnHold: true})
+  const notes_char_input = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
 
-  useKeyboardShortcut(["#"], () => {
+  notes_char_input.forEach((key, index) => {
+    useKeyboardShortcut([key], () => {
       setGameData((prevState) => ({
         ...prevState,
-        inputValue: 3
+        inputValue: index + 1
       }));
   }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["$"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 4
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["%"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 5
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["^"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 6
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["&"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 7
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["*"], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 8
-      }));
-  }, {repeatOnHold: true})
-
-  useKeyboardShortcut(["("], () => {
-      setGameData((prevState) => ({
-        ...prevState,
-        inputValue: 9
-      }));
-  }, {repeatOnHold: true})
+  })
 
   // n PRESS NOTES PERM TOGGLE
   useKeyboardShortcut(["n"], () => {
@@ -279,85 +123,26 @@ export default function Game({newSudoku, newGame}: Props) {
   })
 
   // MOVEMENT INPUT HANDLING
-  useKeyboardShortcut(["ArrowUp"], () => {
-    if (gameData.selectedCell >= 9) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 9,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["k"], () => {
-    if (gameData.selectedCell >= 9) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 9,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["ArrowDown"], () => {
-    if (gameData.selectedCell <= 71) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 9,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["j"], () => {
-    if (gameData.selectedCell <= 71) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 9,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["ArrowLeft"], () => {
-    if (gameData.selectedCell % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 1,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["h"], () => {
-    if (gameData.selectedCell % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 1,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["ArrowRight"], () => {
-    if ((gameData.selectedCell + 1) % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 1,
-      }));
-    }
-    setInputSource("keyboard")
-  });
-
-  useKeyboardShortcut(["l"], () => {
-    if ((gameData.selectedCell + 1) % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 1,
-      }));
-    }
-    setInputSource("keyboard")
-  });
+  const movement_keys = [
+    {keys: ["ArrowUp", "k"], movement: -9},
+    {keys: ["ArrowDown", "j"], movement: +9},
+    {keys: ["ArrowLeft", "h"], movement: -1},
+    {keys: ["ArrowRight", "l"], movement: +1}
+  ];
+  
+  movement_keys.forEach(({keys, movement}) => {
+    keys.forEach(key => {
+      useKeyboardShortcut([key], () => {
+        if ((gameData.selectedCell + 1) % 9 !== 0) {
+          setGameData((prevState) => ({
+            ...prevState,
+            selectedCell: prevState.selectedCell + movement,
+          }));
+        }
+        setInputSource("keyboard")
+      });    
+    })
+  })
 
   // BOARD SHADOW EFFECT
   useEffect(() => {
