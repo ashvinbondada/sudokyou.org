@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Game from "./components/game/game";
 import { newGameInterface, getNewPuzzle } from "@/lib/initializeSudoku";
+import ControlNav from "./components/controls/controlNav";
 
 export default async function Home() {
   const newSudoku = await getNewPuzzle("easy")
@@ -17,7 +18,7 @@ export default async function Home() {
             <Game newSudoku={newSudoku} newGame={newGame}/>
           </div>
           <div className="sm:hidden md:block hidden md:w-[40%] border-4 border-purple-400">
-            CONTROLS
+            <ControlNav />
           </div>
         </div>
 
