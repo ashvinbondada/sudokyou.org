@@ -11,6 +11,7 @@ import { TbBackground } from "react-icons/tb";
 
 import IconSquare from "./iconSquare";
 import NumberPad from "./numberPad";
+import StatBox from "./statBox";
 
 // export default function ControlNav() {
 //   return (
@@ -56,17 +57,17 @@ import NumberPad from "./numberPad";
 export default function ControlNav() {
     return (
         <div className="h-full w-full flex flex-col">
-            <div className="h-12 border-2 border-theme-2-berkeley-blue p-4 mb-1">
-                timer, mistakes
+            <div className="h-12 border-2 border-theme-2-berkeley-blue p-4 mb-1 flex items-center justify-center">
+                idk tbh
             </div>
             <div className="top-12 h-full flex flex-col">
                 <div className="w-full h-1/3 flex flex-col flex-none border-2 border-theme-2-berkeley-blue gap-[2px] bg-theme-2-berkeley-blue">
                     <div className="h-2/3 bg-white">
                         <div className="grid grid-cols-3 flex-none gap-[1px] w-full h-full bg-theme-1-cerulean/50">
-                            <IconSquare icon={PiPencilSimple} label="note" />
+                            <IconSquare icon={PiPencilSimple} label="notes" />
                             <IconSquare icon={PiNotePencil} label="auto" />
-                            <IconSquare icon={PiLightbulb} label="hint" />
-                            <IconSquare icon={IoBackspaceOutline} label="erase" />
+                            <IconSquare icon={PiLightbulb} label="hints" />
+                            <IconSquare icon={IoBackspaceOutline} label="delete" />
                             <IconSquare icon={PiArrowBendDownLeft} label="undo" />
                             <IconSquare icon={PiRepeat} label="restart" />
                         </div>
@@ -79,7 +80,7 @@ export default function ControlNav() {
                     <NumberPad />
                 </div>
                 <div className="w-full h-1/3 flex-none border-2 border-green-400">
-
+                    <StatBox />
                 </div>
             </div>
         </div>

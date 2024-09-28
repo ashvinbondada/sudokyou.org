@@ -21,7 +21,7 @@ export default function RootLayout({
           <div className="h-full w-full flex flex-row justify-center">
             {/* <Navbar /> */}
             {/* Middle component */}
-            <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row border-4 justify-center border-yellow-500">
+            <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row justify-center border-4  border-yellow-500">
               {/* Left component */}
               <div className="h-full border-4 border-blue-400 lg:w-[256px] hidden xl:block">
                 instructions, rules

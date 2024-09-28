@@ -21,7 +21,7 @@ type Props = {
 
 export default function IconSquare({ icon: Icon, label }: Props) {
   return (
-    <div className="bg-white">
+    <div className="bg-white w-full h-full">
         <div className="h-full w-full aspect-square flex flex-col items-center justify-center text-4xl select-none transition-all duration-300 hover:bg-theme-1-pacific-cyan/30 bg-gray-100 relative group hover:shadow-custom-inner">
         <Icon className="transition-transform duration-300 group-hover:text-2xl group-hover:translate-y-[-10px]" />
         {label && (
