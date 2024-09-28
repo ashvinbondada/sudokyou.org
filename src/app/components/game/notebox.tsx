@@ -12,7 +12,7 @@ export default function NoteBox({noteValue, onNoteBoxClick}: Props)
   const {boardValues} = useContext(BoardContext)
   return (
     <div className={`h-full w-full text-md flex items-center justify-center text-editable-num
-      ${noteValue > 0 && noteValue === boardValues[selectedCell].squareValue ? 'font-bold bg-theme-1-jonquil/50 rounded-[2px]' : 'font-normal'}
+      ${noteValue > 0 && noteValue === boardValues[selectedCell].squareValue ? 'font-semibold text-lg bg-theme-1-jonquil/50 rounded-[2px]' : 'font-normal'}
     `}>
       <button 
         className="select-none"

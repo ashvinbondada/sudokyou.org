@@ -524,8 +524,8 @@ export default function Game({newSudoku, newGame}: Props) {
             <div
               className="w-full h-max aspect-square"
               onMouseLeave={handleMouseLeave}
-              onMouseMove={handleMouseMove}
-              style={{ boxShadow: shadow }}
+              // onMouseMove={handleMouseMove}
+              // style={{ boxShadow: shadow }}
             >
               <Board />
             </div>

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Game from "./components/game/game";
 import { newGameInterface, getNewPuzzle } from "@/lib/initializeSudoku";
 import ControlNav from "./components/controls/controlNav";
+import NumberPad from "./components/controls/numberPad";
 
 export default async function Home() {
   const newSudoku = await getNewPuzzle("easy")
@@ -13,16 +14,16 @@ export default async function Home() {
   return (
     // <div className="flex flex-col items-center">
       <div className="w-full">
-        <div className="w-full flex md:flex-row justify-center ">
-          <div className="w-full border-4 border-emerald-600">
+        <div className="w-full flex md:flex-row justify-center gap-1">
+          <div className="w-full ">
             <Game newSudoku={newSudoku} newGame={newGame}/>
           </div>
-          <div className="sm:hidden md:block hidden md:w-[40%] border-4 border-purple-400">
+          <div className="sm:hidden md:block hidden md:w-[33.33%] ">
             <ControlNav />
           </div>
         </div>
 
-        <div className="w-full h-full flex flex-col items-center">
+        <div className="mt-1 w-full h-full flex flex-col items-center">
           <div className="w-full h-full sm:block md:hidden block text-black border-4 border-purple-400">
             controls, instructions
           </div>
