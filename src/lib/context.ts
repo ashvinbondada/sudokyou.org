@@ -18,6 +18,7 @@ const defaultGameState = {
     notesMode: false,
     inputValue: 0,
     selectedCell: 40,
+    anchorMode: false,
     highlightedCells: { 
         shadowBlock : [
             { direction: "top-left", index: 30 },

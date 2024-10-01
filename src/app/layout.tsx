@@ -21,20 +21,20 @@ export default function RootLayout({
           <div className="h-full w-full flex flex-row justify-center">
             {/* <Navbar /> */}
             {/* Middle component */}
-            <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row justify-center border-4  border-yellow-500">
+            <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row justify-center ">
               {/* Left component */}
-              <div className="h-full border-4 border-blue-400 lg:w-[256px] hidden xl:block">
+              {/* <div className="h-full border-4 border-blue-400 lg:w-[256px] hidden xl:block">
                 instructions, rules
-              </div>
+              </div> */}
 
               {/* Main content area */}
-              <div className="h-full xl:w-[768px] lg:w-[768px] sm:w-[768px] w-full p-1 border-4 border-green-400">
+              <div className="h-full lg:w-[1024px] md:w-full w-full p-1 ">
                 {children}
               </div>
 
               {/* Right component */}
-              <div className="h-full border-4 border-red-400 lg:w-[256px] md:flex-none hidden lg:block md:hidden">
-                leaderboard, game history
+              <div className="h-full lg:w-[256px] md:flex-none hidden xl:block">
+                {/* leaderboard, game history */}
               </div>
             </div>
           </div>

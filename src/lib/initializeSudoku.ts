@@ -23,8 +23,9 @@ function PuzzleStringToSudokuInterface(puzzlestring: DocumentData) {
 export function newGameInterface() {
     const newGame: GameInterface = {
         notesMode: false,
-        inputValue: -1,
+        inputValue: 0,
         selectedCell: 40,
+        anchorMode: false,
         highlightedCells: { 
                             neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
                             sameNumbers: [] 

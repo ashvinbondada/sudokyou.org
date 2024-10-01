@@ -50,6 +50,8 @@ interface GameInterface {
     inputValue          : number;
     // tile that user is choosing to edit
     selectedCell        : number;  
+    // anchor mode selected a square when clicking only
+    anchorMode          : boolean;
     // tiles higlighted for user, unable to edit atm
     highlightedCells    : HighlightedCells;
     // status of the game 

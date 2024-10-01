@@ -38,8 +38,10 @@ export default function Square({uid}: Props) {
 
     // handling hasNotes variable
     useEffect(() => {
-        setHasNotes(squareNotes.some((note: number) => note !== 0));
-    }, [squareNotes]);
+        if (highlightedCells.neighborhood.includes(uid)) {
+            setHasNotes(squareNotes.some((note: number) => note !== 0));
+        }
+    }, [squareNotes,uid, highlightedCells.neighborhood]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
@@ -64,8 +66,8 @@ export default function Square({uid}: Props) {
 
     const getBackgroundClasses = (index: number) => {
         const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
-
-        if (highlightedCells.sameNumbers.includes(index)) {
+        // highlightedCells.sameNumbers.includes(index)
+        if (squareValue > 0 && squareValue === boardValues[selectedCell].squareValue) {
         return index !== selectedCell 
             ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
             : selectedCellBG;
@@ -78,7 +80,7 @@ export default function Square({uid}: Props) {
         return 'bg-gray-100'; // Default square background
     };
 
-    return (
+    return (    
         <div className="w-full h-full bg-white"
             onMouseMove={handleMouseMove}
             style={{
@@ -92,7 +94,7 @@ export default function Square({uid}: Props) {
               }}
         >
             <div
-                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-400 ease-in-out`}
+                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
                 >
                 {
                     (

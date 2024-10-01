@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Game from "./components/game/game";
 import { newGameInterface, getNewPuzzle } from "@/lib/initializeSudoku";
 import ControlNav from "./components/controls/controlNav";
-import NumberPad from "./components/controls/numberPad";
+import DifficultySelector from "./components/difficultyTimer";
 
 export default async function Home() {
   const newSudoku = await getNewPuzzle("easy")
@@ -13,12 +13,14 @@ export default async function Home() {
   
   return (
     // <div className="flex flex-col items-center">
-      <div className="w-full">
-        <div className="w-full flex md:flex-row justify-center gap-1">
-          <div className="w-full ">
+      <div className="w-full h-full">
+        
+        <div className="w-full flex md:flex-row sm:justify-start justify-center gap-1">
+          <div className="w-full sm:w-2/3 flex flex-col">
+            <DifficultySelector />
             <Game newSudoku={newSudoku} newGame={newGame}/>
           </div>
-          <div className="sm:hidden md:block hidden md:w-[33.33%] ">
+          <div className="sm:block md:block hidden flex-auto">
             <ControlNav />
           </div>
         </div>
@@ -31,11 +33,11 @@ export default async function Home() {
             <div className="w-full h-full lg:block xl:hidden text-black border-4 border-blue-400">
               instructions, rules
             </div>
-            <div className="md:block lg:hidden w-full h-full text-black border-4 border-red-400">
+            <div className="xl:hidden block w-full h-full text-black border-4 border-red-400">
                 HELLO
             </div>
           </div>
-          <div className="w-full h-full border-4 border-slate-950 block">
+          <div className="w-full h-max block">
             ABOUT SUDOKYOU
           </div>
         </div>

@@ -4,11 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "../../../lib/context";
 import { useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
-import { debounce } from "lodash";
+import { debounce, StringNullableChain } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells } from "@/lib/tileEffects";
 import { tileType } from "@/lib/common";
+import { useHotkeys } from 'react-hotkeys-hook';
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -51,7 +52,7 @@ export default function Game({newSudoku, newGame}: Props) {
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
         setGameData((prevState) => ({
           ...prevState,
-          inputValue: 0
+          inputValue: 0,
         }))
       }
     }
@@ -78,7 +79,7 @@ export default function Game({newSudoku, newGame}: Props) {
   useKeyboardShortcut(["1"], () => {
       setGameData((prevState) => ({
         ...prevState,
-        inputValue: 1
+        inputValue: 1,
       }));
   }, {repeatOnHold: true})
 
@@ -388,11 +389,17 @@ export default function Game({newSudoku, newGame}: Props) {
   useEffect(() => {
     const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
     const { boardValues } = boardData;
+    // console.log(gameData.inputValue)
   
     // Check if the input is valid, notes mode is off, and neighborhood exists
-    if (inputValue > 0 && !notesMode && highlightedCells?.neighborhood) {
+    if (
+      boardData.boardValues[gameData.selectedCell].isEditable !== tileType.GIVEN 
+      && inputValue > 0 
+      && inputValue === Number(boardData.solution[gameData.selectedCell])
+      && !notesMode 
+      && highlightedCells?.neighborhood) {
       const nextBoardValues = boardValues.slice(); // Create a copy of boardValues
-  
+
       // Iterate over the neighborhood and remove inputValue from their notes
       highlightedCells.neighborhood.forEach((cellIndex) => {
         // Skip the currently selected cell
@@ -412,7 +419,7 @@ export default function Game({newSudoku, newGame}: Props) {
         boardValues: nextBoardValues,
       }));
     }
-  }, [gameData.inputValue, gameData.highlightedCells, gameData.notesMode, gameData.selectedCell]);
+  }, [gameData, boardData]);
   
 
   // NOTES SQUARE HANDLING
@@ -503,35 +510,35 @@ export default function Game({newSudoku, newGame}: Props) {
     const shadowY = -(y / offsetHeight) * 15;
 
     // Set the new shadow
-    setShadow(`${shadowX}px ${shadowY}px 30px rgba(0, 0, 0, 0.5)`);
+    setShadow(`${shadowX}px ${shadowY}px 10px rgba(0, 0, 0, 0.5)`);
     setInputSource("mouse");
   };
 
   
 
   return (
-    <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
-      <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-        {/* Outer wrapper for both DifficultySelector and Board */}
-        <div className="w-full h-max flex md:flex-row justify-center">
+      <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
+        <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+          {/* Outer wrapper for both DifficultySelector and Board */}
+          <div className="w-full h-max flex md:flex-row justify-center">
 
-          <div className="w-full h-max flex flex-col items-center">
-            {/* Timer and difficulty selector with full width */}
-            {/* <div className="border-4"> */}
-              <DifficultySelector />
-            {/* </div> */}
-            {/* Sudoku board with full width */}
-            <div
-              className="w-full h-max aspect-square"
-              onMouseLeave={handleMouseLeave}
-              onMouseMove={handleMouseMove}
-              style={{ boxShadow: shadow }}
-            >
-              <Board />
+            <div className="w-full h-max flex flex-col items-center">
+              {/* Timer and difficulty selector with full width */}
+              {/* <div className="border-4"> */}
+                {/* <DifficultySelector /> */}
+              {/* </div> */}
+              {/* Sudoku board with full width */}
+              <div
+                className="w-full h-max aspect-square"
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseMove}
+                style={{ boxShadow: shadow }}
+              >
+                <Board />
+              </div>
             </div>
           </div>
-        </div>
-      </BoardContext.Provider>
-    </GameContext.Provider>
+        </BoardContext.Provider>
+      </GameContext.Provider>
 );
 }
