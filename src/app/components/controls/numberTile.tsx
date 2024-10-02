@@ -6,7 +6,7 @@ type Props = {
     squareValue: number;
     quantity?: number; // New quantity prop
     // handleMe: () => void;
-    keyboardClick: boolean;
+    keyboardClick?: boolean;
     // isDone: boolean;
   };
   
