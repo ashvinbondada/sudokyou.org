@@ -36,6 +36,12 @@ const defaultGameState = {
     gameStatus: GameStatus.WOMB, // Assuming GameStatus is an enum
     timer: undefined,
     mistakesCount: 0,
+    moveCount: 0,
+    history: [Array(81).fill({
+        isEditable: tileType.GIVEN,
+        squareValue: 0,
+        squareNotes: Array(9).fill(0), 
+    })],
     updateGameInterface: () => {}
 };
 

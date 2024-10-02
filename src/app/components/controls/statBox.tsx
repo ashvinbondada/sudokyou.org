@@ -3,7 +3,6 @@ import { IoShareOutline } from "react-icons/io5";
 import { useState } from "react";
 import { BsGrid3X3Gap, BsGrid3X3GapFill } from "react-icons/bs";
 import ShareSquare from "./shareSquare";
-import NumPadSquare from "./numberTile";
 
 export default function StatBox() {
   const [isClicked, setIsClicked] = useState(false);
@@ -21,7 +20,7 @@ export default function StatBox() {
                 className="flex-1 flex items-center justify-center transition-all duration-300 border-l-2 border-theme-1-pacific-cyan"
                 onClick={() => setIsClicked(!isClicked)}
               >
-                {isClicked ? <ShareSquare icon={BsGrid3X3GapFill} label="new"/> : <ShareSquare icon={BsGrid3X3Gap} label="current"/>}
+                {isClicked ? <ShareSquare icon={BsGrid3X3GapFill} label="current"/> : <ShareSquare icon={BsGrid3X3Gap} label="new"/>}
               </button>
             </div>
         </div>

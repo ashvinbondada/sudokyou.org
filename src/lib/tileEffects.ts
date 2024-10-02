@@ -45,32 +45,48 @@ export const calculateHighlightCells = (
 };
 
 export function calculateAutoCandidates(boardValues: Tile[]): Tile[] {
-  // start with a array of 81 Tile[] with all notes filled in
+  // start with an array of 81 Tile[] with all notes filled in
   const completeNotes: Tile[] = Array.from({ length: 81 }, () => ({
     isEditable: tileType.WRONG,
     squareValue: 0,
-    squareNotes: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    squareNotes: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   }));
-  completeNotes.forEach((tile: Tile, inputIndex: number) => {
+
+  boardValues.forEach((inputTile, inputIndex: number) => {
     // only inputting valid numbers
-    if (boardValues[inputIndex].squareValue > 0) {
-      const { neighborhood } = calculateHighlightCells(inputIndex)
-      tile.isEditable = boardValues[inputIndex].isEditable;
-      tile.squareValue = boardValues[inputIndex].squareValue;
+    if (inputTile.squareValue > 0) {
+      const { neighborhood } = calculateHighlightCells(inputIndex);
+      console.log(neighborhood.length) 
+      // Directly update the properties of the current tile in completeNotes
+      completeNotes[inputIndex] = {
+        ...completeNotes[inputIndex],
+        isEditable: inputTile.isEditable,
+        squareValue: inputTile.squareValue,
+        squareNotes: [],  // Clear notes for filled squares
+      };
+
+      // Iterate over the neighborhood to update the notes
       neighborhood.forEach((cellIndex) => {
-        // Skip the currently selected cell
         if (cellIndex !== inputIndex) {
-          const nbhdTile = completeNotes[cellIndex];
-          const nextSquareNotes = nbhdTile.squareNotes.map(note => (note === boardValues[inputIndex].squareValue ? 0 : note)); // Remove the input from the notes
           completeNotes[cellIndex] = {
-            ...nbhdTile,
-            squareNotes: nextSquareNotes,
+            ...completeNotes[cellIndex],
+            squareNotes: completeNotes[cellIndex].squareNotes.map(note => (note === inputTile.squareValue ? 0 : note)),
           };
         }
       });
     }
+  });
 
-  })
-  
-  return completeNotes
+  return completeNotes;
+}
+
+export function clearTile(selectedTile: Tile): Tile {
+  if (selectedTile.isEditable !== tileType.GIVEN) { 
+    return {
+      isEditable: tileType.WRONG,
+      squareValue: 0,
+      squareNotes: [0,0,0,0,0,0,0,0,0]
+    }    
+  } 
+  return selectedTile
 }

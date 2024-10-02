@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "../../../lib/context";
 import { useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
-import { debounce, StringNullableChain } from "lodash";
+import { debounce, } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells } from "@/lib/tileEffects";
 import { tileType } from "@/lib/common";
-import { useHotkeys } from 'react-hotkeys-hook';
+// import { useHotkeys } from 'react-hotkeys-hook';
+import ControlNav from "../controls/controlNav";
+// import next from "next";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -41,10 +43,16 @@ export default function Game({newSudoku, newGame}: Props) {
   })
 
   const updateGameInterface = (newState: Partial<GameInterface>) => {
+    // const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), boardData.boardValues]
     setGameData((prevState) => ({
       ...prevState,
-      ...newState
+      ...newState,
     }))
+    // setGameData((prevState) => ({
+    //   ...prevState,
+    //   history: nextHistory,
+    //   moveCount: nextHistory.length - 1
+    // }))
   }
 
   useEffect(() => {
@@ -378,7 +386,7 @@ export default function Game({newSudoku, newGame}: Props) {
   }, [gameData.selectedCell, inputSource]);
 
   useEffect(() => {
-    const {neighborhood, sameNumbers} = calculateHighlightCells(gameData.selectedCell, boardData)
+    const {neighborhood, sameNumbers} = calculateHighlightCells(gameData.selectedCell)
     setGameData((prevState) => ({
       ...prevState,
       highlightedCells: {neighborhood, sameNumbers}
@@ -421,6 +429,16 @@ export default function Game({newSudoku, newGame}: Props) {
     }
   }, [gameData, boardData]);
   
+  function appendHistory(nextBoardValues: Tile[]) {
+    // console.log(gameData.moveCount+2)
+    const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
+    setGameData((prevstate) => ({
+      ...prevstate,
+      history: nextHistory,
+      moveCount: nextHistory.length - 1
+    }))
+    console.log(nextHistory)
+  }
 
   // NOTES SQUARE HANDLING
   const handleSquareNotesInput = useCallback((index: number) => {
@@ -438,34 +456,59 @@ export default function Game({newSudoku, newGame}: Props) {
           ...prevState,
           boardValues: nextBoardValues
         }))
+
+      console.log("adding a move")
+      // appendHistory(nextBoardValues)
+      const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
+      setGameData((prevstate) => ({
+        ...prevstate,
+        history: nextHistory,
+        moveCount: nextHistory.length - 1
+      }))
       // setRight(true)
   }, [gameData.selectedCell, boardData]);
 
   // REGULAR SQUARE HANDLING
   const handleRegularSquareInput = useCallback((input: number) => {
-      const {solution, boardValues} = boardData
-      const {squareValue} = boardValues[gameData.selectedCell]
-      // if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
-      //   // setRight(false);
-      // } else {
-      //   // setRight(true);
-      // }
-  
-      const nextValue = (squareValue === input) ? 0 : input;
-      const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
-      nextBoardValues[gameData.selectedCell] = {
-      ...boardValues[gameData.selectedCell],
-      isEditable: nextValue === Number(solution[gameData.selectedCell]) ? tileType.RIGHT : tileType.WRONG,
-      squareValue: nextValue,
-      // dont reset notes since we cant edit the square once right value is entered anyway - shilpa
-      // squareNotes: Array(9).fill(0), 
-      };
+    const {solution, boardValues} = boardData
+    const {squareValue} = boardValues[gameData.selectedCell]
+    // if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
+    //   // setRight(false);
+    // } else {
+    //   // setRight(true);
+    // }
 
-      setBoardData((prevState) => ({
-          ...prevState,
-          boardValues: nextBoardValues
-        }))
+    const nextValue = (squareValue === input) ? 0 : input;
+    const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
+    nextBoardValues[gameData.selectedCell] = {
+    ...boardValues[gameData.selectedCell],
+    isEditable: nextValue === Number(solution[gameData.selectedCell]) ? tileType.RIGHT : tileType.WRONG,
+    squareValue: nextValue,
+    // dont reset notes since we cant edit the square once right value is entered anyway - shilpa
+    // squareNotes: Array(9).fill(0), 
+    };
+
+    console.log("adding a move")
+    // appendHistory(nextBoardValues)
+    const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
+    setGameData((prevstate) => ({
+      ...prevstate,
+      history: nextHistory,
+      moveCount: nextHistory.length - 1
+    }))
+
+    setBoardData((prevState) => ({
+        ...prevState,
+        boardValues: nextBoardValues
+      }))
     }, [gameData.selectedCell, boardData]);
+
+    // const nexthistory = [...gameData.history.slice(0, gameData.moveCount+1), boardData.boardValues]
+    // setGameData((prevstate) => ({
+    //   ...prevstate,
+    //   history: nexthistory,
+    //   movecount: nexthistory.length - 1
+    // }))
 
 
     // SQUARE INPUT HANDLING
@@ -495,6 +538,12 @@ export default function Game({newSudoku, newGame}: Props) {
       boardValues: updatedBoardValues
     }))
 
+    // introduces a recursion bug
+    // setGameData(prevGameData => ({
+    //   ...prevGameData,
+    //   inputValue: 0
+    // }))
+
     console.log("cleaned")
   },50) 
 
@@ -514,27 +563,25 @@ export default function Game({newSudoku, newGame}: Props) {
     setInputSource("mouse");
   };
 
-  
 
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          {/* Outer wrapper for both DifficultySelector and Board */}
-          <div className="w-full h-max flex md:flex-row justify-center">
-
-            <div className="w-full h-max flex flex-col items-center">
-              {/* Timer and difficulty selector with full width */}
-              {/* <div className="border-4"> */}
-                {/* <DifficultySelector /> */}
-              {/* </div> */}
-              {/* Sudoku board with full width */}
-              <div
+          <div className="w-full h-full">
+            <div className="w-full flex md:flex-row sm:justify-start justify-center gap-1">
+              <div className="w-full sm:w-2/3 flex flex-col">
+                <DifficultySelector />
+                <div
                 className="w-full h-max aspect-square"
                 onMouseLeave={handleMouseLeave}
                 onMouseMove={handleMouseMove}
                 style={{ boxShadow: shadow }}
-              >
-                <Board />
+                >
+                  <Board />
+                </div>
+              </div>
+              <div className="sm:block md:block hidden flex-auto">
+                <ControlNav />
               </div>
             </div>
           </div>

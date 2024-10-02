@@ -1,6 +1,6 @@
 'use client'
 
-import {useContext, useEffect, useState } from "react"
+import {useContext, useState } from "react"
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
 import { BoardContext, GameContext } from "../../../lib/context";
@@ -11,10 +11,9 @@ type Props = {
 }
 
 export default function Square({uid}: Props) {
-    const [hasNotes, setHasNotes] = useState(false);
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
+    const {notesMode, selectedCell, highlightedCells, history, moveCount, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface } = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
@@ -32,16 +31,24 @@ export default function Square({uid}: Props) {
         }
         if (updateSudokuInterface) {
             updateSudokuInterface({ boardValues: nextBoardValues });
-          }
+         }
+        if (updateGameInterface){
+            const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
+            updateGameInterface({
+                history: nextHistory,
+                moveCount: nextHistory.length - 1
+            })
+        }
         // setRight(true)
     };
 
     // handling hasNotes variable
-    useEffect(() => {
-        if (highlightedCells.neighborhood.includes(uid)) {
-            setHasNotes(squareNotes.some((note: number) => note !== 0));
-        }
-    }, [squareNotes,uid, highlightedCells.neighborhood]);
+    // useEffect(() => {
+    //     console.log("edited", uid)
+    //     if (highlightedCells.neighborhood.includes(uid)) {
+    //         setHasNotes(squareNotes.some((note: number) => note !== 0));
+    //     }
+    // }, [squareNotes,uid, highlightedCells.neighborhood]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
@@ -105,7 +112,7 @@ export default function Square({uid}: Props) {
                             // on the current tile & engaged notes mode
                             // or already has notes
                             ((selectedCell == uid) && notesMode) 
-                            || hasNotes
+                            || squareNotes.some((note: number) => note !== 0)
                             )
                     ) ? (
                         // passing in handleSquareNotesInput function because 
