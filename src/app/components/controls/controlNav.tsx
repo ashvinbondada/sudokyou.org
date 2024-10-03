@@ -16,28 +16,35 @@ import NumPadSquare from "./numberTile";
 import ShareSquare from "./shareSquare";
 import { useContext, useState } from "react";
 import { BoardContext, GameContext } from "@/lib/context";
-import { calculateAutoCandidates, clearTile } from "@/lib/tileEffects";
+import { calculateAutoCandidates, clearAutoCandidates, clearTile } from "@/lib/tileEffects";
 import { newGameInterface, PuzzleStringToSudokuInterface } from "@/lib/initializeSudoku";
 
 export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, notesMode, undoMode, historySelectedCell, history, updateGameInterface} = useContext(GameContext)
+    const {selectedCell, moveCount, notesMode, undoMode, historySelectedCell, history, updateGameInterface, autoNotesMode} = useContext(GameContext)
 
     const handleAutoNotes = () => {
         // console.log("before: ", boardValues)
-        const boardWithNotesFilled = calculateAutoCandidates(boardValues)
-        // console.log("in control", boardWithNotesFilled)
+        let nextBoardValues: Tile[] = []
+        if (!autoNotesMode) {
+            nextBoardValues = calculateAutoCandidates(boardValues)
+            // console.log("in control", boardWithNotesFilled)
+        } else {
+            nextBoardValues = clearAutoCandidates(boardValues)
+        }
+
         if (updateSudokuInterface) {
-            updateSudokuInterface({boardValues: boardWithNotesFilled})
+            updateSudokuInterface({boardValues: nextBoardValues})
         }
         if (updateGameInterface) {
-            const nextHistory = [...history.slice(0, moveCount+1), boardWithNotesFilled]
-
+            const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
+            console.log(nextHistory)
             updateGameInterface({
                 moveCount: nextHistory.length-1, 
-                history: nextHistory
+                history: nextHistory,
+                autoNotesMode: !autoNotesMode
             })
         }
     }
@@ -68,18 +75,26 @@ export default function ControlNav() {
     }
 
     const handleUndo = () => {
-        if (history.length === 1 || historySelectedCell.length === 1) {
+        if (history.length === 1) {
             alert("reached beginning of game")
+            if (updateGameInterface)
+                updateGameInterface({selectedCell: 40})
         } else {
             const prevMove = history[history.length - 2]
-            const prevSelectedCell = historySelectedCell[historySelectedCell.length - 2]
-            if (updateSudokuInterface)
+            let prevSelectedCell: number = 40
+            if (historySelectedCell.length > 1) {
+            prevSelectedCell = historySelectedCell[historySelectedCell.length - 2]
+            }
+
+            if (updateSudokuInterface) {
                 updateSudokuInterface({boardValues: prevMove})
+                console.log("updated")
+            }
             if (updateGameInterface) {
                 const nextHistory = [...history.slice(0, moveCount)]
                 const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount), selectedCell]
-                // console.log("undo: ", nextHistory)
-                console.log(moveCount)
+                console.log("undo: ", nextHistory)
+                // console.log(moveCount)
                 updateGameInterface({
                     moveCount: nextHistory.length-1, 
                     historySelectedCell: nextHistorySelectedCell,

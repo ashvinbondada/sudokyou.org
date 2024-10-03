@@ -33,6 +33,7 @@ export function newGameInterface(initialBoardValues: Tile[]) {
     const newGame: GameInterface = {
         notesMode: false,
         undoMode: false,
+        autoNotesMode: false,
         inputValue: 0,
         selectedCell: 40,
         anchorMode: false,

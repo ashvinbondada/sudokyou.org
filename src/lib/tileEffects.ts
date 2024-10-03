@@ -62,7 +62,7 @@ export function calculateAutoCandidates(boardValues: Tile[]): Tile[] {
         ...completeNotes[inputIndex],
         isEditable: inputTile.isEditable,
         squareValue: inputTile.squareValue,
-        squareNotes: [],  // Clear notes for filled squares
+        squareNotes: [0,0,0,0,0,0,0,0,0],  // Clear notes for filled squares
       };
 
       // Iterate over the neighborhood to update the notes
@@ -89,4 +89,13 @@ export function clearTile(selectedTile: Tile): Tile {
     }    
   } 
   return selectedTile
+}
+
+export function clearAutoCandidates(boardValues: Tile[]): Tile[] {
+  const newBoardValues = boardValues.map((inputTile) => ({
+    ...inputTile,
+    squareNotes: [0, 0, 0, 0, 0, 0, 0, 0, 0], // Clear notes for filled squares
+  }));
+
+  return newBoardValues;
 }

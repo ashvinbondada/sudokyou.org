@@ -608,12 +608,12 @@ export default function Game({newSudoku, newGame}: Props) {
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          <div className="w-full h-full">
+          <div className="w-full h-max">
             <div className="w-full flex md:flex-row sm:justify-start justify-center gap-1">
               <div className="w-full sm:w-2/3 flex flex-col">
                 <DifficultySelector />
                 <div
-                className="w-full h-max aspect-square"
+                className="h-max aspect-square"
                 onMouseLeave={handleMouseLeave}
                 onMouseMove={handleMouseMove}
                 style={{ boxShadow: shadow }}

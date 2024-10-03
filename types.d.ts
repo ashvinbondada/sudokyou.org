@@ -41,6 +41,11 @@ type HighlightedCells = {
     sameNumbers     : number[];
 }
 
+type GameSnapShot  = {
+    seletedCell: number;
+    boardValues: Tile[];
+    autoNotesMode: boolean;
+}
 
 // Interface responsible for definin
 interface GameInterface {
@@ -50,6 +55,8 @@ interface GameInterface {
     undoMode            : boolean;
     // anchor mode selected a square when clicking only
     anchorMode          : boolean;
+    // auto candidates toggle to take off notes
+    autoNotesMode       : boolean;
     // input value entered in selected tile
     inputValue          : number;
     // tile that user is choosing to edit
