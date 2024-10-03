@@ -57,13 +57,20 @@ export default function Game({newSudoku, newGame}: Props) {
 
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
+      if (event.key === "u") {
+        setGameData((prevState) => ({
+          ...prevState,
+          undoMode: false,
+        }))
+      }
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
         setGameData((prevState) => ({
           ...prevState,
           inputValue: 0,
         }))
       }
-    }
+    } 
+    
 
     window.addEventListener('keyup', handleKeyUp);
 
@@ -283,6 +290,37 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
   })
 
+  // n PRESS NOTES PERM TOGGLE
+  useKeyboardShortcut(["u"], () => {
+    if (gameData.history.length === 1 || gameData.historySelectedCell.length === 1) {
+        setGameData((prevState) => ({
+          ...prevState,
+          undoMode: false
+        }))
+        alert("reached beginning of game")
+    } else {
+        const prevMove = gameData.history[gameData.history.length - 2]
+        const prevSelectedCell = gameData.historySelectedCell[gameData.historySelectedCell.length - 2]
+        if (updateSudokuInterface)
+            updateSudokuInterface({boardValues: prevMove})
+        if (updateGameInterface) {
+            const nextHistory = [...gameData.history.slice(0, gameData.moveCount)]
+            const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount), gameData.selectedCell]
+            // console.log("undo: ", nextHistory)
+            console.log(gameData.moveCount)
+            updateGameInterface({
+                moveCount: nextHistory.length-1, 
+                historySelectedCell: nextHistorySelectedCell,
+                history: nextHistory,
+                selectedCell: prevSelectedCell
+            })}
+            setGameData((prevState) => ({
+              ...prevState,
+              undoMode: true
+            }))
+        }
+  },{repeatOnHold: false, })
+
   useKeyboardShortcut(["Control", "z"], () => {
     console.log("CONTROL + Z pressed.")
   })
@@ -397,7 +435,6 @@ export default function Game({newSudoku, newGame}: Props) {
   useEffect(() => {
     const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
     const { boardValues } = boardData;
-    // console.log(gameData.inputValue)
   
     // Check if the input is valid, notes mode is off, and neighborhood exists
     if (
@@ -429,16 +466,16 @@ export default function Game({newSudoku, newGame}: Props) {
     }
   }, [gameData, boardData]);
   
-  function appendHistory(nextBoardValues: Tile[]) {
-    // console.log(gameData.moveCount+2)
-    const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-    setGameData((prevstate) => ({
-      ...prevstate,
-      history: nextHistory,
-      moveCount: nextHistory.length - 1
-    }))
-    console.log(nextHistory)
-  }
+  // function appendHistory(nextBoardValues: Tile[]) {
+  //   // console.log(gameData.moveCount+2)
+  //   const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
+  //   setGameData((prevstate) => ({
+  //     ...prevstate,
+  //     history: nextHistory,
+  //     moveCount: nextHistory.length - 1
+  //   }))
+  //   console.log(nextHistory)
+  // }
 
   // NOTES SQUARE HANDLING
   const handleSquareNotesInput = useCallback((index: number) => {
@@ -460,9 +497,11 @@ export default function Game({newSudoku, newGame}: Props) {
       console.log("adding a move")
       // appendHistory(nextBoardValues)
       const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
+      const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount + 1), gameData.selectedCell]
       setGameData((prevstate) => ({
         ...prevstate,
         history: nextHistory,
+        historySelectedCell: nextHistorySelectedCell,
         moveCount: nextHistory.length - 1
       }))
       // setRight(true)
@@ -491,9 +530,11 @@ export default function Game({newSudoku, newGame}: Props) {
     console.log("adding a move")
     // appendHistory(nextBoardValues)
     const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
+    const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount + 1), gameData.selectedCell]
     setGameData((prevstate) => ({
       ...prevstate,
       history: nextHistory,
+      historySelectedCell: nextHistorySelectedCell,
       moveCount: nextHistory.length - 1
     }))
 

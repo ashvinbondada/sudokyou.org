@@ -23,7 +23,6 @@ export default function IconSquare({ icon: Icon, pressedIcon: PressedIcon, label
   // useEffect(() => {
   //   handleClick()
   // }, [keyBoardClick])
-
   const handleClick = () => {
     if (isToggle) {
       setClicked(!clicked); // Toggle the clicked state if isToggle is true
@@ -37,7 +36,7 @@ export default function IconSquare({ icon: Icon, pressedIcon: PressedIcon, label
   return (
     <div className="select-none w-full h-full aspect-square flex items-center justify-center">
         <div className="bg-white w-[80%] sm:w-[100%] rounded-full items-center justify-center aspect-square">
-          <button className={`w-full rounded-full aspect-square flex flex-col items-center justify-center text-4xl select-none transition-all duration-300  ${(clicked || keyBoardClick) ? 'text-white bg-theme-1-pacific-cyan' : 'text-theme-1-pacific-cyan bg-gray-100 hover:bg-gray-200'} relative group hover:shadow-custom-inner`}
+          <button className={`w-full rounded-full aspect-square flex flex-col items-center justify-center text-4xl select-none transition-all duration-300  ${(keyBoardClick) ? 'text-white bg-theme-1-pacific-cyan' : 'text-theme-1-pacific-cyan bg-gray-100 hover:bg-gray-200'} relative group hover:shadow-custom-inner`}
           onClick={handleClick} 
           >
           {/* <Icon className="transition-transform duration-300 sm:group-hover:text-2xl md:group-hover:text-3xl group-hover:translate-y-[-7px]" /> */}

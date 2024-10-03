@@ -13,7 +13,7 @@ type Props = {
 export default function Square({uid}: Props) {
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, history, moveCount, updateGameInterface} = useContext(GameContext)
+    const {notesMode, selectedCell, highlightedCells, historySelectedCell, history, moveCount, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface } = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
@@ -21,23 +21,27 @@ export default function Square({uid}: Props) {
     // has encoded the uid of the square component
     // of whos squareNotes we are editing
     const handleSquareNotesInput = (index: number) => {
-        const nextSquareNotes = squareNotes.slice();
-        nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
-        const nextBoardValues = boardValues.slice();
-        nextBoardValues[uid] = {
-            ...boardValues[uid],
-            squareValue: 0,
-            squareNotes: nextSquareNotes
-        }
-        if (updateSudokuInterface) {
-            updateSudokuInterface({ boardValues: nextBoardValues });
-         }
-        if (updateGameInterface){
-            const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
-            updateGameInterface({
-                history: nextHistory,
-                moveCount: nextHistory.length - 1
-            })
+        if (notesMode) {
+            const nextSquareNotes = squareNotes.slice();
+            nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
+            const nextBoardValues = boardValues.slice();
+            nextBoardValues[uid] = {
+                ...boardValues[uid],
+                squareValue: 0,
+                squareNotes: nextSquareNotes
+            }
+            if (updateSudokuInterface) {
+                updateSudokuInterface({ boardValues: nextBoardValues });
+            }
+            if (updateGameInterface){
+                const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
+                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount + 1), selectedCell]
+                updateGameInterface({
+                    historySelectedCell: nextHistorySelectedCell,
+                    history: nextHistory,
+                    moveCount: nextHistory.length - 1
+                })
+            }
         }
         // setRight(true)
     };

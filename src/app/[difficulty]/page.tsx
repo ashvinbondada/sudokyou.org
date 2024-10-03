@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Game from "../components/game/game";
-import { getNewPuzzle, getNewPuzzleOffline, newGameInterface } from "@/lib/initializeSudoku";
+import { getNewPuzzle, newGameInterface } from "@/lib/initializeSudoku";
 
 type Props = {
   params: {
@@ -10,7 +10,7 @@ type Props = {
 
 // This is now a server component by default in Next.js 13's app/ directory
 export default async function Difficultypage({ params: { difficulty } }: Props) {
-  const newSudoku = await getNewPuzzleOffline(difficulty)
+  const newSudoku = await getNewPuzzle(difficulty)
   if (!newSudoku) {
     notFound()
   }

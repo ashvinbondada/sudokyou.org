@@ -46,12 +46,14 @@ type HighlightedCells = {
 interface GameInterface {
     // notes mode toggle
     notesMode           : boolean;
+    // undo mode toggle
+    undoMode            : boolean;
+    // anchor mode selected a square when clicking only
+    anchorMode          : boolean;
     // input value entered in selected tile
     inputValue          : number;
     // tile that user is choosing to edit
     selectedCell        : number;  
-    // anchor mode selected a square when clicking only
-    anchorMode          : boolean;
     // tiles higlighted for user, unable to edit atm
     highlightedCells    : HighlightedCells;
     // status of the game 
@@ -62,6 +64,8 @@ interface GameInterface {
     mistakesCount       : number; // max 3
     // current move count
     moveCount           : number; 
+    // history of selected cell - purely for aesthetic
+    historySelectedCell : number[]
     // game history
     history: Tile[][];
     // helper function to update Game data

@@ -4,9 +4,10 @@ import { IoBackspaceOutline, IoBackspace, IoSettingsOutline, IoSettings } from "
 
 // PiRepeatDuotone - could use this for stalling while it runs
 import {PiLightbulb, PiLightbulbFill, 
-        PiPencilSimple, PiPencilSimpleFill, PiNotePencil,
-        PiRepeat, 
-        PiArrowBendDownLeft, PiQuestion, 
+        PiPencilSimple, PiNotePencil,
+        PiRepeat, PiRepeatDuotone,
+        PiArrowBendUpLeftFill, PiArrowBendDoubleUpLeftFill,
+        PiQuestion, 
         PiQuestionFill} from "react-icons/pi";
 
 import IconSquare from "./iconSquare";
@@ -22,7 +23,7 @@ export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, notesMode, history, updateGameInterface} = useContext(GameContext)
+    const {selectedCell, moveCount, notesMode, undoMode, historySelectedCell, history, updateGameInterface} = useContext(GameContext)
 
     const handleAutoNotes = () => {
         // console.log("before: ", boardValues)
@@ -51,8 +52,10 @@ export default function ControlNav() {
     }
 
     const handleNotes = () => {
-        if (updateGameInterface)
+        if (updateGameInterface) {
+            console.log("before button: ", notesMode)
             updateGameInterface({notesMode: !notesMode })
+        }
     }
 
     const handleRestart = () => {
@@ -65,19 +68,23 @@ export default function ControlNav() {
     }
 
     const handleUndo = () => {
-        if (history.length === 1) {
+        if (history.length === 1 || historySelectedCell.length === 1) {
             alert("reached beginning of game")
         } else {
             const prevMove = history[history.length - 2]
+            const prevSelectedCell = historySelectedCell[historySelectedCell.length - 2]
             if (updateSudokuInterface)
                 updateSudokuInterface({boardValues: prevMove})
             if (updateGameInterface) {
                 const nextHistory = [...history.slice(0, moveCount)]
-                console.log("undo: ", nextHistory)
+                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount), selectedCell]
+                // console.log("undo: ", nextHistory)
                 console.log(moveCount)
                 updateGameInterface({
                     moveCount: nextHistory.length-1, 
-                    history: nextHistory
+                    historySelectedCell: nextHistorySelectedCell,
+                    history: nextHistory,
+                    selectedCell: prevSelectedCell
                 })}
             }
     }
@@ -111,7 +118,7 @@ export default function ControlNav() {
                     <div className="h-full bg-transparent">
                         <div className="grid grid-cols-3 flex-none gap-2 w-full h-full p-2">
                             <IconSquare icon={PiPencilSimple}
-                            pressedIcon={PiPencilSimpleFill} label="notes" 
+                            pressedIcon={PiPencilSimple} label="notes" 
                             handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode}/>
                             <IconSquare icon={PiNotePencil} 
                             pressedIcon={PiNotePencil} label="auto" 
@@ -119,15 +126,15 @@ export default function ControlNav() {
                             <IconSquare icon={PiLightbulb} 
                             pressedIcon={PiLightbulbFill} label="hints" 
                             handleMe={() => console.log("pressed hints")}
-                            isToggle={true}/>
+                            />
                             <IconSquare icon={IoBackspaceOutline} 
                             pressedIcon={IoBackspace} label="delete" 
                             handleMe={handleDelete}/>
-                            <IconSquare icon={PiArrowBendDownLeft} 
-                            pressedIcon={PiArrowBendDownLeft} label="undo" 
-                            handleMe={handleUndo}/>
+                            <IconSquare icon={PiArrowBendUpLeftFill} 
+                            pressedIcon={PiArrowBendDoubleUpLeftFill} label="undo" 
+                            handleMe={handleUndo} keyBoardClick={undoMode}/>
                             <IconSquare icon={PiRepeat} 
-                            pressedIcon={PiRepeat} label="restart" 
+                            pressedIcon={PiRepeatDuotone} label="restart" 
                             handleMe={handleRestart}/>
                         </div>
                     </div>

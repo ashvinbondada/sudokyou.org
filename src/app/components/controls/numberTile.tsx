@@ -1,28 +1,41 @@
 'use client'
+import { tileType } from "@/lib/common";
 import { BoardContext, GameContext } from "@/lib/context";
 import { useContext, useState } from "react";
 
 type Props = {
     squareValue: number;
     quantity?: number; // New quantity prop
-    // handleMe: () => void;
-    keyboardClick?: boolean;
-    // isDone: boolean;
   };
   
   export default function NumPadSquare({ squareValue, quantity}: Props) {
     const [clicked, setClicked] = useState(false)
-    const {boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {moveCount, history, updateGameInterface} = useContext(GameContext)
+    const {boardValues, solution} = useContext(BoardContext)
+    const {inputValue, notesMode, selectedCell, updateGameInterface} = useContext(GameContext)
     const handleClick = () => {
-        setClicked(true);
-        setTimeout(() => setClicked(false), 200); // Momentary effect when isToggle is false
-        
-    };
+      setClicked(true);
+      if (updateGameInterface) {
+        updateGameInterface({inputValue: squareValue})
+      }
+      setTimeout(() => {
+        if (updateGameInterface)
+          updateGameInterface({inputValue: 0 })
+      }, 1)
+      setTimeout(() => {
+        setClicked(false)
+      }, 150); // Momentary effect when isToggle is false
+  };
 
     return (
-      // <div className="h-full w-full">
-        <button className="bg-gray-100 h-full w-full flex flex-col items-center justify-center sm:text-3xl md:text-4xl select-none transition-all duration-300 hover:bg-theme-1-pacific-cyan relative group hover:shadow-custom-inner rounded-md text-theme-1-pacific-cyan hover:text-white"
+        <button className={`h-full w-full flex flex-col items-center justify-center sm:text-3xl md:text-4xl select-none transition-all duration-300  relative group hover:shadow-custom-inner rounded-md 
+          ${(clicked || (squareValue === inputValue)) 
+            ? (squareValue === Number(solution[selectedCell]) 
+              || notesMode
+              || (boardValues[selectedCell].isEditable !== tileType.WRONG)
+            ) 
+              ? 'text-white bg-theme-1-pacific-cyan' 
+              : 'text-white bg-theme-2-pantone' 
+            : 'text-theme-1-pacific-cyan bg-gray-100 hover:bg-gray-200'} `}
         onClick={handleClick} 
         >
           {/* Display the squareValue with hover effect */}
@@ -37,7 +50,6 @@ type Props = {
             </span>
           )}
         </button>
-      // </div>
     );
   }
   
