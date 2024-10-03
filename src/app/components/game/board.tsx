@@ -1,11 +1,13 @@
 'use client'
-import { useContext,} from 'react';
+import { useContext, useEffect,} from 'react';
 import Square from './square';
 import { BoardContext } from '@/lib/context';
 
 export default function Board() {
   const { boardValues } = useContext(BoardContext);
 
+  useEffect( () => {
+  }, [boardValues])
   // Generate the squares
   const squares = boardValues.map((_, index) => (
     <div

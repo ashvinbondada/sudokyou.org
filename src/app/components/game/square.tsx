@@ -1,6 +1,6 @@
 'use client'
 
-import {useContext, useEffect, useState } from "react"
+import {useContext, useState } from "react"
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
 import { BoardContext, GameContext } from "../../../lib/context";
@@ -11,10 +11,9 @@ type Props = {
 }
 
 export default function Square({uid}: Props) {
-    const [hasNotes, setHasNotes] = useState(false);
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, updateGameInterface} = useContext(GameContext)
+    const {notesMode, selectedCell, highlightedCells, historySelectedCell, history, moveCount, updateGameInterface} = useContext(GameContext)
     const {boardValues, updateSudokuInterface } = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
@@ -22,24 +21,38 @@ export default function Square({uid}: Props) {
     // has encoded the uid of the square component
     // of whos squareNotes we are editing
     const handleSquareNotesInput = (index: number) => {
-        const nextSquareNotes = squareNotes.slice();
-        nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
-        const nextBoardValues = boardValues.slice();
-        nextBoardValues[uid] = {
-            ...boardValues[uid],
-            squareValue: 0,
-            squareNotes: nextSquareNotes
+        if (notesMode) {
+            const nextSquareNotes = squareNotes.slice();
+            nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
+            const nextBoardValues = boardValues.slice();
+            nextBoardValues[uid] = {
+                ...boardValues[uid],
+                squareValue: 0,
+                squareNotes: nextSquareNotes
+            }
+            if (updateSudokuInterface) {
+                updateSudokuInterface({ boardValues: nextBoardValues });
+            }
+            if (updateGameInterface){
+                const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
+                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount + 1), selectedCell]
+                updateGameInterface({
+                    historySelectedCell: nextHistorySelectedCell,
+                    history: nextHistory,
+                    moveCount: nextHistory.length - 1
+                })
+            }
         }
-        if (updateSudokuInterface) {
-            updateSudokuInterface({ boardValues: nextBoardValues });
-          }
         // setRight(true)
     };
 
     // handling hasNotes variable
-    useEffect(() => {
-        setHasNotes(squareNotes.some((note: number) => note !== 0));
-    }, [squareNotes]);
+    // useEffect(() => {
+    //     console.log("edited", uid)
+    //     if (highlightedCells.neighborhood.includes(uid)) {
+    //         setHasNotes(squareNotes.some((note: number) => note !== 0));
+    //     }
+    // }, [squareNotes,uid, highlightedCells.neighborhood]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
@@ -64,8 +77,8 @@ export default function Square({uid}: Props) {
 
     const getBackgroundClasses = (index: number) => {
         const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
-
-        if (highlightedCells.sameNumbers.includes(index)) {
+        // highlightedCells.sameNumbers.includes(index)
+        if (squareValue > 0 && squareValue === boardValues[selectedCell].squareValue) {
         return index !== selectedCell 
             ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
             : selectedCellBG;
@@ -78,7 +91,7 @@ export default function Square({uid}: Props) {
         return 'bg-gray-100'; // Default square background
     };
 
-    return (
+    return (    
         <div className="w-full h-full bg-white"
             onMouseMove={handleMouseMove}
             style={{
@@ -92,7 +105,7 @@ export default function Square({uid}: Props) {
               }}
         >
             <div
-                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-400 ease-in-out`}
+                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
                 >
                 {
                     (
@@ -103,7 +116,7 @@ export default function Square({uid}: Props) {
                             // on the current tile & engaged notes mode
                             // or already has notes
                             ((selectedCell == uid) && notesMode) 
-                            || hasNotes
+                            || squareNotes.some((note: number) => note !== 0)
                             )
                     ) ? (
                         // passing in handleSquareNotesInput function because 
