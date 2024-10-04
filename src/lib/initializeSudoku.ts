@@ -34,6 +34,7 @@ export function newGameInterface(initialBoardValues: Tile[]) {
         notesMode: false,
         undoMode: false,
         autoNotesMode: false,
+        backspaceMode: false,
         inputValue: 0,
         selectedCell: 40,
         anchorMode: false,

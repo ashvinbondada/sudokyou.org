@@ -8,7 +8,8 @@ import {PiLightbulb, PiLightbulbFill,
         PiRepeat, PiRepeatDuotone,
         PiArrowBendUpLeftFill, PiArrowBendDoubleUpLeftFill,
         PiQuestion, 
-        PiQuestionFill} from "react-icons/pi";
+        PiQuestionFill,
+        PiPencilSimpleFill} from "react-icons/pi";
 
 import IconSquare from "./iconSquare";
 import StatBox from "./statBox";
@@ -23,7 +24,7 @@ export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode} = useContext(GameContext)
+    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode} = useContext(GameContext)
 
     const handleAutoNotes = () => {
         // console.log("before: ", boardValues)
@@ -58,6 +59,18 @@ export default function ControlNav() {
         nextBoardValues[selectedCell] = newClearTile
         if (updateSudokuInterface) {
             updateSudokuInterface({boardValues: nextBoardValues})
+        }
+        if (updateGameInterface) {
+            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+            selectedCell: selectedCell,
+            boardValues: nextBoardValues,
+            autoNotesMode: autoNotesMode
+            }]
+            updateGameInterface({
+                moveCount: nextGameHistory.length-1, 
+                gameHistory: nextGameHistory,
+                autoNotesMode: !autoNotesMode
+            })
         }
     }
 
@@ -132,7 +145,7 @@ export default function ControlNav() {
                     <div className="h-full bg-transparent">
                         <div className="grid grid-cols-3 flex-none gap-2 w-full h-full p-2">
                             <IconSquare icon={PiPencilSimple}
-                            pressedIcon={PiPencilSimple} label="notes" 
+                            pressedIcon={PiPencilSimpleFill} label="notes" 
                             handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode}/>
                             <IconSquare icon={PiNotePencil} 
                             pressedIcon={PiNotePencil} label="auto" 
@@ -143,7 +156,7 @@ export default function ControlNav() {
                             />
                             <IconSquare icon={IoBackspaceOutline} 
                             pressedIcon={IoBackspace} label="delete" 
-                            handleMe={handleDelete}/>
+                            handleMe={handleDelete} keyBoardClick={backspaceMode}/>
                             <IconSquare icon={PiArrowBendUpLeftFill} 
                             pressedIcon={PiArrowBendDoubleUpLeftFill} label="undo" 
                             handleMe={handleUndo} keyBoardClick={undoMode}/>

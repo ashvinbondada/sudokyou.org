@@ -19,6 +19,7 @@ const defaultGameState = {
     undoMode: false,
     anchorMode: false,
     autoNotesMode: false,
+    backspaceMode: false,
     inputValue: 0,
     selectedCell: 40,
     highlightedCells: { 

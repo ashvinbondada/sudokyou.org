@@ -7,7 +7,7 @@ import Board from "./board";
 import { debounce, } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
-import { calculateHighlightCells } from "@/lib/tileEffects";
+import { calculateHighlightCells, clearTile } from "@/lib/tileEffects";
 import { tileType } from "@/lib/common";
 import ControlNav from "../controls/controlNav";
 
@@ -18,7 +18,6 @@ type Props = {
 
 export default function Game({newSudoku, newGame}: Props) {
   const shiftPressIsShiftDown = useShiftClick();
-  // const keyDown = useKeyboardClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
   const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
 
@@ -59,6 +58,12 @@ export default function Game({newSudoku, newGame}: Props) {
         setGameData((prevState) => ({
           ...prevState,
           undoMode: false,
+        }))
+      }
+      if (event.key === "Backspace") {
+        setGameData((prevState) => ({
+          ...prevState,
+          backspaceMode: false,
         }))
       }
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
@@ -280,6 +285,33 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
   }, {repeatOnHold: true})
 
+
+  // n PRESS NOTES PERM TOGGLE
+  useKeyboardShortcut(["Backspace"], () => {
+    const newClearTile = clearTile(boardData.boardValues[gameData.selectedCell])
+    const nextBoardValues = boardData.boardValues.slice();
+    nextBoardValues[gameData.selectedCell] = newClearTile
+    setBoardData((prevState) => ({
+      ...prevState,
+      boardValues: nextBoardValues
+    }))
+    setGameData((prevState) => ({
+      ...prevState,
+      backspaceMode: true
+    }));
+    const nextGameHistory = [...gameData.gameHistory.slice(0, gameData.moveCount + 1), {
+      selectedCell: gameData.selectedCell,
+      boardValues: nextBoardValues,
+      autoNotesMode: gameData.autoNotesMode
+    }]
+    setGameData((prevstate) => ({
+      ...prevstate,
+      gameHistory: nextGameHistory,
+      moveCount: nextGameHistory.length - 1,
+    }))
+
+  })
+
   // n PRESS NOTES PERM TOGGLE
   useKeyboardShortcut(["n"], () => {
       setGameData((prevState) => ({
@@ -480,7 +512,7 @@ export default function Game({newSudoku, newGame}: Props) {
           boardValues: nextBoardValues
         }))
 
-      console.log("adding a move")
+      // console.log("adding a move")
       // appendHistory(nextBoardValues)
       const nextGameHistory = [...gameData.gameHistory.slice(0, gameData.moveCount + 1), {
       selectedCell: gameData.selectedCell,

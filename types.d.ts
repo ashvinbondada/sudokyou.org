@@ -58,6 +58,8 @@ interface GameInterface {
     anchorMode          : boolean;
     // auto candidates toggle to take off notes
     autoNotesMode       : boolean;
+    // backspace toggle
+    backspaceMode       : boolean;
     // input value entered in selected tile
     inputValue          : number;
     // tile that user is choosing to edit
