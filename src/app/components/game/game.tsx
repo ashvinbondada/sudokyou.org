@@ -9,9 +9,7 @@ import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells } from "@/lib/tileEffects";
 import { tileType } from "@/lib/common";
-// import { useHotkeys } from 'react-hotkeys-hook';
 import ControlNav from "../controls/controlNav";
-// import next from "next";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -290,36 +288,35 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
   })
 
-  // n PRESS NOTES PERM TOGGLE
+  // u PRESS UNDO MOVE
   useKeyboardShortcut(["u"], () => {
-    if (gameData.history.length === 1 || gameData.historySelectedCell.length === 1) {
+      const { selectedCell: prevSelectedTile } = gameData.gameHistory[gameData.gameHistory.length - 1]
+    if (gameData.gameHistory.length == 1) {
         setGameData((prevState) => ({
           ...prevState,
-          undoMode: false
+          undoMode: false,
+          selectedCell: prevSelectedTile,
         }))
-        alert("reached beginning of game")
     } else {
-        const prevMove = gameData.history[gameData.history.length - 2]
-        const prevSelectedCell = gameData.historySelectedCell[gameData.historySelectedCell.length - 2]
-        if (updateSudokuInterface)
-            updateSudokuInterface({boardValues: prevMove})
-        if (updateGameInterface) {
-            const nextHistory = [...gameData.history.slice(0, gameData.moveCount)]
-            const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount), gameData.selectedCell]
-            // console.log("undo: ", nextHistory)
-            console.log(gameData.moveCount)
-            updateGameInterface({
-                moveCount: nextHistory.length-1, 
-                historySelectedCell: nextHistorySelectedCell,
-                history: nextHistory,
-                selectedCell: prevSelectedCell
-            })}
-            setGameData((prevState) => ({
-              ...prevState,
-              undoMode: true
-            }))
-        }
-  },{repeatOnHold: false, })
+        const { boardValues: prevBoardValues,
+                autoNotesMode: prevAutoNotesMode
+        } = gameData.gameHistory[gameData.gameHistory.length - 2]
+        setBoardData((prevState) => ({
+          ...prevState,
+          boardValues: prevBoardValues
+        }))
+        const nextGameHistory = [...gameData.gameHistory.slice(0, gameData.moveCount)]
+        console.log("button: ", nextGameHistory)  
+        setGameData((prevState) => ({
+          ...prevState,
+          gameHistory: nextGameHistory,
+          autoNotesMode: prevAutoNotesMode,
+          moveCount: nextGameHistory.length-1, 
+          selectedCell: prevSelectedTile,
+          undoMode: true
+        }))
+      }
+  },{repeatOnHold: true, })
 
   useKeyboardShortcut(["Control", "z"], () => {
     console.log("CONTROL + Z pressed.")
@@ -424,13 +421,13 @@ export default function Game({newSudoku, newGame}: Props) {
   }, [gameData.selectedCell, inputSource]);
 
   useEffect(() => {
-    const {neighborhood, sameNumbers} = calculateHighlightCells(gameData.selectedCell)
+    const {neighborhood} = calculateHighlightCells(gameData.selectedCell)
     setGameData((prevState) => ({
       ...prevState,
-      highlightedCells: {neighborhood, sameNumbers}
+      highlightedCells: {neighborhood}
     }))
 
-  }, [gameData.selectedCell, boardData])
+  }, [gameData.selectedCell])
 
   useEffect(() => {
     const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
@@ -465,17 +462,6 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
     }
   }, [gameData, boardData]);
-  
-  // function appendHistory(nextBoardValues: Tile[]) {
-  //   // console.log(gameData.moveCount+2)
-  //   const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-  //   setGameData((prevstate) => ({
-  //     ...prevstate,
-  //     history: nextHistory,
-  //     moveCount: nextHistory.length - 1
-  //   }))
-  //   console.log(nextHistory)
-  // }
 
   // NOTES SQUARE HANDLING
   const handleSquareNotesInput = useCallback((index: number) => {
@@ -496,61 +482,52 @@ export default function Game({newSudoku, newGame}: Props) {
 
       console.log("adding a move")
       // appendHistory(nextBoardValues)
-      const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-      const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount + 1), gameData.selectedCell]
+      const nextGameHistory = [...gameData.gameHistory.slice(0, gameData.moveCount + 1), {
+      selectedCell: gameData.selectedCell,
+      boardValues: nextBoardValues,
+      autoNotesMode: gameData.autoNotesMode
+    }]
       setGameData((prevstate) => ({
         ...prevstate,
-        history: nextHistory,
-        historySelectedCell: nextHistorySelectedCell,
-        moveCount: nextHistory.length - 1
+        gameHistory: nextGameHistory,
+        moveCount: nextGameHistory.length - 1
       }))
-      // setRight(true)
   }, [gameData.selectedCell, boardData]);
 
   // REGULAR SQUARE HANDLING
   const handleRegularSquareInput = useCallback((input: number) => {
     const {solution, boardValues} = boardData
+    const {selectedCell, gameHistory, autoNotesMode, moveCount } = gameData
     const {squareValue} = boardValues[gameData.selectedCell]
-    // if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
-    //   // setRight(false);
-    // } else {
-    //   // setRight(true);
-    // }
 
     const nextValue = (squareValue === input) ? 0 : input;
     const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
-    nextBoardValues[gameData.selectedCell] = {
-    ...boardValues[gameData.selectedCell],
-    isEditable: nextValue === Number(solution[gameData.selectedCell]) ? tileType.RIGHT : tileType.WRONG,
+    nextBoardValues[selectedCell] = {
+    ...boardValues[selectedCell],
+    isEditable: nextValue === Number(solution[selectedCell]) ? tileType.RIGHT : tileType.WRONG,
     squareValue: nextValue,
     // dont reset notes since we cant edit the square once right value is entered anyway - shilpa
     // squareNotes: Array(9).fill(0), 
     };
 
     console.log("adding a move")
-    // appendHistory(nextBoardValues)
-    const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-    const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount + 1), gameData.selectedCell]
+    const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+      selectedCell: selectedCell,
+      boardValues: nextBoardValues,
+      autoNotesMode: autoNotesMode
+    }]
+    console.log("reg square: ", nextGameHistory)
     setGameData((prevstate) => ({
       ...prevstate,
-      history: nextHistory,
-      historySelectedCell: nextHistorySelectedCell,
-      moveCount: nextHistory.length - 1
+      gameHistory: nextGameHistory,
+      moveCount: nextGameHistory.length - 1
     }))
 
     setBoardData((prevState) => ({
         ...prevState,
         boardValues: nextBoardValues
       }))
-    }, [gameData.selectedCell, boardData]);
-
-    // const nexthistory = [...gameData.history.slice(0, gameData.moveCount+1), boardData.boardValues]
-    // setGameData((prevstate) => ({
-    //   ...prevstate,
-    //   history: nexthistory,
-    //   movecount: nexthistory.length - 1
-    // }))
-
+    }, [gameData.selectedCell,gameData.gameHistory, boardData]);
 
     // SQUARE INPUT HANDLING
     useEffect(() => {
@@ -578,12 +555,6 @@ export default function Game({newSudoku, newGame}: Props) {
       ...prevBoardData,
       boardValues: updatedBoardValues
     }))
-
-    // introduces a recursion bug
-    // setGameData(prevGameData => ({
-    //   ...prevGameData,
-    //   inputValue: 0
-    // }))
 
     console.log("cleaned")
   },50) 

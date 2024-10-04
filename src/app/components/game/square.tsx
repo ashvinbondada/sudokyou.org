@@ -13,7 +13,7 @@ type Props = {
 export default function Square({uid}: Props) {
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, historySelectedCell, history, moveCount, updateGameInterface} = useContext(GameContext)
+    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode} = useContext(GameContext)
     const {boardValues, updateSudokuInterface } = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
@@ -34,25 +34,18 @@ export default function Square({uid}: Props) {
                 updateSudokuInterface({ boardValues: nextBoardValues });
             }
             if (updateGameInterface){
-                const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
-                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount + 1), selectedCell]
+                const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+                    selectedCell: selectedCell,
+                    boardValues: nextBoardValues,
+                    autoNotesMode: autoNotesMode
+                }]
                 updateGameInterface({
-                    historySelectedCell: nextHistorySelectedCell,
-                    history: nextHistory,
-                    moveCount: nextHistory.length - 1
+                    gameHistory: nextGameHistory,
+                    moveCount: nextGameHistory.length - 1
                 })
             }
         }
-        // setRight(true)
     };
-
-    // handling hasNotes variable
-    // useEffect(() => {
-    //     console.log("edited", uid)
-    //     if (highlightedCells.neighborhood.includes(uid)) {
-    //         setHasNotes(squareNotes.some((note: number) => note !== 0));
-    //     }
-    // }, [squareNotes,uid, highlightedCells.neighborhood]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
@@ -109,9 +102,8 @@ export default function Square({uid}: Props) {
                 >
                 {
                     (
-                        // show notes only on playable and unfilled squares
-                        // TODO: change to isEditable === tileType.WRONG
-                        (isEditable !== tileType.GIVEN && squareValue < 1)
+                        // show notes only on playable and to be solved squares
+                        (isEditable === tileType.WRONG)
                         && (
                             // on the current tile & engaged notes mode
                             // or already has notes

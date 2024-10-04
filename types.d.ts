@@ -37,13 +37,14 @@ interface SudokuInterface {
 type HighlightedCells = {
     // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
-    // tiles which have the same number as selectedCell
-    sameNumbers     : number[];
 }
 
 type GameSnapShot  = {
-    seletedCell: number;
+    // saves cell edited at the time
+    selectedCell: number;
+    // saved baord values at time
     boardValues: Tile[];
+    // saved auto notes mode. see control-bar branch for more info
     autoNotesMode: boolean;
 }
 
@@ -71,10 +72,8 @@ interface GameInterface {
     mistakesCount       : number; // max 3
     // current move count
     moveCount           : number; 
-    // history of selected cell - purely for aesthetic
-    historySelectedCell : number[]
-    // game history
-    history: Tile[][];
+    // game history 
+    gameHistory: GameSnapShot[];
     // helper function to update Game data
     updateGameInterface ?: (newState: Partial<GameInterface>) => void;
 }

@@ -23,7 +23,7 @@ export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, notesMode, undoMode, historySelectedCell, history, updateGameInterface, autoNotesMode} = useContext(GameContext)
+    const {selectedCell, moveCount, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode} = useContext(GameContext)
 
     const handleAutoNotes = () => {
         // console.log("before: ", boardValues)
@@ -39,11 +39,14 @@ export default function ControlNav() {
             updateSudokuInterface({boardValues: nextBoardValues})
         }
         if (updateGameInterface) {
-            const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
-            console.log(nextHistory)
+            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+            selectedCell: selectedCell,
+            boardValues: nextBoardValues,
+            autoNotesMode: autoNotesMode
+            }]
             updateGameInterface({
-                moveCount: nextHistory.length-1, 
-                history: nextHistory,
+                moveCount: nextGameHistory.length-1, 
+                gameHistory: nextGameHistory,
                 autoNotesMode: !autoNotesMode
             })
         }
@@ -75,31 +78,27 @@ export default function ControlNav() {
     }
 
     const handleUndo = () => {
-        if (history.length === 1) {
-            alert("reached beginning of game")
+      const { selectedCell: prevSelectedTile } = gameHistory[gameHistory.length - 1]
+        if (gameHistory.length == 1) {
             if (updateGameInterface)
-                updateGameInterface({selectedCell: 40})
+                updateGameInterface({selectedCell: prevSelectedTile})
         } else {
-            const prevMove = history[history.length - 2]
-            let prevSelectedCell: number = 40
-            if (historySelectedCell.length > 1) {
-            prevSelectedCell = historySelectedCell[historySelectedCell.length - 2]
-            }
-
+            const { 
+                    boardValues: prevBoardValues,
+                    autoNotesMode: prevAutoNotesMode
+            } = gameHistory[gameHistory.length - 2]
             if (updateSudokuInterface) {
-                updateSudokuInterface({boardValues: prevMove})
+                updateSudokuInterface({boardValues: prevBoardValues})
                 console.log("updated")
             }
             if (updateGameInterface) {
-                const nextHistory = [...history.slice(0, moveCount)]
-                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount), selectedCell]
-                console.log("undo: ", nextHistory)
-                // console.log(moveCount)
+                const nextGameHistory = [...gameHistory.slice(0, moveCount)]
+                console.log("undo button: ",nextGameHistory)
                 updateGameInterface({
-                    moveCount: nextHistory.length-1, 
-                    historySelectedCell: nextHistorySelectedCell,
-                    history: nextHistory,
-                    selectedCell: prevSelectedCell
+                    moveCount: nextGameHistory.length-1, 
+                    gameHistory: nextGameHistory,
+                    selectedCell: prevSelectedTile,
+                    autoNotesMode: prevAutoNotesMode
                 })}
             }
     }

@@ -38,15 +38,17 @@ export function newGameInterface(initialBoardValues: Tile[]) {
         selectedCell: 40,
         anchorMode: false,
         highlightedCells: { 
-                            neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-                            sameNumbers: [] 
-                        },
+            neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
+        },
         gameStatus: GameStatus.BORN, 
         timer: undefined,
         mistakesCount: 0,
         moveCount: 0,
-        historySelectedCell: [40],
-        history: [initialBoardValues],
+        gameHistory: [{
+            selectedCell: 40,            
+            boardValues: initialBoardValues,
+            autoNotesMode: false
+        }],
         // updateGameInterface: () => {}
     }
 
