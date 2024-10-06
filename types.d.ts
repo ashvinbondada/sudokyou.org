@@ -37,15 +37,18 @@ interface SudokuInterface {
 type HighlightedCells = {
     // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
+    // cells selected for group action
+    anchors             : Set<number>
 }
 
 type GameSnapShot  = {
     // saves cell edited at the time
-    selectedCell: number;
+    selectedCell    : number;
     // saved baord values at time
-    boardValues: Tile[];
+    boardValues     : Tile[];
     // saved auto notes mode. see control-bar branch for more info
-    autoNotesMode: boolean;
+    autoNotesMode   : boolean;
+    anchors         ?: number[]
 }
 
 // Interface responsible for definin
@@ -54,11 +57,11 @@ interface GameInterface {
     notesMode           : boolean;
     // undo mode toggle
     undoMode            : boolean;
-    // anchor mode selected a square when clicking only
+    // anchor 
     anchorMode          : boolean;
     // auto candidates toggle to take off notes
     autoNotesMode       : boolean;
-    // backspace toggle
+    // backspace toggle 
     backspaceMode       : boolean;
     // input value entered in selected tile
     inputValue          : number;
@@ -75,7 +78,7 @@ interface GameInterface {
     // current move count
     moveCount           : number; 
     // game history 
-    gameHistory: GameSnapShot[];
+    gameHistory         : GameSnapShot[];
     // helper function to update Game data
     updateGameInterface ?: (newState: Partial<GameInterface>) => void;
 }

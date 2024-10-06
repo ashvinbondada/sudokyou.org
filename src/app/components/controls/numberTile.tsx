@@ -37,6 +37,7 @@ type Props = {
               : 'text-white bg-theme-2-pantone' 
             : 'text-theme-1-pacific-cyan bg-gray-100 hover:bg-gray-200'} `}
         onClick={handleClick} 
+        tabIndex={-1}
         >
           {/* Display the squareValue with hover effect */}
           <span className={`transition-transform duration-300 ${squareValue > 0 ? 'md:group-hover:text-3xl sm:group-hover:text-2xl sm:group-hover:translate-y-[-7px] md:group-hover:translate-y-[-7px]' : ''}`}>

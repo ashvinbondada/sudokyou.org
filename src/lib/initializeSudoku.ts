@@ -40,6 +40,7 @@ export function newGameInterface(initialBoardValues: Tile[]) {
         anchorMode: false,
         highlightedCells: { 
             neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
+            anchors: new Set<number>()
         },
         gameStatus: GameStatus.BORN, 
         timer: undefined,
@@ -48,7 +49,8 @@ export function newGameInterface(initialBoardValues: Tile[]) {
         gameHistory: [{
             selectedCell: 40,            
             boardValues: initialBoardValues,
-            autoNotesMode: false
+            autoNotesMode: false,
+            anchors: []
         }],
         // updateGameInterface: () => {}
     }

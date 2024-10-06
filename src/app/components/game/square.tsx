@@ -13,8 +13,8 @@ type Props = {
 export default function Square({uid}: Props) {
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode} = useContext(GameContext)
-    const {boardValues, updateSudokuInterface } = useContext(BoardContext);
+    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode, anchorMode} = useContext(GameContext)
+    const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
     // need this function because it
@@ -44,8 +44,32 @@ export default function Square({uid}: Props) {
                     moveCount: nextGameHistory.length - 1
                 })
             }
+        } else {
+            handleRegularSquareClick()
         }
     };
+
+    const handleRegularSquareClick = () => {
+        const newAnchors = new Set(highlightedCells.anchors); 
+        if (anchorMode && !newAnchors.has(uid)) {
+                newAnchors.add(uid);
+        } 
+        else if (newAnchors.has(uid)) {
+            newAnchors.delete(uid)
+        }
+        else {
+            newAnchors.clear()
+            newAnchors.add(uid);
+        }
+        if (updateGameInterface) {
+            updateGameInterface({
+                highlightedCells: {
+                    ...highlightedCells,
+                    anchors: newAnchors
+                }
+            });
+        }
+    }
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
@@ -69,23 +93,30 @@ export default function Square({uid}: Props) {
     };
 
     const getBackgroundClasses = (index: number) => {
+        let backGroundClassRes = ''
         const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
-        // highlightedCells.sameNumbers.includes(index)
+        // same numbered cells highlight
         if (squareValue > 0 && squareValue === boardValues[selectedCell].squareValue) {
-        return index !== selectedCell 
+        backGroundClassRes += (index !== selectedCell) 
             ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
             : selectedCellBG;
-        } else if (highlightedCells.neighborhood.includes(index)) {
-        return index === selectedCell
+        } 
+        else if (highlightedCells.anchors.has(uid)) {
+            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 shadow-custom-inner'
+        }
+        else if (highlightedCells.neighborhood.includes(index)) {
+        backGroundClassRes += index === selectedCell
             ? selectedCellBG
             : 'bg-theme-1-pacific-cyan/30';
+        } else {
+            backGroundClassRes += 'bg-gray-100'
         }
 
-        return 'bg-gray-100'; // Default square background
+        return backGroundClassRes
     };
 
     return (    
-        <div className="w-full h-full bg-white"
+        <div className="w-full h-full bg-white" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: selectedCell === uid ? shadow : 'none',
@@ -96,9 +127,11 @@ export default function Square({uid}: Props) {
                   updateGameInterface({ selectedCell: uid });
                 }
               }}
+              tabIndex={-1}
         >
-            <div
+            <div 
                 className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
+                tabIndex={-1}
                 >
                 {
                     (
@@ -116,7 +149,7 @@ export default function Square({uid}: Props) {
                         // and not just rely on hover input
                         <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
                     ) : (
-                        <RegularSquare squareValue={squareValue} isEditable={isEditable} />
+                        <RegularSquare squareValue={squareValue} isEditable={isEditable} handleClick={handleRegularSquareClick}/>
                     )
                 }
             </div>

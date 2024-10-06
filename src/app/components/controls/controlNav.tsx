@@ -54,23 +54,25 @@ export default function ControlNav() {
     }
 
     const handleDelete = () => {
-        const newClearTile = clearTile(boardValues[selectedCell])
-        const nextBoardValues = boardValues.slice()
-        nextBoardValues[selectedCell] = newClearTile
-        if (updateSudokuInterface) {
-            updateSudokuInterface({boardValues: nextBoardValues})
-        }
-        if (updateGameInterface) {
-            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-            selectedCell: selectedCell,
-            boardValues: nextBoardValues,
-            autoNotesMode: autoNotesMode
-            }]
-            updateGameInterface({
-                moveCount: nextGameHistory.length-1, 
-                gameHistory: nextGameHistory,
-                autoNotesMode: !autoNotesMode
-            })
+        if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
+            const newClearTile = clearTile(boardValues[selectedCell])
+            const nextBoardValues = boardValues.slice()
+            nextBoardValues[selectedCell] = newClearTile
+            if (updateSudokuInterface) {
+                updateSudokuInterface({boardValues: nextBoardValues})
+            }
+            if (updateGameInterface) {
+                const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+                selectedCell: selectedCell,
+                boardValues: nextBoardValues,
+                autoNotesMode: autoNotesMode
+                }]
+                updateGameInterface({
+                    moveCount: nextGameHistory.length-1, 
+                    gameHistory: nextGameHistory,
+                    autoNotesMode: !autoNotesMode
+                })
+            }
         }
     }
 
@@ -102,11 +104,9 @@ export default function ControlNav() {
             } = gameHistory[gameHistory.length - 2]
             if (updateSudokuInterface) {
                 updateSudokuInterface({boardValues: prevBoardValues})
-                console.log("updated")
             }
             if (updateGameInterface) {
                 const nextGameHistory = [...gameHistory.slice(0, moveCount)]
-                console.log("undo button: ",nextGameHistory)
                 updateGameInterface({
                     moveCount: nextGameHistory.length-1, 
                     gameHistory: nextGameHistory,

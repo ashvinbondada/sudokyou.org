@@ -3,12 +3,12 @@ import { tileType } from "@/lib/common";
 type Props = {
   squareValue: number;
   isEditable: tileType;
-  // isRight: string;
+  handleClick: () => void
 };
 
-export default function RegularSquare({ squareValue, isEditable}: Props) {
+export default function RegularSquare({ squareValue, isEditable, handleClick}: Props) {
   return (
-    <div
+    <button onClick={handleClick}
       className={`h-full w-full flex place-content-center items-center text-4xl ${
         isEditable === tileType.GIVEN
           ? 'text-black' // Not editable, always black
@@ -16,8 +16,9 @@ export default function RegularSquare({ squareValue, isEditable}: Props) {
           ? 'text-theme-1-cerulean' // Editable and correct, show blue
           : 'text-red-600' // Editable but incorrect, show red
       } select-none`}
+      tabIndex={-1}
     >
       {squareValue > 0 ? squareValue : ''}
-    </div>
+    </button>
   );
 }

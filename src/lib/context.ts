@@ -24,6 +24,7 @@ const defaultGameState = {
     selectedCell: 40,
     highlightedCells: { 
         neighborhood: [4, 13, 22, 36, 37, 38, 58, 67, 76, 42, 43, 44],
+        anchors: new Set<number>()
     },
     gameStatus: GameStatus.WOMB, // Assuming GameStatus is an enum
     timer: undefined,
@@ -36,7 +37,8 @@ const defaultGameState = {
             squareValue: 0,
             squareNotes: Array(9).fill(0), 
         }),
-        autoNotesMode: false
+        autoNotesMode: false,
+        anchors: []
     }],
     updateGameInterface: () => {}
 };

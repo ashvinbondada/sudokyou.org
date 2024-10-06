@@ -33,8 +33,8 @@ export default function RootLayout({
               </div>
 
               {/* Right component */}
-              <div className="h-full lg:w-[256px] md:flex-none hidden xl:block border-2 border-green-400">
-                leaderboard, game history
+              <div className="h-full lg:w-[256px] md:flex-none hidden xl:block ">
+                {/* leaderboard, game history */}
               </div>
             </div>
           </div>
