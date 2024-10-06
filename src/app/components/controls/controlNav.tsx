@@ -15,7 +15,7 @@ import IconSquare from "./iconSquare";
 import StatBox from "./statBox";
 import NumPadSquare from "./numberTile";
 import ShareSquare from "./shareSquare";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "@/lib/context";
 import { calculateAutoCandidates, clearAutoCandidates, clearTile } from "@/lib/tileEffects";
 import { newGameInterface, PuzzleStringToSudokuInterface } from "@/lib/initializeSudoku";
@@ -24,7 +24,7 @@ export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode} = useContext(GameContext)
+    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells} = useContext(GameContext)
 
     const handleAutoNotes = () => {
         // console.log("before: ", boardValues)
@@ -54,7 +54,30 @@ export default function ControlNav() {
     }
 
     const handleDelete = () => {
-        if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
+        if (highlightedCells.anchors.size > 1) {
+            const anchorsArray = Array.from(highlightedCells.anchors);
+            const nextBoardValues = boardValues.slice()
+            for (const anchor of anchorsArray) {
+                const newClearTile = clearTile(boardValues[anchor]) 
+                nextBoardValues[anchor] = newClearTile
+                if (updateSudokuInterface) {
+                    updateSudokuInterface({boardValues: nextBoardValues})
+                }
+            }
+            if (updateGameInterface) {
+                const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+                    selectedCell: selectedCell,
+                    boardValues: nextBoardValues,
+                    autoNotesMode: autoNotesMode
+                }]
+                updateGameInterface({
+                    moveCount: nextGameHistory.length-1, 
+                    gameHistory: nextGameHistory,
+                    autoNotesMode: !autoNotesMode
+                })
+            }
+        }
+        else if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
             const newClearTile = clearTile(boardValues[selectedCell])
             const nextBoardValues = boardValues.slice()
             nextBoardValues[selectedCell] = newClearTile
@@ -76,12 +99,21 @@ export default function ControlNav() {
         }
     }
 
+    useEffect(() => {
+        if (backspaceMode)
+            handleDelete()
+    }, [backspaceMode])
+
     const handleNotes = () => {
         if (updateGameInterface) {
-            console.log("before button: ", notesMode)
             updateGameInterface({notesMode: !notesMode })
         }
     }
+
+    // useEffect(() => {
+    //     if (notesMode)
+    //         handleNotes()
+    // }, [notesMode])
 
     const handleRestart = () => {
         const newSudoku = PuzzleStringToSudokuInterface(initial, solution)
@@ -93,7 +125,7 @@ export default function ControlNav() {
     }
 
     const handleUndo = () => {
-      const { selectedCell: prevSelectedTile } = gameHistory[gameHistory.length - 1]
+        const { selectedCell: prevSelectedTile } = gameHistory[gameHistory.length - 1]
         if (gameHistory.length == 1) {
             if (updateGameInterface)
                 updateGameInterface({selectedCell: prevSelectedTile})
@@ -112,9 +144,14 @@ export default function ControlNav() {
                     gameHistory: nextGameHistory,
                     selectedCell: prevSelectedTile,
                     autoNotesMode: prevAutoNotesMode
-                })}
-            }
+            })}
+        }
     }
+
+    useEffect(() => {
+        if (undoMode)
+            handleUndo()
+    }, [undoMode])
 
 
     return (
