@@ -27,11 +27,9 @@ export default function ControlNav() {
     const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells, } = useContext(GameContext)
 
     const handleAutoNotes = () => {
-        // console.log("before: ", boardValues)
         let nextBoardValues: Tile[] = []
         if (!autoNotesMode) {
             nextBoardValues = calculateAutoCandidates(boardValues)
-            // console.log("in control", boardWithNotesFilled)
         } else {
             nextBoardValues = clearAutoCandidates(boardValues)
         }
@@ -54,48 +52,34 @@ export default function ControlNav() {
     }
 
     const handleDelete = () => {
+        let nextBoardValues = boardValues.slice()
         if (highlightedCells.anchors.size > 1) {
             const anchorsArray = Array.from(highlightedCells.anchors);
             const nextBoardValues = boardValues.slice()
             for (const anchor of anchorsArray) {
                 const newClearTile = clearTile(boardValues[anchor]) 
                 nextBoardValues[anchor] = newClearTile
-                if (updateSudokuInterface) {
-                    updateSudokuInterface({boardValues: nextBoardValues})
-                }
-            }
-            if (updateGameInterface) {
-                const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-                    selectedCell: selectedCell,
-                    boardValues: nextBoardValues,
-                    autoNotesMode: autoNotesMode
-                }]
-                updateGameInterface({
-                    moveCount: nextGameHistory.length-1, 
-                    gameHistory: nextGameHistory,
-                    autoNotesMode: !autoNotesMode
-                })
             }
         }
         else if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
             const newClearTile = clearTile(boardValues[selectedCell])
-            const nextBoardValues = boardValues.slice()
+            nextBoardValues = boardValues.slice()
             nextBoardValues[selectedCell] = newClearTile
-            if (updateSudokuInterface) {
-                updateSudokuInterface({boardValues: nextBoardValues})
-            }
-            if (updateGameInterface) {
-                const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-                selectedCell: selectedCell,
-                boardValues: nextBoardValues,
-                autoNotesMode: autoNotesMode
-                }]
-                updateGameInterface({
-                    moveCount: nextGameHistory.length-1, 
-                    gameHistory: nextGameHistory,
-                    autoNotesMode: !autoNotesMode
-                })
-            }
+        }
+        if (updateSudokuInterface) {
+            updateSudokuInterface({boardValues: nextBoardValues})
+        }
+        if (updateGameInterface) {
+            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+            selectedCell: selectedCell,
+            boardValues: nextBoardValues,
+            autoNotesMode: autoNotesMode
+            }]
+            updateGameInterface({
+                moveCount: nextGameHistory.length-1, 
+                gameHistory: nextGameHistory,
+                autoNotesMode: !autoNotesMode
+            })
         }
     }
 
@@ -109,11 +93,6 @@ export default function ControlNav() {
             updateGameInterface({notesMode: !notesMode })
         }
     }
-
-    // useEffect(() => {
-    //     if (notesMode)
-    //         handleNotes()
-    // }, [notesMode])
 
     const handleRestart = () => {
         const newSudoku = PuzzleStringToSudokuInterface(initial, solution)
