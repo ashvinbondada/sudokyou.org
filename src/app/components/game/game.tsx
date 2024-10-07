@@ -2,16 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "../../../lib/context";
-import { useShiftClick } from "@/lib/useKeyboard";
+// import { useShiftClick } from "@/lib/useKeyboard";
 import Board from "./board";
-import { debounce, } from "lodash";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
-import { calculateHighlightCells } from "@/lib/tileEffects";
+import { calculateHighlightCells,} from "@/lib/tileEffects";
 import { tileType } from "@/lib/common";
-// import { useHotkeys } from 'react-hotkeys-hook';
 import ControlNav from "../controls/controlNav";
-// import next from "next";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -19,8 +16,6 @@ type Props = {
 }
 
 export default function Game({newSudoku, newGame}: Props) {
-  const shiftPressIsShiftDown = useShiftClick();
-  // const keyDown = useKeyboardClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
   const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
 
@@ -43,16 +38,10 @@ export default function Game({newSudoku, newGame}: Props) {
   })
 
   const updateGameInterface = (newState: Partial<GameInterface>) => {
-    // const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), boardData.boardValues]
     setGameData((prevState) => ({
       ...prevState,
       ...newState,
     }))
-    // setGameData((prevState) => ({
-    //   ...prevState,
-    //   history: nextHistory,
-    //   moveCount: nextHistory.length - 1
-    // }))
   }
 
   useEffect(() => {
@@ -61,6 +50,24 @@ export default function Game({newSudoku, newGame}: Props) {
         setGameData((prevState) => ({
           ...prevState,
           undoMode: false,
+        }))
+      }
+      if (event.key === "Backspace") {
+        setGameData((prevState) => ({
+          ...prevState,
+          backspaceMode: false,
+        }))
+      }
+      if (event.key === "Shift") {
+        setGameData((prevState) => ({
+          ...prevState,
+          notesMode: false
+        }))
+      }
+      if (event.key === "Meta") {
+        setGameData((prevState) => ({
+          ...prevState,
+          anchorMode: false
         }))
       }
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
@@ -80,15 +87,20 @@ export default function Game({newSudoku, newGame}: Props) {
   }, []);
 
   // SHIFT PRESS NOTES SOFT TOGGLE UPDATE
-  useEffect(() => {
-    setGameData((prevGameData) => (
-      {
-        ...prevGameData,
-        notesMode: shiftPressIsShiftDown
-      }
-    ))
-  }, [shiftPressIsShiftDown])
+ 
+  useKeyboardShortcut(["Shift"], () => {
+    setGameData((prevState) => ({
+      ...prevState,
+      notesMode: true
+    }));
+  }, {repeatOnHold: true, overrideSystem: true})
 
+  useKeyboardShortcut(["Meta"], () => {
+    setGameData((prevState) => ({
+      ...prevState,
+      anchorMode: true
+    }))
+  })
 
   // NUMBER INPUT HANDLING
   useKeyboardShortcut(["1"], () => {
@@ -282,6 +294,15 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
   }, {repeatOnHold: true})
 
+
+  // Backspace DELETE TOGGLE
+  useKeyboardShortcut(["Backspace"], () => {
+    setGameData((prevState) => ({
+      ...prevState,
+      backspaceMode: true
+    }));
+  })
+
   // n PRESS NOTES PERM TOGGLE
   useKeyboardShortcut(["n"], () => {
       setGameData((prevState) => ({
@@ -290,40 +311,20 @@ export default function Game({newSudoku, newGame}: Props) {
       }));
   })
 
-  // n PRESS NOTES PERM TOGGLE
+  // u PRESS UNDO MOVE
   useKeyboardShortcut(["u"], () => {
-    if (gameData.history.length === 1 || gameData.historySelectedCell.length === 1) {
+      setGameData((prevState) => ({
+        ...prevState,
+        undoMode: true
+      }))
+      setTimeout(() => {
         setGameData((prevState) => ({
           ...prevState,
           undoMode: false
-        }))
-        alert("reached beginning of game")
-    } else {
-        const prevMove = gameData.history[gameData.history.length - 2]
-        const prevSelectedCell = gameData.historySelectedCell[gameData.historySelectedCell.length - 2]
-        if (updateSudokuInterface)
-            updateSudokuInterface({boardValues: prevMove})
-        if (updateGameInterface) {
-            const nextHistory = [...gameData.history.slice(0, gameData.moveCount)]
-            const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount), gameData.selectedCell]
-            // console.log("undo: ", nextHistory)
-            console.log(gameData.moveCount)
-            updateGameInterface({
-                moveCount: nextHistory.length-1, 
-                historySelectedCell: nextHistorySelectedCell,
-                history: nextHistory,
-                selectedCell: prevSelectedCell
-            })}
-            setGameData((prevState) => ({
-              ...prevState,
-              undoMode: true
-            }))
-        }
-  },{repeatOnHold: false, })
+        })) 
+      },1)
+  },{repeatOnHold: true, })
 
-  useKeyboardShortcut(["Control", "z"], () => {
-    console.log("CONTROL + Z pressed.")
-  })
 
   // MOVEMENT INPUT HANDLING
   useKeyboardShortcut(["ArrowUp"], () => {
@@ -424,169 +425,138 @@ export default function Game({newSudoku, newGame}: Props) {
   }, [gameData.selectedCell, inputSource]);
 
   useEffect(() => {
-    const {neighborhood, sameNumbers} = calculateHighlightCells(gameData.selectedCell)
+    const {neighborhood} = calculateHighlightCells(gameData.selectedCell)
     setGameData((prevState) => ({
       ...prevState,
-      highlightedCells: {neighborhood, sameNumbers}
+      highlightedCells: {...prevState.highlightedCells, neighborhood}
     }))
 
-  }, [gameData.selectedCell, boardData])
-
-  useEffect(() => {
-    const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
-    const { boardValues } = boardData;
-  
-    // Check if the input is valid, notes mode is off, and neighborhood exists
-    if (
-      boardData.boardValues[gameData.selectedCell].isEditable !== tileType.GIVEN 
-      && inputValue > 0 
-      && inputValue === Number(boardData.solution[gameData.selectedCell])
-      && !notesMode 
-      && highlightedCells?.neighborhood) {
-      const nextBoardValues = boardValues.slice(); // Create a copy of boardValues
-
-      // Iterate over the neighborhood and remove inputValue from their notes
-      highlightedCells.neighborhood.forEach((cellIndex) => {
-        // Skip the currently selected cell
-        if (cellIndex !== selectedCell) {
-          const cell = nextBoardValues[cellIndex];
-          const nextSquareNotes = cell.squareNotes.map(note => (note === inputValue ? 0 : note)); // Remove the input from the notes
-          nextBoardValues[cellIndex] = {
-            ...cell,
-            squareNotes: nextSquareNotes,
-          };
-        }
-      });
-
-      // Update the board values without affecting the selected cell
-      setBoardData((prevState) => ({
-        ...prevState,
-        boardValues: nextBoardValues,
-      }));
-    }
-  }, [gameData, boardData]);
-  
-  // function appendHistory(nextBoardValues: Tile[]) {
-  //   // console.log(gameData.moveCount+2)
-  //   const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-  //   setGameData((prevstate) => ({
-  //     ...prevstate,
-  //     history: nextHistory,
-  //     moveCount: nextHistory.length - 1
-  //   }))
-  //   console.log(nextHistory)
-  // }
+  }, [gameData.selectedCell])
 
   // NOTES SQUARE HANDLING
-  const handleSquareNotesInput = useCallback((index: number) => {
-      const {boardValues } = boardData
-      const {squareNotes} = boardValues[gameData.selectedCell]
+  const handleSquareNotesInput = useCallback((input: number, inputList: number[]) => {
+    const nextBoardValues = boardData.boardValues.slice();
+    for (const idx of inputList) {
+      const { squareNotes } = boardData.boardValues[idx];
       const nextSquareNotes = squareNotes.slice();
-      nextSquareNotes[index] = (nextSquareNotes[index] === index+1) ? 0 : index + 1;
-      const nextBoardValues = boardValues.slice();
-      nextBoardValues[gameData.selectedCell] = {
-          ...boardValues[gameData.selectedCell],
+      
+      nextSquareNotes[input] = (nextSquareNotes[input] === input + 1) ? 0 : input + 1;
+      
+      nextBoardValues[idx] = {
+          ...boardData.boardValues[idx],
           squareValue: 0,
-          squareNotes: nextSquareNotes
-      }
-      setBoardData((prevState) => ({
-          ...prevState,
-          boardValues: nextBoardValues
-        }))
+          squareNotes: nextSquareNotes,
+      };
+    }
+    return nextBoardValues
 
-      console.log("adding a move")
-      // appendHistory(nextBoardValues)
-      const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-      const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount + 1), gameData.selectedCell]
-      setGameData((prevstate) => ({
-        ...prevstate,
-        history: nextHistory,
-        historySelectedCell: nextHistorySelectedCell,
-        moveCount: nextHistory.length - 1
-      }))
-      // setRight(true)
-  }, [gameData.selectedCell, boardData]);
+}, [boardData.boardValues]);
 
   // REGULAR SQUARE HANDLING
-  const handleRegularSquareInput = useCallback((input: number) => {
-    const {solution, boardValues} = boardData
-    const {squareValue} = boardValues[gameData.selectedCell]
-    // if (input > 0 && input !== Number(solution.charAt(gameData.selectedCell))) {
-    //   // setRight(false);
-    // } else {
-    //   // setRight(true);
-    // }
+  const handleRegularSquareInput = useCallback((input: number, index: number) => {
+    const nextBoardValues = boardData.boardValues.slice(); // Clone the board values to avoid mutation
+    const {squareValue} = nextBoardValues[index]
 
     const nextValue = (squareValue === input) ? 0 : input;
-    const nextBoardValues = boardValues.slice(); // Clone the board values to avoid mutation
-    nextBoardValues[gameData.selectedCell] = {
-    ...boardValues[gameData.selectedCell],
-    isEditable: nextValue === Number(solution[gameData.selectedCell]) ? tileType.RIGHT : tileType.WRONG,
+    const nextIsEditable = nextValue === Number(boardData.solution[index]) ? tileType.RIGHT : tileType.WRONG
+    nextBoardValues[index] = {
+    ...boardData.boardValues[index],
+    isEditable: nextIsEditable,
     squareValue: nextValue,
-    // dont reset notes since we cant edit the square once right value is entered anyway - shilpa
-    // squareNotes: Array(9).fill(0), 
     };
 
-    console.log("adding a move")
-    // appendHistory(nextBoardValues)
-    const nextHistory = [...gameData.history.slice(0, gameData.moveCount+1), nextBoardValues ]
-    const nextHistorySelectedCell = [...gameData.historySelectedCell.slice(0, gameData.moveCount + 1), gameData.selectedCell]
-    setGameData((prevstate) => ({
-      ...prevstate,
-      history: nextHistory,
-      historySelectedCell: nextHistorySelectedCell,
-      moveCount: nextHistory.length - 1
-    }))
+    if (nextIsEditable === tileType.RIGHT) {
+      // Iterate over the neighborhood and remove inputValue from their notes
+      gameData.highlightedCells.neighborhood.forEach((cellIndex) => { //       // Skip the currently selected cell //       if (cellIndex !== selectedCell) {
+        const cell = nextBoardValues[cellIndex];
+        const nextSquareNotes = cell.squareNotes.map(note => (note === input ? 0 : note)); // Remove the input from the notes
+        nextBoardValues[cellIndex] = {
+          ...cell,
+          squareNotes: nextSquareNotes,
+        };
+      })
 
-    setBoardData((prevState) => ({
-        ...prevState,
-        boardValues: nextBoardValues
-      }))
-    }, [gameData.selectedCell, boardData]);
+      setGameData((prevState) => {
+        const updatedNumToQuantity = new Map(prevState.numToQuantity);
+        // Get the current quantity, default to 0 if not present
+        const currentQuantity = updatedNumToQuantity.get(input) || 0;
+        // Update the quantity
+        updatedNumToQuantity.set(input, currentQuantity + 1);
+        return {
+            ...prevState,
+            numToQuantity: updatedNumToQuantity,
+        };
+      });
+    }
+    
+    return nextBoardValues
+  }, [boardData, gameData.highlightedCells]);
 
-    // const nexthistory = [...gameData.history.slice(0, gameData.moveCount+1), boardData.boardValues]
-    // setGameData((prevstate) => ({
-    //   ...prevstate,
-    //   history: nexthistory,
-    //   movecount: nexthistory.length - 1
-    // }))
-
-
-    // SQUARE INPUT HANDLING
+   
     useEffect(() => {
-        const {inputValue, selectedCell, notesMode} = gameData
-        const {isEditable} = boardData.boardValues[selectedCell]
-        if (isEditable === tileType.WRONG && inputValue > 0) {
-            if (notesMode) {
-                const index = inputValue - 1;
-                handleSquareNotesInput(index);
-            } else {
-                handleRegularSquareInput(inputValue);
+      const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
+      let nextBoardValues: Tile[] = boardData.boardValues;
+    
+      if (inputValue > 0) {
+        if (highlightedCells.anchors.size > 1) {
+          const anchorsArray = Array.from(highlightedCells.anchors);
+          // Filter anchors where isEditable is tileType.WRONG
+          const filteredAnchors = anchorsArray.filter(anchor => {
+            const { isEditable } = boardData.boardValues[anchor];
+            return isEditable === tileType.WRONG;
+          });
+    
+          const input = inputValue - 1;
+          nextBoardValues = handleSquareNotesInput(input, filteredAnchors);
+        } 
+        else if (highlightedCells.anchors.size === 1) {
+            const index = Array.from(highlightedCells.anchors)[0];
+            const { isEditable } = boardData.boardValues[index];
+            
+            if (isEditable === tileType.WRONG) {
+              if (notesMode) {
+                const input = inputValue - 1;
+                nextBoardValues = handleSquareNotesInput(input, [index]);
+              } else {
+                nextBoardValues = handleRegularSquareInput(inputValue, index);
+              }
             }
+          } 
+          else {
+            const { isEditable } = boardData.boardValues[selectedCell];
+            if (isEditable === tileType.WRONG) {
+              if (notesMode) {
+                const input = inputValue - 1;
+                nextBoardValues = handleSquareNotesInput(input, [selectedCell]);
+              } else {
+                nextBoardValues = handleRegularSquareInput(inputValue, selectedCell);
+              }
+            }
+          }
+        
+        setBoardData((prevBoardData) => ({
+          ...prevBoardData,
+          boardValues: nextBoardValues
+        }));
+        setGameData((prevGameData) => {
+          const nextGameHistory = [
+            ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
+            {
+              selectedCell: prevGameData.selectedCell,
+              boardValues: nextBoardValues, // Use the updated boardValues
+              autoNotesMode: prevGameData.autoNotesMode,
+            },
+          ];
+    
+          return {
+            ...prevGameData,
+            gameHistory: nextGameHistory,
+            moveCount: nextGameHistory.length - 1,
+          };
+        });
         }
-    }, [gameData.selectedCell, gameData.inputValue]);
-    // IMPORTANT - INCLUDING SELECTED CELL MAKES THIS STICKY 
-
-  // RESET GAME STATE
-  const handleMouseLeave = debounce(() => {
-    const updatedBoardValues = boardData.boardValues.map(square => ({
-      ...square,
-      isDivHovered: false
-    }))
-
-    setBoardData(prevBoardData => ({
-      ...prevBoardData,
-      boardValues: updatedBoardValues
-    }))
-
-    // introduces a recursion bug
-    // setGameData(prevGameData => ({
-    //   ...prevGameData,
-    //   inputValue: 0
-    // }))
-
-    console.log("cleaned")
-  },50) 
+      }, [gameData.inputValue, gameData.selectedCell]);    
+  
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = e.currentTarget;
@@ -604,17 +574,15 @@ export default function Game({newSudoku, newGame}: Props) {
     setInputSource("mouse");
   };
 
-
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
-          <div className="w-full h-full">
+          <div className="w-full h-max" tabIndex={-1}>
             <div className="w-full flex md:flex-row sm:justify-start justify-center gap-1">
               <div className="w-full sm:w-2/3 flex flex-col">
                 <DifficultySelector />
                 <div
-                className="w-full h-max aspect-square"
-                onMouseLeave={handleMouseLeave}
+                className="h-max aspect-square"
                 onMouseMove={handleMouseMove}
                 style={{ boxShadow: shadow }}
                 >

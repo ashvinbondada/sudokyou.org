@@ -59,8 +59,8 @@ export default function DifficultySelector() {
           onClick={() => handleDifficultySelection(level)}
           className={`select-none text-lg ${
             selectedLevel === level
-              ? 'text-blue-600' // Selected difficulty
-              : 'font-normal text-gray-500 hover:text-gray-700' // Unselected difficulties
+              ? 'text-theme-1-pacific-cyan' // Selected difficulty
+              : 'font-normal text-gray-500 hover:text-theme-1-pacific-cyan' // Unselected difficulties
           }`}
         >
           {level}

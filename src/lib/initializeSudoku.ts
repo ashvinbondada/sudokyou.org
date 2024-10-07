@@ -30,22 +30,38 @@ function PuzzleResponseToSudokuInterface(puzzleData: DocumentData) {
 
 // function generates a new game state GameInterface
 export function newGameInterface(initialBoardValues: Tile[]) {
+    const numToQuantity = new Map<number, number>();
+
+    initialBoardValues.forEach((tile) => {
+        if (tile.squareValue > 0) { // Only count positive values
+            const currentQuantity = numToQuantity.get(tile.squareValue) || 0;
+            numToQuantity.set(tile.squareValue, currentQuantity + 1);
+        }
+    });
+
     const newGame: GameInterface = {
         notesMode: false,
         undoMode: false,
+        autoNotesMode: false,
+        backspaceMode: false,
         inputValue: 0,
         selectedCell: 40,
+        numToQuantity,
         anchorMode: false,
         highlightedCells: { 
-                            neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-                            sameNumbers: [] 
-                        },
+            neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
+            anchors: new Set<number>()
+        },
         gameStatus: GameStatus.BORN, 
         timer: undefined,
         mistakesCount: 0,
         moveCount: 0,
-        historySelectedCell: [40],
-        history: [initialBoardValues],
+        gameHistory: [{
+            selectedCell: 40,            
+            boardValues: initialBoardValues,
+            autoNotesMode: false,
+            anchors: []
+        }],
         // updateGameInterface: () => {}
     }
 
@@ -68,18 +84,9 @@ export async function getNewPuzzle(difficulty: string): Promise<SudokuInterface 
         }
 
 
-    // Return the document data
         const puzzleData = puzzleDoc.data();
-        // console.log(puzzleDataString)
         const newPuzzle: SudokuInterface = PuzzleResponseToSudokuInterface(puzzleData)
-        // const puzzle: PuzzleString = {
-        //     id: puzzleDoc.id, // Use the doc ID from Firestore
-        //     level: puzzleData.level, // Ensure these fields exist in your Firestore document
-        //     initial: puzzleData.initial,
-        //     solution: puzzleData.solution,
-        // };
         return newPuzzle
-        // return new Response(JSON.stringify(puzzleData), { status: 200 });
 
     } catch (error) {
         // Handle errors

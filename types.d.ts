@@ -2,12 +2,6 @@
 // containing relevant value, notes, 
 // and meta data regarding its state.
 
-// enum tileType {
-//     GIVEN, // black
-//     WRONG, // red
-//     RIGHT // blue
-// }
-
 interface Tile {
     // given or user entered status 
     isEditable  : any; // tileType in lib/common.ts
@@ -37,10 +31,19 @@ interface SudokuInterface {
 type HighlightedCells = {
     // rows, columns, and grid colored with respect to selectedCell
     neighborhood    : number[] 
-    // tiles which have the same number as selectedCell
-    sameNumbers     : number[];
+    // cells selected for group action
+    anchors             : Set<number>
 }
 
+type GameSnapShot  = {
+    // saves cell edited at the time
+    selectedCell    : number;
+    // saved baord values at time
+    boardValues     : Tile[];
+    // saved auto notes mode. see control-bar branch for more info
+    autoNotesMode   : boolean;
+    anchors         ?: number[]
+}
 
 // Interface responsible for definin
 interface GameInterface {
@@ -48,12 +51,18 @@ interface GameInterface {
     notesMode           : boolean;
     // undo mode toggle
     undoMode            : boolean;
-    // anchor mode selected a square when clicking only
+    // anchor 
     anchorMode          : boolean;
+    // auto candidates toggle to take off notes
+    autoNotesMode       : boolean;
+    // backspace toggle 
+    backspaceMode       : boolean;
     // input value entered in selected tile
     inputValue          : number;
     // tile that user is choosing to edit
     selectedCell        : number;  
+    // quantity of each number
+    numToQuantity       : Map<number, number>
     // tiles higlighted for user, unable to edit atm
     highlightedCells    : HighlightedCells;
     // status of the game 
@@ -64,10 +73,8 @@ interface GameInterface {
     mistakesCount       : number; // max 3
     // current move count
     moveCount           : number; 
-    // history of selected cell - purely for aesthetic
-    historySelectedCell : number[]
-    // game history
-    history: Tile[][];
+    // game history 
+    gameHistory         : GameSnapShot[];
     // helper function to update Game data
     updateGameInterface ?: (newState: Partial<GameInterface>) => void;
 }

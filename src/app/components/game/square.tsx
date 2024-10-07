@@ -13,8 +13,8 @@ type Props = {
 export default function Square({uid}: Props) {
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, historySelectedCell, history, moveCount, updateGameInterface} = useContext(GameContext)
-    const {boardValues, updateSudokuInterface } = useContext(BoardContext);
+    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode, anchorMode} = useContext(GameContext)
+    const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
     // need this function because it
@@ -34,25 +34,45 @@ export default function Square({uid}: Props) {
                 updateSudokuInterface({ boardValues: nextBoardValues });
             }
             if (updateGameInterface){
-                const nextHistory = [...history.slice(0, moveCount+1), nextBoardValues]
-                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount + 1), selectedCell]
+                const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+                    selectedCell: selectedCell,
+                    boardValues: nextBoardValues,
+                    autoNotesMode: autoNotesMode
+                }]
                 updateGameInterface({
-                    historySelectedCell: nextHistorySelectedCell,
-                    history: nextHistory,
-                    moveCount: nextHistory.length - 1
+                    gameHistory: nextGameHistory,
+                    moveCount: nextGameHistory.length - 1
                 })
             }
+        } else {
+            handleRegularSquareClick()
         }
-        // setRight(true)
     };
 
-    // handling hasNotes variable
-    // useEffect(() => {
-    //     console.log("edited", uid)
-    //     if (highlightedCells.neighborhood.includes(uid)) {
-    //         setHasNotes(squareNotes.some((note: number) => note !== 0));
-    //     }
-    // }, [squareNotes,uid, highlightedCells.neighborhood]);
+    const handleRegularSquareClick = () => {
+        const newAnchors = new Set(highlightedCells.anchors); 
+        if (anchorMode && !newAnchors.has(uid)) {
+                newAnchors.add(uid);
+        } 
+        else if (anchorMode && newAnchors.has(uid)) {
+            newAnchors.delete(uid)
+        }
+        else if (newAnchors.size == 0) {
+            newAnchors.add(uid)
+        }
+        else {
+            newAnchors.clear()
+            // newAnchors.add(uid);
+        }
+        if (updateGameInterface) {
+            updateGameInterface({
+                highlightedCells: {
+                    ...highlightedCells,
+                    anchors: newAnchors,
+                },
+            });
+        }
+    }
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (selectedCell === uid) { // Only apply the effect to the selectedCell
@@ -76,23 +96,30 @@ export default function Square({uid}: Props) {
     };
 
     const getBackgroundClasses = (index: number) => {
-        const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
-        // highlightedCells.sameNumbers.includes(index)
+        let backGroundClassRes = ''
+        const selectedCellBG = 'bg-theme-1-pacific-cyan/65 animate-pulse-shadow';
+        // same numbered cells highlight
         if (squareValue > 0 && squareValue === boardValues[selectedCell].squareValue) {
-        return index !== selectedCell 
+        backGroundClassRes += (index !== selectedCell) 
             ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
             : selectedCellBG;
-        } else if (highlightedCells.neighborhood.includes(index)) {
-        return index === selectedCell
+        } 
+        else if (highlightedCells.anchors.has(uid)) {
+            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 animate-pulse-shadow'
+        }
+        else if (highlightedCells.neighborhood.includes(index)) {
+        backGroundClassRes += index === selectedCell
             ? selectedCellBG
             : 'bg-theme-1-pacific-cyan/30';
+        } else {
+            backGroundClassRes += 'bg-gray-100'
         }
 
-        return 'bg-gray-100'; // Default square background
+        return backGroundClassRes
     };
 
     return (    
-        <div className="w-full h-full bg-white"
+        <div className="w-full h-full bg-white" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: selectedCell === uid ? shadow : 'none',
@@ -103,20 +130,21 @@ export default function Square({uid}: Props) {
                   updateGameInterface({ selectedCell: uid });
                 }
               }}
+              tabIndex={-1}
         >
-            <div
+            <div 
                 className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
+                tabIndex={-1}
                 >
                 {
                     (
-                        // show notes only on playable and unfilled squares
-                        // TODO: change to isEditable === tileType.WRONG
-                        (isEditable !== tileType.GIVEN && squareValue < 1)
+                        // show notes only on playable and to be solved squares
+                        (isEditable === tileType.WRONG)
                         && (
                             // on the current tile & engaged notes mode
-                            // or already has notes
+                            // or already has notes with no input value
                             ((selectedCell == uid) && notesMode) 
-                            || squareNotes.some((note: number) => note !== 0)
+                            || (squareValue == 0 && squareNotes.some((note: number) => note !== 0))
                             )
                     ) ? (
                         // passing in handleSquareNotesInput function because 
@@ -124,7 +152,7 @@ export default function Square({uid}: Props) {
                         // and not just rely on hover input
                         <NotesSquare squareNotes={squareNotes} handleSquareNotesInput={handleSquareNotesInput} />
                     ) : (
-                        <RegularSquare squareValue={squareValue} isEditable={isEditable} />
+                        <RegularSquare squareValue={squareValue} isEditable={isEditable} handleClick={handleRegularSquareClick}/>
                     )
                 }
             </div>

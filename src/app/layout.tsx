@@ -28,12 +28,12 @@ export default function RootLayout({
               </div> */}
 
               {/* Main content area */}
-              <div className="h-full lg:w-[1024px] md:w-full w-full p-1 ">
+              <div className="h-full lg:w-[1024px] w-full p-1 ">
                 {children}
               </div>
 
               {/* Right component */}
-              <div className="h-full lg:w-[256px] md:flex-none hidden xl:block">
+              <div className="h-full lg:w-[256px] md:flex-none hidden xl:block ">
                 {/* leaderboard, game history */}
               </div>
             </div>

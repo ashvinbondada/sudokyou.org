@@ -47,11 +47,11 @@ const SignInButton = () => {
         <>
           {user ? (
             <>
-              <img
+              {/* <img
                 className="text-black"
                 src={user.photoURL ?? '/default-profile.png'} // Fallback if photoURL is null
                 alt={user.displayName ?? 'User'} // Fallback if displayName is null
-              />
+              /> */}
               <button
                 onClick={handleSignOut}
                 className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300"

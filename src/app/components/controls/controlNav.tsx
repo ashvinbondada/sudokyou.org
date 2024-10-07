@@ -8,52 +8,88 @@ import {PiLightbulb, PiLightbulbFill,
         PiRepeat, PiRepeatDuotone,
         PiArrowBendUpLeftFill, PiArrowBendDoubleUpLeftFill,
         PiQuestion, 
-        PiQuestionFill} from "react-icons/pi";
+        PiQuestionFill,
+        PiPencilSimpleFill} from "react-icons/pi";
 
 import IconSquare from "./iconSquare";
 import StatBox from "./statBox";
-import NumPadSquare from "./numberTile";
+import NumberTile from "./numberTile";
 import ShareSquare from "./shareSquare";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "@/lib/context";
-import { calculateAutoCandidates, clearTile } from "@/lib/tileEffects";
+import { calculateAutoCandidates, clearAutoCandidates, clearTile } from "@/lib/tileEffects";
 import { newGameInterface, PuzzleStringToSudokuInterface } from "@/lib/initializeSudoku";
 
 export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, notesMode, undoMode, historySelectedCell, history, updateGameInterface} = useContext(GameContext)
+    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells, numToQuantity } = useContext(GameContext)
 
     const handleAutoNotes = () => {
-        // console.log("before: ", boardValues)
-        const boardWithNotesFilled = calculateAutoCandidates(boardValues)
-        // console.log("in control", boardWithNotesFilled)
+        let nextBoardValues: Tile[] = []
+        if (!autoNotesMode) {
+            nextBoardValues = calculateAutoCandidates(boardValues)
+        } else {
+            nextBoardValues = clearAutoCandidates(boardValues)
+        }
+
         if (updateSudokuInterface) {
-            updateSudokuInterface({boardValues: boardWithNotesFilled})
+            updateSudokuInterface({boardValues: nextBoardValues})
         }
         if (updateGameInterface) {
-            const nextHistory = [...history.slice(0, moveCount+1), boardWithNotesFilled]
-
+            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+            selectedCell: selectedCell,
+            boardValues: nextBoardValues,
+            autoNotesMode: autoNotesMode
+            }]
             updateGameInterface({
-                moveCount: nextHistory.length-1, 
-                history: nextHistory
+                moveCount: nextGameHistory.length-1, 
+                gameHistory: nextGameHistory,
+                autoNotesMode: !autoNotesMode
             })
         }
     }
 
     const handleDelete = () => {
-        const newClearTile = clearTile(boardValues[selectedCell])
-        const nextBoardValues = boardValues.slice()
-        nextBoardValues[selectedCell] = newClearTile
+        let nextBoardValues = boardValues.slice()
+        if (highlightedCells.anchors.size > 1) {
+            const anchorsArray = Array.from(highlightedCells.anchors);
+            const nextBoardValues = boardValues.slice()
+            for (const anchor of anchorsArray) {
+                const newClearTile = clearTile(boardValues[anchor]) 
+                nextBoardValues[anchor] = newClearTile
+            }
+        }
+        else if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
+            const newClearTile = clearTile(boardValues[selectedCell])
+            nextBoardValues = boardValues.slice()
+            nextBoardValues[selectedCell] = newClearTile
+        }
         if (updateSudokuInterface) {
             updateSudokuInterface({boardValues: nextBoardValues})
         }
+        if (updateGameInterface) {
+            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+            selectedCell: selectedCell,
+            boardValues: nextBoardValues,
+            autoNotesMode: autoNotesMode
+            }]
+            updateGameInterface({
+                moveCount: nextGameHistory.length-1, 
+                gameHistory: nextGameHistory,
+                autoNotesMode: !autoNotesMode
+            })
+        }
     }
+
+    useEffect(() => {
+        if (backspaceMode)
+            handleDelete()
+    }, [backspaceMode])
 
     const handleNotes = () => {
         if (updateGameInterface) {
-            console.log("before button: ", notesMode)
             updateGameInterface({notesMode: !notesMode })
         }
     }
@@ -68,26 +104,33 @@ export default function ControlNav() {
     }
 
     const handleUndo = () => {
-        if (history.length === 1 || historySelectedCell.length === 1) {
-            alert("reached beginning of game")
+        const { selectedCell: prevSelectedTile } = gameHistory[gameHistory.length - 1]
+        if (gameHistory.length == 1) {
+            if (updateGameInterface)
+                updateGameInterface({selectedCell: prevSelectedTile})
         } else {
-            const prevMove = history[history.length - 2]
-            const prevSelectedCell = historySelectedCell[historySelectedCell.length - 2]
-            if (updateSudokuInterface)
-                updateSudokuInterface({boardValues: prevMove})
-            if (updateGameInterface) {
-                const nextHistory = [...history.slice(0, moveCount)]
-                const nextHistorySelectedCell = [...historySelectedCell.slice(0, moveCount), selectedCell]
-                // console.log("undo: ", nextHistory)
-                console.log(moveCount)
-                updateGameInterface({
-                    moveCount: nextHistory.length-1, 
-                    historySelectedCell: nextHistorySelectedCell,
-                    history: nextHistory,
-                    selectedCell: prevSelectedCell
-                })}
+            const { 
+                    boardValues: prevBoardValues,
+                    autoNotesMode: prevAutoNotesMode
+            } = gameHistory[gameHistory.length - 2]
+            if (updateSudokuInterface) {
+                updateSudokuInterface({boardValues: prevBoardValues})
             }
+            if (updateGameInterface) {
+                const nextGameHistory = [...gameHistory.slice(0, moveCount)]
+                updateGameInterface({
+                    moveCount: nextGameHistory.length-1, 
+                    gameHistory: nextGameHistory,
+                    selectedCell: prevSelectedTile,
+                    autoNotesMode: prevAutoNotesMode
+            })}
+        }
     }
+
+    useEffect(() => {
+        if (undoMode)
+            handleUndo()
+    }, [undoMode])
 
 
     return (
@@ -118,8 +161,8 @@ export default function ControlNav() {
                     <div className="h-full bg-transparent">
                         <div className="grid grid-cols-3 flex-none gap-2 w-full h-full p-2">
                             <IconSquare icon={PiPencilSimple}
-                            pressedIcon={PiPencilSimple} label="notes" 
-                            handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode}/>
+                            pressedIcon={PiPencilSimpleFill} label="notes" 
+                            handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode || highlightedCells.anchors.size > 1}/>
                             <IconSquare icon={PiNotePencil} 
                             pressedIcon={PiNotePencil} label="auto" 
                             handleMe={handleAutoNotes}/>
@@ -129,7 +172,7 @@ export default function ControlNav() {
                             />
                             <IconSquare icon={IoBackspaceOutline} 
                             pressedIcon={IoBackspace} label="delete" 
-                            handleMe={handleDelete}/>
+                            handleMe={handleDelete} keyBoardClick={backspaceMode}/>
                             <IconSquare icon={PiArrowBendUpLeftFill} 
                             pressedIcon={PiArrowBendDoubleUpLeftFill} label="undo" 
                             handleMe={handleUndo} keyBoardClick={undoMode}/>
@@ -140,17 +183,16 @@ export default function ControlNav() {
                     </div>
                 </div>
                 <div className="p-2 grid grid-cols-3 h-1/3 gap-2">
-                    <NumPadSquare squareValue={1} quantity={0} />
-                    <NumPadSquare squareValue={2} quantity={0} />
-                    <NumPadSquare squareValue={3} quantity={0} />
-                    <NumPadSquare squareValue={4} quantity={0} />
-                    <NumPadSquare squareValue={5} quantity={0} />
-                    <NumPadSquare squareValue={6} quantity={0} />
-                    <NumPadSquare squareValue={7} quantity={0} />
-                    <NumPadSquare squareValue={8} quantity={0} />
-                    <NumPadSquare squareValue={9} quantity={0} />
+                    <NumberTile squareValue={1} quantity={numToQuantity.get(1) ?? 0} />
+                    <NumberTile squareValue={2} quantity={numToQuantity.get(2) ?? 0} />
+                    <NumberTile squareValue={3} quantity={numToQuantity.get(3) ?? 0} />
+                    <NumberTile squareValue={4} quantity={numToQuantity.get(4) ?? 0} />
+                    <NumberTile squareValue={5} quantity={numToQuantity.get(5) ?? 0} />
+                    <NumberTile squareValue={6} quantity={numToQuantity.get(6) ?? 0} />
+                    <NumberTile squareValue={7} quantity={numToQuantity.get(7) ?? 0} />
+                    <NumberTile squareValue={8} quantity={numToQuantity.get(8) ?? 0} />
+                    <NumberTile squareValue={9} quantity={numToQuantity.get(9) ?? 0} />
                 </div>
-
 
                 <div className="w-full h-1/3 flex-none">
                     <StatBox />
