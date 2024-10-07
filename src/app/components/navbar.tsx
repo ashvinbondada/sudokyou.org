@@ -1,6 +1,6 @@
 import Link from "next/link";
 // import { FaGithub } from "react-icons/fa";
-import SignInButton from "./signInButton";
+// import SignInButton from "./signInButton";
 // import SignOutButton from "./signOutButton";
 
 export default function Navbar() {
@@ -16,7 +16,7 @@ export default function Navbar() {
             {/* <Link className="hidden md:block lg:block" href="https://github.com/ashvinbondada/sudokyou.org">
                 <FaGithub className="dark:text-dun text-theme-2-berkeley-blue hover:opacity-90"/>
             </Link> */}
-            <SignInButton />
+            {/* <SignInButton /> */}
             </div>
         </nav>
     </div>

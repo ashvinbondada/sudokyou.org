@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/navbar";
+import Instructions from "./components/instructions";
 
 export const metadata: Metadata = {
   title: "Sudokyou - Sudoku For You",
@@ -33,8 +34,8 @@ export default function RootLayout({
               </div>
 
               {/* Right component */}
-              <div className="h-full lg:w-[256px] md:flex-none hidden xl:block ">
-                {/* leaderboard, game history */}
+              <div className="h-full lg:w-[256px] md:flex-none hidden lg:block p-4 select-none">
+                <Instructions />
               </div>
             </div>
           </div>
