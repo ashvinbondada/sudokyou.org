@@ -34,7 +34,7 @@ export default function RootLayout({
               </div>
 
               {/* Right component */}
-              <div className="h-full lg:w-[256px] md:flex-none hidden lg:block p-4 select-none">
+              <div className="h-full lg:w-[256px] md:flex-none hidden lg:block p-4 select-none overflow-y-auto">
                 <Instructions />
               </div>
             </div>
