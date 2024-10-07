@@ -97,7 +97,7 @@ export default function Square({uid}: Props) {
 
     const getBackgroundClasses = (index: number) => {
         let backGroundClassRes = ''
-        const selectedCellBG = 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
+        const selectedCellBG = 'bg-theme-1-pacific-cyan/65 animate-pulse-shadow';
         // same numbered cells highlight
         if (squareValue > 0 && squareValue === boardValues[selectedCell].squareValue) {
         backGroundClassRes += (index !== selectedCell) 
@@ -105,7 +105,7 @@ export default function Square({uid}: Props) {
             : selectedCellBG;
         } 
         else if (highlightedCells.anchors.has(uid)) {
-            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 shadow-custom-inner'
+            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 animate-pulse-shadow'
         }
         else if (highlightedCells.neighborhood.includes(index)) {
         backGroundClassRes += index === selectedCell
