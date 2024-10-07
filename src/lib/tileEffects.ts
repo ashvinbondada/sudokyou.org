@@ -39,6 +39,7 @@ export const calculateHighlightCells = (
   const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
   const highlightedCells: HighlightedCells = {
     neighborhood: combinedCells,
+    anchors: new Set()
   }
     return highlightedCells
 };

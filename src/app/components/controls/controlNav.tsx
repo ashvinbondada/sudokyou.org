@@ -24,7 +24,7 @@ export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells} = useContext(GameContext)
+    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells, } = useContext(GameContext)
 
     const handleAutoNotes = () => {
         // console.log("before: ", boardValues)
@@ -183,7 +183,7 @@ export default function ControlNav() {
                         <div className="grid grid-cols-3 flex-none gap-2 w-full h-full p-2">
                             <IconSquare icon={PiPencilSimple}
                             pressedIcon={PiPencilSimpleFill} label="notes" 
-                            handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode}/>
+                            handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode || highlightedCells.anchors.size > 1}/>
                             <IconSquare icon={PiNotePencil} 
                             pressedIcon={PiNotePencil} label="auto" 
                             handleMe={handleAutoNotes}/>

@@ -74,18 +74,9 @@ export async function getNewPuzzle(difficulty: string): Promise<SudokuInterface 
         }
 
 
-    // Return the document data
         const puzzleData = puzzleDoc.data();
-        // console.log(puzzleDataString)
         const newPuzzle: SudokuInterface = PuzzleResponseToSudokuInterface(puzzleData)
-        // const puzzle: PuzzleString = {
-        //     id: puzzleDoc.id, // Use the doc ID from Firestore
-        //     level: puzzleData.level, // Ensure these fields exist in your Firestore document
-        //     initial: puzzleData.initial,
-        //     solution: puzzleData.solution,
-        // };
         return newPuzzle
-        // return new Response(JSON.stringify(puzzleData), { status: 200 });
 
     } catch (error) {
         // Handle errors

@@ -54,19 +54,22 @@ export default function Square({uid}: Props) {
         if (anchorMode && !newAnchors.has(uid)) {
                 newAnchors.add(uid);
         } 
-        else if (newAnchors.has(uid)) {
+        else if (anchorMode && newAnchors.has(uid)) {
             newAnchors.delete(uid)
+        }
+        else if (newAnchors.size == 0) {
+            newAnchors.add(uid)
         }
         else {
             newAnchors.clear()
-            newAnchors.add(uid);
+            // newAnchors.add(uid);
         }
         if (updateGameInterface) {
             updateGameInterface({
                 highlightedCells: {
                     ...highlightedCells,
-                    anchors: newAnchors
-                }
+                    anchors: newAnchors,
+                },
             });
         }
     }
@@ -139,9 +142,9 @@ export default function Square({uid}: Props) {
                         (isEditable === tileType.WRONG)
                         && (
                             // on the current tile & engaged notes mode
-                            // or already has notes
+                            // or already has notes with no input value
                             ((selectedCell == uid) && notesMode) 
-                            || squareNotes.some((note: number) => note !== 0)
+                            || (squareValue == 0 && squareNotes.some((note: number) => note !== 0))
                             )
                     ) ? (
                         // passing in handleSquareNotesInput function because 
