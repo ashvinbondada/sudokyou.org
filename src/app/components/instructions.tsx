@@ -26,13 +26,13 @@ export default function Instructions() {
       </ul>
       <h2 className="text-lg font-semibold text-gray-800 mt-6 mb-3">Keyboard Instructions</h2>
       <ul className="list-disc list-inside space-y-2 text-gray-600">
-        <li>Numbers (1-9) can be used for input.</li>
-        <li><strong>n</strong> - Toggle notes mode.</li>
+        {/* <li>Numbers (1-9) can be used for input.</li> */}
+        {/* <li><strong>n</strong> - Toggle notes mode.</li>
         <li><strong>u</strong> - Undo a move.</li>
         <li><strong>Backspace</strong> - Clear a square.</li>
-        <li><strong>hjkl (vim)</strong> or <strong>arrow keys</strong> - Move around the board.</li>
+        <li><strong>hjkl (vim)</strong> or <strong>arrow keys</strong> - Move around the board.</li> */}
         <li>
-          Use these keys to input (1-9) numbers:
+        Press and/or hold <strong>(1-9)</strong> or these keys to input numbers:
           <div className="flex flex-col items-center mt-2 space-y-1">
             <div className="flex space-x-2">
               {keys.slice(0, 3).map((key) => (
@@ -72,7 +72,12 @@ export default function Instructions() {
             </div>
           </div>
         </li>
+        <li><strong>n</strong> - Toggle notes mode.</li>
+        <li><strong>u</strong> - Undo a move.</li>
+        <li><strong>Backspace</strong> - Clear a square.</li>
+        <li><strong>hjkl (vim)</strong> or <strong>arrow keys</strong> - Move around the board.</li>
         <li><strong>Shift</strong> - Temporarily toggle notes mode when held down.</li>
+        <li><strong>Meta key (⌘ Mac / ⊞ Win) + click</strong> - Select multiple squares for adding notes.</li>
       </ul>
     </div>
   );

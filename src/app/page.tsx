@@ -26,7 +26,7 @@ export default async function Home() {
             </div>
           </div>
           <div className="w-full h-max block">
-            ABOUT SUDOKYOU
+            {/* ABOUT SUDOKYOU */}
           </div>
         </div>
       </div>

@@ -32,7 +32,7 @@ export default async function Difficultypage({ params: { difficulty } }: Props) 
           </div>
         </div>
         <div className="w-full h-max block">
-          ABOUT SUDOKYOU
+          {/* ABOUT SUDOKYOU */}
         </div>
       </div>
     </div>
