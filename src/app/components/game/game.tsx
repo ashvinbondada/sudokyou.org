@@ -16,7 +16,6 @@ type Props = {
 }
 
 export default function Game({newSudoku, newGame}: Props) {
-  // const shiftPressIsShiftDown = useShiftClick();
   const [inputSource, setInputSource] = useState<"keyboard" | "mouse">("keyboard")
   const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
 
@@ -302,12 +301,6 @@ export default function Game({newSudoku, newGame}: Props) {
       ...prevState,
       backspaceMode: true
     }));
-    // setTimeout(() => {
-    //   setGameData((prevState) => ({
-    //     ...prevState,
-    //     backspaceMode: false
-    //   })) 
-    // },1)
   })
 
   // n PRESS NOTES PERM TOGGLE
@@ -320,7 +313,6 @@ export default function Game({newSudoku, newGame}: Props) {
 
   // u PRESS UNDO MOVE
   useKeyboardShortcut(["u"], () => {
-      // const { selectedCell: prevSelectedTile } = gameData.gameHistory[gameData.gameHistory.length - 1]
       setGameData((prevState) => ({
         ...prevState,
         undoMode: true
@@ -443,10 +435,8 @@ export default function Game({newSudoku, newGame}: Props) {
 
   // NOTES SQUARE HANDLING
   const handleSquareNotesInput = useCallback((input: number, inputList: number[]) => {
-    // const { boardValues } = boardData;
     const nextBoardValues = boardData.boardValues.slice();
     for (const idx of inputList) {
-      // setBoardData((prevBoardData) => {
       const { squareNotes } = boardData.boardValues[idx];
       const nextSquareNotes = squareNotes.slice();
       
@@ -508,7 +498,7 @@ export default function Game({newSudoku, newGame}: Props) {
           nextBoardValues = handleSquareNotesInput(input, filteredAnchors);
         } 
         else if (highlightedCells.anchors.size === 1) {
-            const index = Array.from(highlightedCells.anchors)[0]; // Corrected to get first anchor
+            const index = Array.from(highlightedCells.anchors)[0];
             const { isEditable } = boardData.boardValues[index];
             
             if (isEditable === tileType.WRONG) {
@@ -517,7 +507,6 @@ export default function Game({newSudoku, newGame}: Props) {
                 nextBoardValues = handleSquareNotesInput(input, [index]);
               } else {
                 nextBoardValues = handleRegularSquareInput(inputValue, index);
-                console.log("edit mode 2: ", "index: ", nextBoardValues[index])
               }
             }
           } 
