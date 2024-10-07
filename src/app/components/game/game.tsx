@@ -475,6 +475,18 @@ export default function Game({newSudoku, newGame}: Props) {
           squareNotes: nextSquareNotes,
         };
       })
+
+      setGameData((prevState) => {
+        const updatedNumToQuantity = new Map(prevState.numToQuantity);
+        // Get the current quantity, default to 0 if not present
+        const currentQuantity = updatedNumToQuantity.get(input) || 0;
+        // Update the quantity
+        updatedNumToQuantity.set(input, currentQuantity + 1);
+        return {
+            ...prevState,
+            numToQuantity: updatedNumToQuantity,
+        };
+      });
     }
     
     return nextBoardValues
@@ -521,12 +533,11 @@ export default function Game({newSudoku, newGame}: Props) {
               }
             }
           }
-
+        
         setBoardData((prevBoardData) => ({
           ...prevBoardData,
           boardValues: nextBoardValues
         }));
-    
         setGameData((prevGameData) => {
           const nextGameHistory = [
             ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),

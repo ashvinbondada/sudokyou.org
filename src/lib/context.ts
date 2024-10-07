@@ -22,6 +22,7 @@ const defaultGameState = {
     backspaceMode: false,
     inputValue: 0,
     selectedCell: 40,
+    numToQuantity: new Map<number, number>(),
     highlightedCells: { 
         neighborhood: [4, 13, 22, 36, 37, 38, 58, 67, 76, 42, 43, 44],
         anchors: new Set<number>()

@@ -2,12 +2,6 @@
 // containing relevant value, notes, 
 // and meta data regarding its state.
 
-// enum tileType {
-//     GIVEN, // black
-//     WRONG, // red
-//     RIGHT // blue
-// }
-
 interface Tile {
     // given or user entered status 
     isEditable  : any; // tileType in lib/common.ts
@@ -67,6 +61,8 @@ interface GameInterface {
     inputValue          : number;
     // tile that user is choosing to edit
     selectedCell        : number;  
+    // quantity of each number
+    numToQuantity       : Map<number, number>
     // tiles higlighted for user, unable to edit atm
     highlightedCells    : HighlightedCells;
     // status of the game 

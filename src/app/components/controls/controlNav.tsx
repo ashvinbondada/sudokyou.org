@@ -13,7 +13,7 @@ import {PiLightbulb, PiLightbulbFill,
 
 import IconSquare from "./iconSquare";
 import StatBox from "./statBox";
-import NumPadSquare from "./numberTile";
+import NumberTile from "./numberTile";
 import ShareSquare from "./shareSquare";
 import { useContext, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "@/lib/context";
@@ -24,7 +24,7 @@ export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
     const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells, } = useContext(GameContext)
+    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells, numToQuantity } = useContext(GameContext)
 
     const handleAutoNotes = () => {
         let nextBoardValues: Tile[] = []
@@ -183,17 +183,16 @@ export default function ControlNav() {
                     </div>
                 </div>
                 <div className="p-2 grid grid-cols-3 h-1/3 gap-2">
-                    <NumPadSquare squareValue={1} quantity={0} />
-                    <NumPadSquare squareValue={2} quantity={0} />
-                    <NumPadSquare squareValue={3} quantity={0} />
-                    <NumPadSquare squareValue={4} quantity={0} />
-                    <NumPadSquare squareValue={5} quantity={0} />
-                    <NumPadSquare squareValue={6} quantity={0} />
-                    <NumPadSquare squareValue={7} quantity={0} />
-                    <NumPadSquare squareValue={8} quantity={0} />
-                    <NumPadSquare squareValue={9} quantity={0} />
+                    <NumberTile squareValue={1} quantity={numToQuantity.get(1) ?? 0} />
+                    <NumberTile squareValue={2} quantity={numToQuantity.get(2) ?? 0} />
+                    <NumberTile squareValue={3} quantity={numToQuantity.get(3) ?? 0} />
+                    <NumberTile squareValue={4} quantity={numToQuantity.get(4) ?? 0} />
+                    <NumberTile squareValue={5} quantity={numToQuantity.get(5) ?? 0} />
+                    <NumberTile squareValue={6} quantity={numToQuantity.get(6) ?? 0} />
+                    <NumberTile squareValue={7} quantity={numToQuantity.get(7) ?? 0} />
+                    <NumberTile squareValue={8} quantity={numToQuantity.get(8) ?? 0} />
+                    <NumberTile squareValue={9} quantity={numToQuantity.get(9) ?? 0} />
                 </div>
-
 
                 <div className="w-full h-1/3 flex-none">
                     <StatBox />

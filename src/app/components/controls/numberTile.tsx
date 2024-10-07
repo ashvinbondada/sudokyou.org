@@ -5,10 +5,10 @@ import { useContext, useState } from "react";
 
 type Props = {
     squareValue: number;
-    quantity?: number; // New quantity prop
+    quantity: number; // New quantity prop
   };
   
-  export default function NumPadSquare({ squareValue, quantity}: Props) {
+  export default function NumberTile({ squareValue, quantity}: Props) {
     const [clicked, setClicked] = useState(false)
     const {boardValues, solution} = useContext(BoardContext)
     const {inputValue, notesMode, selectedCell, updateGameInterface} = useContext(GameContext)
@@ -28,7 +28,10 @@ type Props = {
 
     return (
         <button className={`h-full w-full flex flex-col items-center justify-center sm:text-3xl md:text-4xl select-none transition-all duration-300  relative group hover:shadow-custom-inner rounded-md 
-          ${(clicked || (squareValue === inputValue)) 
+          ${
+          (quantity == 9)
+          ? 'text-gray-400 bg-gray-100' 
+          : (clicked || (squareValue === inputValue)) 
             ? (squareValue === Number(solution[selectedCell]) 
               || notesMode
               || (boardValues[selectedCell].isEditable !== tileType.WRONG)
@@ -36,7 +39,7 @@ type Props = {
               ? 'text-white bg-theme-1-pacific-cyan' 
               : 'text-white bg-theme-2-pantone' 
             : 'text-theme-1-pacific-cyan bg-gray-100 hover:bg-gray-200'} `}
-        onClick={handleClick} 
+        onClick={(quantity < 9) ? handleClick : () => {}} 
         tabIndex={-1}
         >
           {/* Display the squareValue with hover effect */}
