@@ -31,7 +31,7 @@ type Props = {
         className={`h-full w-full flex flex-col items-center justify-center sm:text-3xl md:text-4xl select-none transition-all duration-300 relative group hover:shadow-custom-inner rounded-md
           ${
             quantity === 9 
-            ? 'text-gray-400 bg-gray-200 shadow-custom-inner pointer-events-none' 
+            ? 'text-gray-400 bg-gray-200 dark:bg-slate-800 shadow-custom-inner pointer-events-none' 
             : (clicked || squareValue === inputValue) 
                 ? (squareValue === Number(solution[selectedCell]) 
                     || notesMode 
