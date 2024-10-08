@@ -567,11 +567,11 @@ export default function Game({newSudoku, newGame}: Props) {
     const y = e.clientY - offsetTop - offsetHeight / 2;
 
     // Invert the shadow to be on the opposite side of the mouse position
-    const shadowX = -(x / offsetWidth) * 15; // Negative sign to invert
-    const shadowY = -(y / offsetHeight) * 15;
+    const shadowX = -(x / offsetWidth) * 30; // Negative sign to invert
+    const shadowY = -(y / offsetHeight) * 30;
 
     // Set the new shadow
-    setShadow(`${shadowX}px ${shadowY}px 10px rgba(0, 0, 0, 0.5)`);
+    setShadow(`${shadowX}px ${shadowY}px 10px rgba(0, 0, 0, 0.2)`);
     setInputSource("mouse");
   };
 
@@ -580,12 +580,12 @@ export default function Game({newSudoku, newGame}: Props) {
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
           <div className="w-full h-max" tabIndex={-1}>
             <div className="w-full flex md:flex-row sm:justify-start justify-center gap-1">
-              <div className="w-full sm:w-2/3 flex flex-col">
+              <div className="w-full sm:w-2/3 flex flex-col p-2">
                 <DifficultySelector />
                 <div
                 className="h-max aspect-square"
                 onMouseMove={handleMouseMove}
-                style={{ boxShadow: shadow }}
+                style={{ boxShadow: shadow, zIndex: 10 }}
                 >
                   <Board />
                 </div>

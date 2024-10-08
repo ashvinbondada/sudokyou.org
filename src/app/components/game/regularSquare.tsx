@@ -11,9 +11,9 @@ export default function RegularSquare({ squareValue, isEditable, handleClick}: P
     <button onClick={handleClick}
       className={`h-full w-full flex place-content-center items-center text-4xl ${
         isEditable === tileType.GIVEN
-          ? 'text-black' // Not editable, always black
-          : (isEditable === tileType.RIGHT)
-          ? 'text-theme-1-cerulean' // Editable and correct, show blue
+          ? 'text-black dark:text-dark-mode-2-dull-grey-blue' // Not editable, always black
+          : (isEditable === tileType.RIGHT || squareValue == 0)
+          ? 'text-editable-num'  // Editable and correct, show blue
           : 'text-red-600' // Editable but incorrect, show red
       } select-none`}
       tabIndex={-1}

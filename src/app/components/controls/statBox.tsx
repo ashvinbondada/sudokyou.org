@@ -25,18 +25,18 @@ export default function StatBox() {
             </div>
         </div>
         <div className="h-1/3 p-2 w-full flex flex-row">
-          <div className="w-full h-full bg-theme-1-pacific-cyan rounded-md flex flex-row items-center justify-center">
+          <div className="w-full h-full bg-gray-100 text-theme-1-pacific-cyan rounded-md dark:bg-slate-900 dark:hover:dark:bg-slate-800 flex flex-row items-center justify-center">
             {/* <div className="w-1/2 h-full flex items-center justify-center">
               <NumPadSquare squareValue={1234}/>
             </div>
             <div className="w-1/2 h-full flex items-center justify-center">
               <NumPadSquare squareValue={1.4}/>
             </div> */}
-            progress bar
+            <h1> progress bar</h1>
           </div>
         </div>
         <div className="w-full h-1/3 p-2">
-              <div className="w-full h-full bg-theme-1-pacific-cyan rounded-md flex justify-center items-center">
+              <div className="w-full h-full dark:bg-slate-900 dark:hover:dark:bg-slate-800 bg-gray-100 text-theme-1-pacific-cyan rounded-md flex justify-center items-center">
                 timer
               </div>
         </div>

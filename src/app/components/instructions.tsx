@@ -18,13 +18,13 @@ export default function Instructions() {
 
   return (
     <div className="h-full lg:w-[256px] md:flex-none hidden lg:block p-4 select-none overflow-y-auto">
-      <h1 className="text-xl font-bold text-gray-800 mb-4">Sudoku Rules</h1>
+      <h1 className="text-xl font-bold text-gray-800 dark:text-dark-mode-2-dull-grey-blue mb-4">Sudoku Rules</h1>
       <ul className="list-disc list-inside space-y-2 text-gray-600">
         <li>Each row must contain the numbers 1-9, without repetition.</li>
         <li>Each column must contain the numbers 1-9, without repetition.</li>
         <li>Each 3x3 sub-grid must contain the numbers 1-9, without repetition.</li>
       </ul>
-      <h2 className="text-lg font-semibold text-gray-800 mt-6 mb-3">Keyboard Instructions</h2>
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-dark-mode-2-dull-grey-blue mt-6 mb-3">Keyboard Instructions</h2>
       <ul className="list-disc list-inside space-y-2 text-gray-600">
         {/* <li>Numbers (1-9) can be used for input.</li> */}
         {/* <li><strong>n</strong> - Toggle notes mode.</li>
@@ -38,7 +38,7 @@ export default function Instructions() {
               {keys.slice(0, 3).map((key) => (
                 <div
                   key={key.char}
-                  className="bg-gray-100 text-theme-1-pacific-cyan p-2 rounded text-center cursor-pointer hover:bg-gray-200 transition duration-300"
+                  className="bg-gray-100 dark:bg-slate-900 dark:hover:dark:bg-slate-800  text-theme-1-pacific-cyan p-2 rounded text-center cursor-pointer hover:bg-gray-200 transition duration-300"
                   onMouseEnter={() => setHoveredKey(key.char)}
                   onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -50,7 +50,7 @@ export default function Instructions() {
               {keys.slice(3, 6).map((key) => (
                 <div
                   key={key.char}
-                  className="bg-gray-100 text-theme-1-pacific-cyan p-2 rounded text-center cursor-pointer hover:bg-gray-200 transition duration-300"
+                  className="bg-gray-100 dark:bg-slate-900 dark:hover:dark:bg-slate-800 text-theme-1-pacific-cyan p-2 rounded text-center cursor-pointer hover:bg-gray-200 transition duration-300"
                   onMouseEnter={() => setHoveredKey(key.char)}
                   onMouseLeave={() => setHoveredKey(null)}
                 >
@@ -62,7 +62,7 @@ export default function Instructions() {
               {keys.slice(6, 9).map((key) => (
                 <div
                   key={key.char}
-                  className="bg-gray-100 text-theme-1-pacific-cyan p-2 rounded text-center cursor-pointer hover:bg-gray-200 transition duration-300"
+                  className="bg-gray-100 dark:bg-slate-900 dark:hover:dark:bg-slate-800 text-theme-1-pacific-cyan p-2 rounded text-center cursor-pointer hover:bg-gray-200 transition duration-300"
                   onMouseEnter={() => setHoveredKey(key.char)}
                   onMouseLeave={() => setHoveredKey(null)}
                 >
