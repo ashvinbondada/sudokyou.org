@@ -1,6 +1,6 @@
 'use client'
 
-import {useContext, useState } from "react"
+import {useCallback, useContext, useState } from "react"
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
 import { BoardContext, GameContext } from "../../../lib/context";
@@ -13,7 +13,7 @@ type Props = {
 export default function Square({uid}: Props) {
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode, anchorMode} = useContext(GameContext)
+    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode, anchorMode, numToQuantity} = useContext(GameContext)
     const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
@@ -35,9 +35,10 @@ export default function Square({uid}: Props) {
             }
             if (updateGameInterface){
                 const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-                    selectedCell: selectedCell,
+                    selectedCell,
                     boardValues: nextBoardValues,
-                    autoNotesMode: autoNotesMode
+                    autoNotesMode,
+                    numToQuantity 
                 }]
                 updateGameInterface({
                     gameHistory: nextGameHistory,
@@ -51,24 +52,29 @@ export default function Square({uid}: Props) {
 
     const handleRegularSquareClick = () => {
         const newAnchors = new Set(highlightedCells.anchors); 
-        if (anchorMode && !newAnchors.has(uid)) {
-                newAnchors.add(uid);
+        const newAnchorNums = new Map(highlightedCells.anchorNums)
+        if (anchorMode && !newAnchors.has(uid) || newAnchors.size == 0) {
+            newAnchors.add(uid);
+            if (squareValue > 0)
+                newAnchorNums.set(squareValue, (newAnchorNums.get(squareValue) || 0) + 1);
         } 
         else if (anchorMode && newAnchors.has(uid)) {
             newAnchors.delete(uid)
-        }
-        else if (newAnchors.size == 0) {
-            newAnchors.add(uid)
+            if (squareValue > 0) {
+                const currentValue = newAnchorNums.get(squareValue) || 0;
+                newAnchorNums.set(squareValue, currentValue > 0 ? currentValue - 1 : 0);
+            }
         }
         else {
             newAnchors.clear()
-            // newAnchors.add(uid);
+            newAnchorNums.forEach((_, key) => newAnchorNums.set(key, 0));
         }
         if (updateGameInterface) {
             updateGameInterface({
                 highlightedCells: {
                     ...highlightedCells,
                     anchors: newAnchors,
+                    anchorNums: newAnchorNums
                 },
             });
         }
@@ -95,34 +101,50 @@ export default function Square({uid}: Props) {
         }
     };
 
-    const getBackgroundClasses = (index: number) => {
+    const getBackgroundClasses = useCallback((index: number) => {
         let backGroundClassRes = ''
-        const selectedCellBG = 'bg-theme-1-pacific-cyan/65 animate-pulse-shadow';
-        // same numbered cells highlight
-        if (squareValue > 0 && squareValue === boardValues[selectedCell].squareValue) {
+        const lenAnchors = highlightedCells.anchors.size
+        const anchorsArray = Array.from(highlightedCells.anchors);
+        const filteredAnchors = anchorsArray.filter(anchor => {
+          const { isEditable } = boardValues[anchor];
+          return isEditable === tileType.WRONG;
+        });
+        const selectedCellBG = (filteredAnchors.length == 0 
+                                || (isEditable === tileType.WRONG) 
+                                ) 
+                                ? 'bg-theme-1-pacific-cyan/65 animate-pulse-shadow' 
+                                : 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
+        // anchors
+        if (highlightedCells.anchors.has(uid)) {
+            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 '
+            backGroundClassRes += (isEditable === tileType.WRONG) ? 'animate-pulse-shadow' : '' }
+        // same number cells highlight
+        else if (squareValue > 0 
+            && (squareValue === boardValues[selectedCell].squareValue 
+            || (highlightedCells.anchorNums.get(squareValue) || 0) > 0)
+        ) {
         backGroundClassRes += (index !== selectedCell) 
             ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
             : selectedCellBG;
         } 
-        else if (highlightedCells.anchors.has(uid)) {
-            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 animate-pulse-shadow'
-        }
-        else if (highlightedCells.neighborhood.includes(index)) {
+        else if (filteredAnchors.length == 0 && highlightedCells.neighborhood.includes(index)) {
         backGroundClassRes += index === selectedCell
             ? selectedCellBG
-            : 'bg-theme-1-pacific-cyan/30';
+            : (lenAnchors == 0) 
+                ? 'bg-theme-1-pacific-cyan/30'
+                : 'bg-gray-100';
         } else {
             backGroundClassRes += 'bg-gray-100'
         }
 
         return backGroundClassRes
-    };
+    }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
 
     return (    
         <div className="w-full h-full bg-white" 
             onMouseMove={handleMouseMove}
             style={{
-                boxShadow: selectedCell === uid ? shadow : 'none',
+                boxShadow: (highlightedCells.anchors.size == 0 && selectedCell === uid) ? shadow : 'none',
                 zIndex: selectedCell === uid ? 10 : 1,
               }} 
               onPointerEnter={() => {

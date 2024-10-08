@@ -25,7 +25,8 @@ const defaultGameState = {
     numToQuantity: new Map<number, number>(),
     highlightedCells: { 
         neighborhood: [4, 13, 22, 36, 37, 38, 58, 67, 76, 42, 43, 44],
-        anchors: new Set<number>()
+        anchors: new Set<number>(),
+        anchorNums: new Map<number, number>()
     },
     gameStatus: GameStatus.WOMB, // Assuming GameStatus is an enum
     timer: undefined,
@@ -39,7 +40,8 @@ const defaultGameState = {
             squareNotes: Array(9).fill(0), 
         }),
         autoNotesMode: false,
-        anchors: []
+        anchors: [],
+        numToQuantity: new Map<number, number>(),
     }],
     updateGameInterface: () => {}
 };

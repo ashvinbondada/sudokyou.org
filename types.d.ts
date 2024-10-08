@@ -33,6 +33,7 @@ type HighlightedCells = {
     neighborhood    : number[] 
     // cells selected for group action
     anchors             : Set<number>
+    anchorNums          : Map<number, number>
 }
 
 type GameSnapShot  = {
@@ -42,7 +43,10 @@ type GameSnapShot  = {
     boardValues     : Tile[];
     // saved auto notes mode. see control-bar branch for more info
     autoNotesMode   : boolean;
-    anchors         ?: number[]
+
+    anchors         ?: number[];
+    numToQuantity   : Map<number, number>;
+
 }
 
 // Interface responsible for definin
@@ -62,7 +66,7 @@ interface GameInterface {
     // tile that user is choosing to edit
     selectedCell        : number;  
     // quantity of each number
-    numToQuantity       : Map<number, number>
+    numToQuantity       : Map<number, number>;
     // tiles higlighted for user, unable to edit atm
     highlightedCells    : HighlightedCells;
     // status of the game 
