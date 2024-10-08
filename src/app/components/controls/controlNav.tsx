@@ -19,6 +19,7 @@ import { useContext, useEffect, useState } from "react";
 import { BoardContext, GameContext } from "@/lib/context";
 import { calculateAutoCandidates, clearAutoCandidates, clearTile } from "@/lib/tileEffects";
 import { newGameInterface, PuzzleStringToSudokuInterface } from "@/lib/initializeSudoku";
+import { tileType } from "@/lib/common";
 
 export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
@@ -39,9 +40,10 @@ export default function ControlNav() {
         }
         if (updateGameInterface) {
             const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-            selectedCell: selectedCell,
-            boardValues: nextBoardValues,
-            autoNotesMode: autoNotesMode
+                selectedCell,
+                boardValues: nextBoardValues,
+                autoNotesMode,
+                numToQuantity
             }]
             updateGameInterface({
                 moveCount: nextGameHistory.length-1, 
@@ -52,33 +54,54 @@ export default function ControlNav() {
     }
 
     const handleDelete = () => {
-        let nextBoardValues = boardValues.slice()
-        if (highlightedCells.anchors.size > 1) {
+        const nextBoardValues = boardValues.slice()
+        const nextNumToQuantity = new Map(numToQuantity);
+        if (highlightedCells.anchors.size >= 1) {
             const anchorsArray = Array.from(highlightedCells.anchors);
-            const nextBoardValues = boardValues.slice()
-            for (const anchor of anchorsArray) {
-                const newClearTile = clearTile(boardValues[anchor]) 
+            const newAnchorNums = new Map(highlightedCells.anchorNums)
+            const filteredAnchors = anchorsArray.filter(anchor => {
+                const { isEditable } = boardValues[anchor];
+                return isEditable === tileType.WRONG;
+              });
+            for (const anchor of filteredAnchors) {
+                const newClearTile = clearTile(nextBoardValues[anchor]) 
+                const squareValue = nextBoardValues[anchor].squareValue
+                if (squareValue > 0) {
+                    const currentValue = newAnchorNums.get(squareValue) || 0;
+                    newAnchorNums.set(nextBoardValues[anchor].squareValue, currentValue > 0 ? currentValue - 1 : 0);
+
+                    const currentQuantity = nextNumToQuantity.get(squareValue) || 0;
+                    nextNumToQuantity.set(squareValue, currentQuantity-1) 
+                }
                 nextBoardValues[anchor] = newClearTile
             }
         }
         else if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
             const newClearTile = clearTile(boardValues[selectedCell])
-            nextBoardValues = boardValues.slice()
+            // nextBoardValues = boardValues.slice()
+            const squareValue = boardValues[selectedCell].squareValue
+            if (squareValue > 0) {
+                const currentQuantity = nextNumToQuantity.get(squareValue) || 0;
+                nextNumToQuantity.set(squareValue, currentQuantity-1) 
+            }
             nextBoardValues[selectedCell] = newClearTile
         }
+
         if (updateSudokuInterface) {
             updateSudokuInterface({boardValues: nextBoardValues})
         }
         if (updateGameInterface) {
             const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-            selectedCell: selectedCell,
-            boardValues: nextBoardValues,
-            autoNotesMode: autoNotesMode
+                selectedCell,
+                boardValues: nextBoardValues,
+                autoNotesMode,
+                numToQuantity: nextNumToQuantity
             }]
             updateGameInterface({
                 moveCount: nextGameHistory.length-1, 
                 gameHistory: nextGameHistory,
-                autoNotesMode: !autoNotesMode
+                autoNotesMode: !autoNotesMode,
+                numToQuantity: nextNumToQuantity
             })
         }
     }
@@ -111,7 +134,8 @@ export default function ControlNav() {
         } else {
             const { 
                     boardValues: prevBoardValues,
-                    autoNotesMode: prevAutoNotesMode
+                    autoNotesMode: prevAutoNotesMode,
+                    numToQuantity: prevNumToQuantity
             } = gameHistory[gameHistory.length - 2]
             if (updateSudokuInterface) {
                 updateSudokuInterface({boardValues: prevBoardValues})
@@ -122,7 +146,8 @@ export default function ControlNav() {
                     moveCount: nextGameHistory.length-1, 
                     gameHistory: nextGameHistory,
                     selectedCell: prevSelectedTile,
-                    autoNotesMode: prevAutoNotesMode
+                    autoNotesMode: prevAutoNotesMode,
+                    numToQuantity: prevNumToQuantity
             })}
         }
     }
