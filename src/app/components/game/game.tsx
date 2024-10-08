@@ -453,7 +453,7 @@ export default function Game({newSudoku, newGame}: Props) {
 }, [boardData.boardValues]);
 
   // REGULAR SQUARE HANDLING
-  const handleRegularSquareInput = useCallback((input: number, index: number) => {
+  const handleRegularSquareInput = useCallback((input: number, index: number): {nextNumToQuantity: Map<number, number>, nextBoardValues: Tile[] } => {
     const nextBoardValues = boardData.boardValues.slice(); // Clone the board values to avoid mutation
     const {squareValue} = nextBoardValues[index]
 
@@ -476,49 +476,46 @@ export default function Game({newSudoku, newGame}: Props) {
         };
       })
 
-      setGameData((prevState) => {
-        const updatedNumToQuantity = new Map(prevState.numToQuantity);
-        // Get the current quantity, default to 0 if not present
-        const currentQuantity = updatedNumToQuantity.get(input) || 0;
-        // Update the quantity
-        updatedNumToQuantity.set(input, currentQuantity + 1);
-        return {
-            ...prevState,
-            numToQuantity: updatedNumToQuantity,
-        };
-      });
+      const nextNumToQuantity = new Map(gameData.numToQuantity);
+      const currentQuantity = nextNumToQuantity.get(input) || 0;
+      nextNumToQuantity.set(input, currentQuantity + 1);
+      return {
+        nextNumToQuantity: nextNumToQuantity, nextBoardValues: nextBoardValues
+      }
     }
     
-    return nextBoardValues
-  }, [boardData, gameData.highlightedCells]);
+    return {nextNumToQuantity: gameData.numToQuantity , nextBoardValues: nextBoardValues}
+
+  }, [boardData, gameData.highlightedCells, gameData.numToQuantity]);
 
    
     useEffect(() => {
       const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
-      let nextBoardValues: Tile[] = boardData.boardValues;
-    
+      let finalBoardValues: Tile[] = boardData.boardValues.slice();
+      let finalNumToQuantity: Map<number, number> = new Map(gameData.numToQuantity)
       if (inputValue > 0) {
-        if (highlightedCells.anchors.size > 1) {
-          const anchorsArray = Array.from(highlightedCells.anchors);
-          // Filter anchors where isEditable is tileType.WRONG
-          const filteredAnchors = anchorsArray.filter(anchor => {
-            const { isEditable } = boardData.boardValues[anchor];
-            return isEditable === tileType.WRONG;
-          });
-    
+        const anchorsArray = Array.from(highlightedCells.anchors);
+        // Filter anchors where isEditable is tileType.WRONG
+        const filteredAnchors = anchorsArray.filter(anchor => {
+          const { isEditable } = boardData.boardValues[anchor];
+          return isEditable === tileType.WRONG;
+        });
+        if (filteredAnchors.length > 1) {
           const input = inputValue - 1;
-          nextBoardValues = handleSquareNotesInput(input, filteredAnchors);
+          finalBoardValues = handleSquareNotesInput(input, filteredAnchors);
         } 
-        else if (highlightedCells.anchors.size === 1) {
-            const index = Array.from(highlightedCells.anchors)[0];
+        else if (filteredAnchors.length === 1) {
+            const index = filteredAnchors[0];
             const { isEditable } = boardData.boardValues[index];
             
             if (isEditable === tileType.WRONG) {
               if (notesMode) {
                 const input = inputValue - 1;
-                nextBoardValues = handleSquareNotesInput(input, [index]);
+                finalBoardValues = handleSquareNotesInput(input, [index]);
               } else {
-                nextBoardValues = handleRegularSquareInput(inputValue, index);
+                const {nextNumToQuantity, nextBoardValues} = handleRegularSquareInput(inputValue, index);
+                finalBoardValues = nextBoardValues
+                finalNumToQuantity = nextNumToQuantity
               }
             }
           } 
@@ -527,24 +524,27 @@ export default function Game({newSudoku, newGame}: Props) {
             if (isEditable === tileType.WRONG) {
               if (notesMode) {
                 const input = inputValue - 1;
-                nextBoardValues = handleSquareNotesInput(input, [selectedCell]);
+                finalBoardValues = handleSquareNotesInput(input, [selectedCell]);
               } else {
-                nextBoardValues = handleRegularSquareInput(inputValue, selectedCell);
+                const {nextNumToQuantity, nextBoardValues} = handleRegularSquareInput(inputValue, selectedCell);
+                finalBoardValues = nextBoardValues
+                finalNumToQuantity = nextNumToQuantity
               }
             }
           }
         
         setBoardData((prevBoardData) => ({
           ...prevBoardData,
-          boardValues: nextBoardValues
+          boardValues: finalBoardValues
         }));
         setGameData((prevGameData) => {
           const nextGameHistory = [
             ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
             {
               selectedCell: prevGameData.selectedCell,
-              boardValues: nextBoardValues, // Use the updated boardValues
+              boardValues: finalBoardValues, // Use the updated boardValues
               autoNotesMode: prevGameData.autoNotesMode,
+              numToQuantity: finalNumToQuantity
             },
           ];
     
@@ -552,6 +552,7 @@ export default function Game({newSudoku, newGame}: Props) {
             ...prevGameData,
             gameHistory: nextGameHistory,
             moveCount: nextGameHistory.length - 1,
+            numToQuantity: finalNumToQuantity
           };
         });
         }

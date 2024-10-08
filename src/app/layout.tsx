@@ -14,32 +14,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-screen">
-      <body className="w-full h-screen flex flex-col items-center overflow-hidden bg-white dark:bg-dark-mode-1-matte-black">
+    <html lang="en" className="h-screen overflow-hidden">
+      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-dark-mode-1-matte-black overflow-hidden">
         <Navbar />
-        {/* <div className="flex h-full"> */}
           {/* Outer flex container */}
           <div className="h-full w-full flex flex-row justify-center">
-            {/* <Navbar /> */}
+
             {/* Middle component */}
             <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row justify-center ">
-              {/* Left component */}
-              {/* <div className="h-full border-4 border-blue-400 lg:w-[256px] hidden xl:block">
-                instructions, rules
-              </div> */}
 
               {/* Main content area */}
-              <div className="h-full lg:w-[1024px] w-full p-1 ">
+              <div className="h-full lg:w-[1024px] w-full p-1 overflow-hidden">
                 {children}
               </div>
 
               {/* Right component */}
-              <div className="h-full lg:w-[256px] md:flex-none hidden lg:block p-4 select-none overflow-y-auto">
+              {/* <div className="h-full lg:w-[256px] md:flex-none hidden lg:block p-4 select-none overflow-y-auto">
                 <Instructions />
+              </div> */}
+               <div className="h-full lg:w-[256px] hidden lg:block pt-2 pb-2 select-none overflow-y-scroll">
+              <Instructions />
               </div>
             </div>
           </div>
-        {/* </div> */}
       </body>
     </html>
   );

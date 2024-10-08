@@ -31,13 +31,15 @@ function PuzzleResponseToSudokuInterface(puzzleData: DocumentData) {
 // function generates a new game state GameInterface
 export function newGameInterface(initialBoardValues: Tile[]) {
     const numToQuantity = new Map<number, number>();
-
     initialBoardValues.forEach((tile) => {
         if (tile.squareValue > 0) { // Only count positive values
             const currentQuantity = numToQuantity.get(tile.squareValue) || 0;
             numToQuantity.set(tile.squareValue, currentQuantity + 1);
         }
     });
+    const anchorNums = new Map<number, number>(
+        Array.from({ length: 9 }, (_, i) => [i + 1, 0])
+      );
 
     const newGame: GameInterface = {
         notesMode: false,
@@ -46,11 +48,12 @@ export function newGameInterface(initialBoardValues: Tile[]) {
         backspaceMode: false,
         inputValue: 0,
         selectedCell: 40,
-        numToQuantity,
+        numToQuantity: numToQuantity,
         anchorMode: false,
         highlightedCells: { 
             neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-            anchors: new Set<number>()
+            anchors: new Set<number>(),
+            anchorNums: anchorNums
         },
         gameStatus: GameStatus.BORN, 
         timer: undefined,
@@ -60,7 +63,8 @@ export function newGameInterface(initialBoardValues: Tile[]) {
             selectedCell: 40,            
             boardValues: initialBoardValues,
             autoNotesMode: false,
-            anchors: []
+            anchors: [],
+            numToQuantity: numToQuantity
         }],
         // updateGameInterface: () => {}
     }

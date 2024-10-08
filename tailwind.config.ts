@@ -13,12 +13,12 @@ const config: Config = {
       },
       keyframes: {
         pulseShadow: {
-          '0%, 100%': { boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)' }, // start and end with custom-inner
-          '50%': { boxShadow: 'inset 0 0 20px rgba(0, 0, 0, 0.4)' }, // halfway with custom-inner-hover
+          '0%, 100%': { boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.1)' }, // start and end with custom-inner
+          '50%': { boxShadow: 'inset 0 0 20px rgba(0, 0, 0, 0.3)' }, // halfway with custom-inner-hover
         },
       },
       animation: {
-        'pulse-shadow': 'pulseShadow 1.5s ease-in-out infinite', // 2s duration with infinite looping
+        'pulse-shadow': 'pulseShadow 1s ease-in-out infinite', // 2s duration with infinite looping
       },
       colors: {
         "shilpa-aqua": "#A8E6CF",
