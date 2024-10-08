@@ -49,7 +49,7 @@ export default function Board() {
     // with thin grid lines
     <div key={block} className='bg-white'>
     {/* // div responsible for the grid lines between squares */}
-      <div  className="grid grid-cols-3 gap-[1px] bg-theme-1-cerulean/50">
+      <div  className="grid grid-cols-3 gap-[1px] bg-theme-1-cerulean/50 dark:bg-theme-2-berkeley-blue">
           {blockSquares}
       </div>
     </div>
@@ -57,9 +57,9 @@ export default function Board() {
 
   return (
     // Outer grid for the 3x3 blocks, responsible for the border thickness and color
-    <div className='p-[2px] bg-theme-2-berkeley-blue'>
+    <div className='p-[2px] bg-theme-1-pacific-cyan'>
       {/* div responsible for the color and thickness of grid lines */}
-        <div className='grid grid-cols-3 gap-[2px] bg-theme-2-berkeley-blue'>
+        <div className='grid grid-cols-3 gap-[2px] bg-theme-1-pacific-cyan'>
           {blockDivs}
         </div>
     </div>

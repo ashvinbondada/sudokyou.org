@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-screen overflow-hidden">
-      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-dark-mode-1-matte-black overflow-hidden">
+      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-black overflow-hidden">
         <Navbar />
           {/* Outer flex container */}
           <div className="h-full w-full flex flex-row justify-center">

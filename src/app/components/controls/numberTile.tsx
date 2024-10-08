@@ -11,7 +11,7 @@ type Props = {
   export default function NumberTile({ squareValue, quantity}: Props) {
     const [clicked, setClicked] = useState(false)
     const {boardValues, solution} = useContext(BoardContext)
-    const {inputValue, notesMode, selectedCell, updateGameInterface} = useContext(GameContext)
+    const {inputValue, notesMode, selectedCell, updateGameInterface, highlightedCells} = useContext(GameContext)
     const handleClick = () => {
       setClicked(true);
       if (updateGameInterface) {
@@ -35,10 +35,11 @@ type Props = {
             : (clicked || squareValue === inputValue) 
                 ? (squareValue === Number(solution[selectedCell]) 
                     || notesMode 
-                    || boardValues[selectedCell].isEditable !== tileType.WRONG)
+                    || boardValues[selectedCell].isEditable !== tileType.WRONG
+                    || highlightedCells.anchors.size > 1)
                     ? 'text-white bg-theme-1-pacific-cyan'
                     : 'text-white bg-theme-2-pantone'
-                : 'text-theme-1-pacific-cyan bg-gray-100 hover:bg-gray-200'
+                : 'text-theme-1-pacific-cyan bg-gray-100 dark:bg-slate-900 hover:bg-gray-200 dark:hover:dark:bg-slate-800'
           }`}
         onClick={quantity < 9 ? handleClick : () => {}}
         tabIndex={-1}

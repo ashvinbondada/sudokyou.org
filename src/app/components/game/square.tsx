@@ -110,38 +110,38 @@ export default function Square({uid}: Props) {
           return isEditable === tileType.WRONG;
         });
         const selectedCellBG = (filteredAnchors.length == 0 
-                                || (isEditable === tileType.WRONG) 
+                                && (isEditable === tileType.WRONG) 
                                 ) 
-                                ? 'bg-theme-1-pacific-cyan/65 animate-pulse-shadow' 
-                                : 'bg-theme-1-pacific-cyan/65 shadow-custom-inner';
+                                ? 'bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue animate-pulse-shadow' 
+                                : 'bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue shadow-custom-inner';
         // anchors
         if (highlightedCells.anchors.has(uid)) {
-            backGroundClassRes = backGroundClassRes.split(' ').slice(1).join(' ') + ' bg-theme-2-non-photo-blue/80 '
-            backGroundClassRes += (isEditable === tileType.WRONG) ? 'animate-pulse-shadow' : '' }
+            backGroundClassRes ='bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue'
+            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : '' }
         // same number cells highlight
         else if (squareValue > 0 
             && (squareValue === boardValues[selectedCell].squareValue 
             || (highlightedCells.anchorNums.get(squareValue) || 0) > 0)
         ) {
         backGroundClassRes += (index !== selectedCell) 
-            ? 'bg-theme-1-jonquil/50 shadow-custom-inner'
+            ? 'bg-theme-1-jonquil shadow-custom-inner dark:bg-slate-500'
             : selectedCellBG;
         } 
         else if (filteredAnchors.length == 0 && highlightedCells.neighborhood.includes(index)) {
         backGroundClassRes += index === selectedCell
             ? selectedCellBG
             : (lenAnchors == 0) 
-                ? 'bg-theme-1-pacific-cyan/30'
-                : 'bg-gray-100';
+                ? 'bg-dark-mode-1-blue-white dark:bg-slate-800'
+                : 'bg-gray-100 dark:bg-slate-900';
         } else {
-            backGroundClassRes += 'bg-gray-100'
+            backGroundClassRes += 'bg-gray-100 dark:bg-slate-900'
         }
 
         return backGroundClassRes
     }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
 
     return (    
-        <div className="w-full h-full bg-white" 
+        <div className="w-full h-full dark:bg-white" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: (highlightedCells.anchors.size == 0 && selectedCell === uid) ? shadow : 'none',
