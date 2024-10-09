@@ -15,8 +15,7 @@ export default function RegularSquare({ squareValue, isEditable, handleClick}: P
           : (isEditable === tileType.RIGHT || squareValue == 0)
           ? 'text-editable-num'  // Editable and correct, show blue
           : 'text-red-600' // Editable but incorrect, show red
-      } select-none`}
-      tabIndex={-1}
+      }`}
     >
       {squareValue > 0 ? squareValue : ''}
     </button>
