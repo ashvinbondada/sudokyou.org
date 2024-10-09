@@ -152,11 +152,11 @@ export default function Square({uid}: Props) {
                   updateGameInterface({ selectedCell: uid });
                 }
               }}
-              tabIndex={-1}
+            //   tabIndex={-1}
         >
             <div 
                 className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
-                tabIndex={-1}
+                // tabIndex={-1}
                 >
                 {
                     (
