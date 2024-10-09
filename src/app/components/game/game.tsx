@@ -62,7 +62,7 @@ export default function Game({newSudoku, newGame}: Props) {
         setGameData((prevState) => ({
           ...prevState,
           notesMode: false
-        }))
+        }));
       }
       if (event.key === "Meta") {
         setGameData((prevState) => ({
@@ -87,8 +87,10 @@ export default function Game({newSudoku, newGame}: Props) {
   }, []);
 
   // SHIFT PRESS NOTES SOFT TOGGLE UPDATE
- 
   useKeyboardShortcut(["Shift"], () => {
+    if (document.activeElement) {
+      (document.activeElement as HTMLElement).blur(); // Removes focus from the currently active element
+    }
     setGameData((prevState) => ({
       ...prevState,
       notesMode: true
