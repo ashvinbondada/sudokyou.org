@@ -7,7 +7,7 @@ type Props = {
 
 export default function NotesSquare({ squareNotes, handleSquareNotesInput }: Props) {
   return (
-    <div className="h-full w-full grid grid-cols-3 gap-[1px]">
+    <div className=" select-none h-full w-full grid grid-cols-3 gap-[1px]">
       {squareNotes.map((value, index) => (
         <div
           key={index}
