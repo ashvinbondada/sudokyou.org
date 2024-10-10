@@ -13,7 +13,7 @@ export default function RegularSquare({ squareValue, isEditable, handleClick}: P
         isEditable === tileType.GIVEN
           ? 'text-black dark:text-dark-mode-2-dull-grey-blue' // Not editable, always black
           : (isEditable === tileType.RIGHT || squareValue == 0)
-          ? 'text-editable-num'  // Editable and correct, show blue
+          ? 'text-editable-num dark:text-theme-1-pacific-cyan'  // Editable and correct, show blue
           : 'text-red-600' // Editable but incorrect, show red
       }`}
       tabIndex={-1}
