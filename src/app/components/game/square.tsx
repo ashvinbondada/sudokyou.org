@@ -141,7 +141,7 @@ export default function Square({uid}: Props) {
     }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
 
     return (    
-        <div className="w-full h-full dark:bg-white" 
+        <div className="w-full h-full dark:bg-white select-none" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: (highlightedCells.anchors.size == 0 && selectedCell === uid) ? shadow : 'none',
@@ -152,11 +152,11 @@ export default function Square({uid}: Props) {
                   updateGameInterface({ selectedCell: uid });
                 }
               }}
-            //   tabIndex={-1}
+              tabIndex={-1}
         >
             <div 
-                className={`w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
-                // tabIndex={-1}
+                className={`select-none w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
+                tabIndex={-1}
                 >
                 {
                     (
