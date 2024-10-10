@@ -59,6 +59,9 @@ export default function Game({newSudoku, newGame}: Props) {
         }))
       }
       if (event.key === "Shift") {
+        if (document.activeElement) {
+          (document.activeElement as HTMLElement).blur(); // Removes focus from the currently active element
+        }
         setGameData((prevState) => ({
           ...prevState,
           notesMode: false
