@@ -11,10 +11,10 @@ export default function RegularSquare({ squareValue, isEditable, handleClick}: P
     <button onClick={handleClick}
       className={`select-none h-full w-full flex place-content-center items-center text-4xl ${
         isEditable === tileType.GIVEN
-          ? 'text-black dark:text-dark-mode-2-dull-grey-blue' // Not editable, always black
+          ? 'text-light-given dark:text-dark-given' // Not editable, always black
           : (isEditable === tileType.RIGHT || squareValue == 0)
-          ? 'text-editable-num dark:text-theme-1-pacific-cyan'  // Editable and correct, show blue
-          : 'text-red-600' // Editable but incorrect, show red
+          ? 'text-light-right dark:text-dark-right'  // Editable and correct, show blue
+          : 'text-light-wrong' // Editable but incorrect, show red
       }`}
       tabIndex={-1}
     >

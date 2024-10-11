@@ -46,6 +46,9 @@ export default function Game({newSudoku, newGame}: Props) {
 
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
+      if (document.activeElement) {
+        (document.activeElement as HTMLElement).blur(); // Removes focus from the currently active element
+      }
       if (event.key === "u") {
         setGameData((prevState) => ({
           ...prevState,
@@ -59,9 +62,7 @@ export default function Game({newSudoku, newGame}: Props) {
         }))
       }
       if (event.key === "Shift") {
-        if (document.activeElement) {
-          (document.activeElement as HTMLElement).blur(); // Removes focus from the currently active element
-        }
+        
         setGameData((prevState) => ({
           ...prevState,
           notesMode: false

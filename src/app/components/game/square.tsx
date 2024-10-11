@@ -112,12 +112,12 @@ export default function Square({uid}: Props) {
         const selectedCellBG = (filteredAnchors.length == 0 
                                 && (isEditable === tileType.WRONG) 
                                 ) 
-                                ? 'bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue animate-pulse-shadow' 
-                                : 'bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue shadow-custom-inner';
+                                ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow' 
+                                : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner';
         // anchors
         if (highlightedCells.anchors.has(uid)) {
-            backGroundClassRes ='bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue'
-            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : '' }
+            backGroundClassRes ='bg-light-anchor dark:bg-dark-anchor'
+            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : 'shadow-custom-inner' }
         // same number cells highlight
         else if (squareValue > 0 
             && (squareValue === boardValues[selectedCell].squareValue 
@@ -131,17 +131,17 @@ export default function Square({uid}: Props) {
         backGroundClassRes += index === selectedCell
             ? selectedCellBG
             : (lenAnchors == 0) 
-                ? 'bg-dark-mode-1-blue-white dark:bg-slate-800'
-                : 'bg-gray-100 dark:bg-slate-900';
+                ? 'bg-light-nbhd-highlight dark:bg-slate-800'
+                : 'bg-light-square dark:bg-slate-900';
         } else {
-            backGroundClassRes += 'bg-gray-100 dark:bg-slate-900'
+            backGroundClassRes += 'bg-light-square dark:bg-slate-900'
         }
 
-        return backGroundClassRes
+        return backGroundClassRes 
     }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
 
     return (    
-        <div className="w-full h-full select-none" 
+        <div className="w-full h-full select-none rounded-sm" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: (highlightedCells.anchors.size == 0 && selectedCell === uid) ? shadow : 'none',
@@ -155,7 +155,7 @@ export default function Square({uid}: Props) {
               tabIndex={-1}
         >
             <div 
-                className={`select-none w-full h-full transition-all ${getBackgroundClasses(uid)} duration-90 ease-in-out`}
+                className={`select-none w-full h-full rounded-sm ${getBackgroundClasses(uid)} ${!anchorMode ? 'transition-colors duration-200 ease-out' : 'transition-none'}`}
                 tabIndex={-1}
                 >
                 {

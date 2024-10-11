@@ -25,14 +25,16 @@ const config: Config = {
           "given": "#000000", // black
           "wrong": "#dc2626", // red-400
           "right": "#1E3A8A", // blue 
-          "border": "#06AED5", // pacific-cyan blue
-          "grid-line": "#06AED5",  // pacific-cyan blue
+          "border": "#086788", // pacific-cyan blue
+          "grid-line": "#086788",  // pacific-cyan blue
           "reg-line": "#086788", // cerulean
           "square": "#F3F4F6", // gray-100
-          "nbhd-highlight": "#E7F6F2", // dull blue
+          "nbhd-highlight": "#E5E7EB", // dull blue
           "same-num-highlight": "#FFDE64", // jonquil-yellow
           "notebox-hover": "#FFDE64", // 
           "same-num-notebox": "#FFDE64",
+          "anchor": "#06AED5",
+          "selected-cell": "#06AED5",
         },
         "dark": {
           "given": "#9DB2BF",
@@ -46,6 +48,8 @@ const config: Config = {
           "same-num-highlight": "",
           "notebox-hover": "",
           "same-num-notebox": "",
+          "anchor": "#A480CF",
+          "selected-cell": "#A480CF",
         },
         "shilpa-aqua": "#A8E6CF",
         "shilpa-pink": "#FFD1DC",
