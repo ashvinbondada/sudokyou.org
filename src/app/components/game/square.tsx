@@ -124,7 +124,7 @@ export default function Square({uid}: Props) {
             || (highlightedCells.anchorNums.get(squareValue) || 0) > 0)
         ) {
         backGroundClassRes += (index !== selectedCell) 
-            ? 'bg-theme-1-jonquil shadow-custom-inner dark:bg-slate-500'
+            ? 'bg-light-same-num-highlight shadow-custom-inner dark:bg-slate-500'
             : selectedCellBG;
         } 
         else if (filteredAnchors.length == 0 && highlightedCells.neighborhood.includes(index)) {
@@ -141,7 +141,7 @@ export default function Square({uid}: Props) {
     }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
 
     return (    
-        <div className="w-full h-full dark:bg-white select-none" 
+        <div className="w-full h-full select-none" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: (highlightedCells.anchors.size == 0 && selectedCell === uid) ? shadow : 'none',
@@ -155,7 +155,7 @@ export default function Square({uid}: Props) {
               tabIndex={-1}
         >
             <div 
-                className={`select-none w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
+                className={`select-none w-full h-full transition-all ${getBackgroundClasses(uid)} duration-90 ease-in-out`}
                 tabIndex={-1}
                 >
                 {

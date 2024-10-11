@@ -7,15 +7,15 @@ type Props = {
 
 export default function NotesSquare({ squareNotes, handleSquareNotesInput }: Props) {
   return (
-    <div className=" select-none h-full w-full grid grid-cols-3 gap-[1px]">
+    <div className="p-[1px] select-none h-full w-full grid grid-cols-3 gap-[2px]">
       {squareNotes.map((value, index) => (
         <div
           key={index}
-          className=" rounded-[2px] aspect-square"
           onClick={() => handleSquareNotesInput(index)}
         >
           <NoteBox
               noteValue={value}
+              heldValue={index+1}
               onNoteBoxClick={() => handleSquareNotesInput(index)} 
             />
         </div>

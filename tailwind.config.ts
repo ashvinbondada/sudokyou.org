@@ -21,6 +21,32 @@ const config: Config = {
         'pulse-shadow': 'pulseShadow 1s ease-in-out infinite', // 2s duration with infinite looping
       },
       colors: {
+        "light": {
+          "given": "#000000", // black
+          "wrong": "#dc2626", // red-400
+          "right": "#1E3A8A", // blue 
+          "border": "#06AED5", // pacific-cyan blue
+          "grid-line": "#06AED5",  // pacific-cyan blue
+          "reg-line": "#086788", // cerulean
+          "square": "#F3F4F6", // gray-100
+          "nbhd-highlight": "#E7F6F2", // dull blue
+          "same-num-highlight": "#FFDE64", // jonquil-yellow
+          "notebox-hover": "#FFDE64", // 
+          "same-num-notebox": "#FFDE64",
+        },
+        "dark": {
+          "given": "#9DB2BF",
+          "wrong": "#dc2626",
+          "right": "#06AED5",
+          "border": "#06AED5",
+          "grid-line": "#06AED5",
+          "reg-line": "#1D3557",
+          "square": "",
+          "nbhd-highlight": "",
+          "same-num-highlight": "",
+          "notebox-hover": "",
+          "same-num-notebox": "",
+        },
         "shilpa-aqua": "#A8E6CF",
         "shilpa-pink": "#FFD1DC",
         "shilpa-ivy-green": "#6B8E23",
