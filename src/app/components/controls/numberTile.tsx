@@ -37,8 +37,8 @@ type Props = {
                     || notesMode 
                     || boardValues[selectedCell].isEditable !== tileType.WRONG
                     || highlightedCells.anchors.size > 1)
-                    ? 'text-white bg-theme-1-pacific-cyan'
-                    : 'text-white bg-theme-2-pantone'
+                    ? 'text-white bg-light-right dark:bg-dark-right'
+                    : 'text-white bg-light-wrong dark:bg-dark-wrong'
                 : 'text-theme-1-pacific-cyan bg-gray-100 dark:bg-slate-900 hover:bg-gray-200 dark:hover:dark:bg-slate-800'
           }`}
         onClick={quantity < 9 ? handleClick : () => {}}

@@ -117,24 +117,24 @@ export default function Square({uid}: Props) {
         // anchors
         if (highlightedCells.anchors.has(uid)) {
             backGroundClassRes ='bg-light-anchor dark:bg-dark-anchor'
-            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : 'shadow-custom-inner' }
+            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : ' shadow-custom-inner' }
         // same number cells highlight
         else if (squareValue > 0 
             && (squareValue === boardValues[selectedCell].squareValue 
             || (highlightedCells.anchorNums.get(squareValue) || 0) > 0)
         ) {
         backGroundClassRes += (index !== selectedCell) 
-            ? 'bg-light-same-num-highlight shadow-custom-inner dark:bg-slate-500'
+            ? 'bg-light-same-num-highlight shadow-custom-inner dark:bg-dark-same-num-highlight'
             : selectedCellBG;
         } 
         else if (filteredAnchors.length == 0 && highlightedCells.neighborhood.includes(index)) {
         backGroundClassRes += index === selectedCell
             ? selectedCellBG
             : (lenAnchors == 0) 
-                ? 'bg-light-nbhd-highlight dark:bg-slate-800'
-                : 'bg-light-square dark:bg-slate-900';
+                ? 'bg-light-nbhd-highlight dark:bg-dark-nbhd-highlight'
+                : 'bg-light-square dark:bg-dark-square';
         } else {
-            backGroundClassRes += 'bg-light-square dark:bg-slate-900'
+            backGroundClassRes += 'bg-light-square dark:bg-dark-square'
         }
 
         return backGroundClassRes 
