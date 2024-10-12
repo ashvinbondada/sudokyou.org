@@ -27,7 +27,7 @@ export default function NoteBox({noteValue, onNoteBoxClick, heldValue}: Props)
                     : ''
               }
               ${(noteValue > 0 && (noteValue === boardValues[selectedCell].squareValue || (highlightedCells.anchorNums.get(noteValue) || 0) > 0)) 
-                ? 'font-bold sm:text-lg lg:text-md xl:text-xl bg-light-same-num-notebox dark:bg-dark-same-num-notebox animate-pulse-shadow-note text-light-right dark:text-dark-notebox' 
+                ? 'font-bold sm:text-lg lg:text-md xl:text-xl bg-light-same-num-notebox dark:bg-light-same-num-notebox/70 animate-pulse-shadow-note text-light-right dark:text-light-right' 
                 : 'dark:text-dark-notebox text-light-right'
               }`}
       onMouseEnter={() => setIsHovered(true)}  // Set hover state to true on hover
