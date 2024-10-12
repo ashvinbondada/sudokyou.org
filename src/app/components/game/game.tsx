@@ -577,7 +577,7 @@ export default function Game({newSudoku, newGame}: Props) {
     const shadowY = -(y / offsetHeight) * 30;
 
     // Set the new shadow
-    setShadow(`${shadowX}px ${shadowY}px 10px rgba(0, 0, 0, 0.2)`);
+    setShadow(`${shadowX}px ${shadowY}px 15px rgba(8, 103, 136, 0.5)`); // Opacity changed to 0.3
     setInputSource("mouse");
   };
 

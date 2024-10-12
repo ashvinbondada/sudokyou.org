@@ -93,11 +93,11 @@ export default function Square({uid}: Props) {
             const centerY = offsetHeight / 2;
     
             // Compute the shadow values based on the distance from the center of the square
-            const shadowX = -((x - centerX) / offsetWidth) * 8; // Control the strength of the shadow here
-            const shadowY = -((y - centerY) / offsetHeight) * 8;
+            const shadowX = -((x - centerX) / offsetWidth) * 30; // Control the strength of the shadow here
+            const shadowY = -((y - centerY) / offsetHeight) * 30;
     
             // Set the new shadow
-            setShadow(`${shadowX}px ${shadowY}px 15px rgba(0, 0, 0, 0.5)`);
+            setShadow(`${shadowX}px ${shadowY}px 50px rgba(8, 103, 136, 0.5)`); // Opacity changed to 0.3
         }
     };
 
@@ -112,7 +112,7 @@ export default function Square({uid}: Props) {
         const selectedCellBG = (filteredAnchors.length == 0 
                                 && (isEditable === tileType.WRONG) 
                                 ) 
-                                ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow' 
+                                ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow ' 
                                 : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner';
         // anchors
         if (highlightedCells.anchors.has(uid)) {
