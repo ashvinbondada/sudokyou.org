@@ -581,6 +581,13 @@ export default function Game({newSudoku, newGame}: Props) {
     setInputSource("mouse");
   };
 
+  const handleMouseLeave = () => {
+    setGameData((prevState) => ({
+      ...prevState,
+      inputValue: 0
+    }))
+  }
+
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
         <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
@@ -591,6 +598,7 @@ export default function Game({newSudoku, newGame}: Props) {
                 <div
                 className="h-max aspect-square"
                 onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
                 style={{ boxShadow: shadow, zIndex: 10 }}
                 >
                   <Board />
