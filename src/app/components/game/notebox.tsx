@@ -1,28 +1,41 @@
 'use client'
 import { BoardContext, GameContext } from "@/lib/context"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 
 type Props = {
     noteValue: number,
+    heldValue: number,
     onNoteBoxClick: () => void
 }
 
-export default function NoteBox({noteValue, onNoteBoxClick}: Props) 
+export default function NoteBox({noteValue, onNoteBoxClick, heldValue}: Props) 
 {
   const {selectedCell, notesMode, highlightedCells} = useContext(GameContext)
   const {boardValues} = useContext(BoardContext)
+  const [isHovered, setIsHovered] = useState(false)  // Track hover state
+
   return (
-    <div className={`h-full w-full text-sm md:text-md flex items-center justify-center text-editable-num dark:text-dark-mode-2-dull-grey-blue ${notesMode ? 'hover:bg-theme-1-jonquil/70 dark:hover:bg-slate-600 hover:text-lg hover:font-semibold' : ''} transition-all duration-200 ease-in-out
-      ${(noteValue > 0 && (noteValue === boardValues[selectedCell].squareValue) || (highlightedCells.anchorNums.get(noteValue) || 0) > 0) ? 'font-bold sm:text-lg md:text-xl lg:text-xl bg-theme-1-jonquil/50 dark:bg-slate-600 rounded-[2px]' : 'font-normal'}
-    `}>
-      <button 
-        className="select-none"
-        onClick={onNoteBoxClick}
-        tabIndex={-1}
-      >
-      {(noteValue > 0) ? noteValue : ''}
-      </button>
-    </div>
+    <button 
+      className={`aspect-square 
+              h-full w-full select-none 
+              flex items-center justify-center 
+              rounded-sm xl:rounded-lg
+              ${(notesMode && noteValue > 0) 
+                ? ' hover:text-lg hover:font-semibold hover:bg-light-notebox-hover dark:hover:bg-dark-notebox-hover'
+                : (notesMode)
+                    ? 'hover:text-md hover:text-opacity-70'
+                    : ''
+              }
+              ${(noteValue > 0 && (noteValue === boardValues[selectedCell].squareValue || (highlightedCells.anchorNums.get(noteValue) || 0) > 0)) 
+                ? 'font-bold sm:text-lg lg:text-md xl:text-xl bg-light-same-num-notebox dark:bg-light-same-num-notebox/70 animate-pulse-shadow-note text-light-right dark:text-light-right' 
+                : 'dark:text-dark-notebox text-light-right'
+              }`}
+      onMouseEnter={() => setIsHovered(true)}  // Set hover state to true on hover
+      onMouseLeave={() => setIsHovered(false)}  // Set hover state to false when hover ends
+      onClick={onNoteBoxClick}
+      tabIndex={-1}
+    >
+      {(notesMode && isHovered) ? heldValue : (noteValue > 0) ? noteValue : ''}
+    </button>
   )
 }
-

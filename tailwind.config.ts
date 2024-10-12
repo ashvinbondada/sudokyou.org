@@ -14,49 +14,55 @@ const config: Config = {
       keyframes: {
         pulseShadow: {
           '0%, 100%': { boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.1)' }, // start and end with custom-inner
-          '50%': { boxShadow: 'inset 0 0 20px rgba(0, 0, 0, 0.3)' }, // halfway with custom-inner-hover
+          '50%': { boxShadow: 'inset 0 0 20px rgba(0, 0, 0, 0.5)' }, // halfway with custom-inner-hover
+        },
+        pulseShadowNotes: {
+          '0%, 100%': { boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.1)' }, // start and end with custom-inner
+          '50%': { boxShadow: 'inset 0 0 20px rgba(0, 0, 0, 0.2)' }, // halfway with custom-inner-hover
         },
       },
       animation: {
-        'pulse-shadow': 'pulseShadow 1s ease-in-out infinite', // 2s duration with infinite looping
+        'pulse-shadow': 'pulseShadowNotes 1s ease-in-out infinite', // 2s duration with infinite looping
+        'pulse-shadow-note': 'pulseShadowNotes 3s ease-in-out infinite', // 2s duration with infinite looping
       },
       colors: {
-        "shilpa-aqua": "#A8E6CF",
-        "shilpa-pink": "#FFD1DC",
-        "shilpa-ivy-green": "#6B8E23",
-        "off-white": "#DDE6ED",
-        "off-white-2": "#EDEFED",
-        "off-white-3": "#DCE3E7",
-        "editable-num" : "#1E3A8A",
+        "light": {
+          "given": "#000000", // black
+          "wrong": "#dc2626", // red-400
+          "right": "#1E3A8A", // blue 
+          "border": "#086788", // pacific-cyan blue
+          "grid-line": "#086788",  // pacific-cyan blue
+          "reg-line": "#086788", // cerulean
+          "square": "#F3F4F6", // gray-100
+          "nbhd-highlight": "#E5E7EB", // dull blue
+          "same-num-highlight": "#FFDE64", // jonquil-yellow
+          "notebox-hover": "#FFDE64", // 
+          "same-num-notebox": "#FFDE64",
+          "anchor": "#06AED5",
+          "selected-cell": "#06AED5",
+        },
+        "dark": {
+          "given": "#F3F4F6",
+          "wrong": "#dc2626",
+          "right": "#84D2F6",
+          "grid-line": "#06AED5",
+          "reg-line": "#1D3557",
+          "square": "#020617",
+          "nbhd-highlight": "#0f172a",
+          "same-num-highlight": "#64748B",
+          "notebox": "#e2e8f0",
+          "notebox-hover": "#64748B",
+          "same-num-notebox": "#64748B",
+          "anchor": "#A480CF",
+          "selected-cell": "#A480CF",
+        },
         "theme-1" : {
           "pacific-cyan" :"#06AED5",
           "cerulean" : "#086788",
-          "jonquil": "#f0c808",
-          "papaya-whip": "#FFF1D0",
-          "rojo": "#DD1C1A"
-        },
-
-        "theme-2": {
-          "pantone": "#E63946",
-          "honeydew": "#F1FAEE",
-          "non-photo-blue": "#A8DADC",
-          "cerulean": "#457B9D",
-          "berkeley-blue": "#1D3557"
-        },
-        "dark-mode-1" : {
-          "matte-black": "#2C3333",
-          "dull-dk-blue": "#395B64",
-          "dull-light-blue": "#A5C9CA",
-          "blue-white": "#E7F6F2"
         },
         "dark-mode-2": {
-          "dk-blue": "#27374D",
-          "matte-blue":"#526D82",
           "dull-grey-blue": "#9DB2BF",
-          // off white theme is general
-
         }
-
       },
     },
   },

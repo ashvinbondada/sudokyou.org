@@ -19,6 +19,7 @@ export default async function Difficultypage({ params: { difficulty } }: Props) 
   return (
     <div className="w-full h-full">
       <Game newSudoku={newSudoku} newGame={newGame}/>
+
       <div className="mt-1 w-full h-full flex flex-col items-center">
         <div className="w-full h-full sm:block md:hidden block text-black border-4 border-purple-400">
           controls, instructions

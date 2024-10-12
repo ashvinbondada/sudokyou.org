@@ -46,6 +46,9 @@ export default function Game({newSudoku, newGame}: Props) {
 
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
+      if (document.activeElement) {
+        (document.activeElement as HTMLElement).blur(); // Removes focus from the currently active element
+      }
       if (event.key === "u") {
         setGameData((prevState) => ({
           ...prevState,
@@ -59,9 +62,7 @@ export default function Game({newSudoku, newGame}: Props) {
         }))
       }
       if (event.key === "Shift") {
-        if (document.activeElement) {
-          (document.activeElement as HTMLElement).blur(); // Removes focus from the currently active element
-        }
+        
         setGameData((prevState) => ({
           ...prevState,
           notesMode: false
@@ -576,9 +577,16 @@ export default function Game({newSudoku, newGame}: Props) {
     const shadowY = -(y / offsetHeight) * 30;
 
     // Set the new shadow
-    setShadow(`${shadowX}px ${shadowY}px 10px rgba(0, 0, 0, 0.2)`);
+    setShadow(`${shadowX}px ${shadowY}px 15px rgba(8, 103, 136, 0.5)`); // Opacity changed to 0.3
     setInputSource("mouse");
   };
+
+  const handleMouseLeave = () => {
+    setGameData((prevState) => ({
+      ...prevState,
+      inputValue: 0
+    }))
+  }
 
   return (
       <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
@@ -590,6 +598,7 @@ export default function Game({newSudoku, newGame}: Props) {
                 <div
                 className="h-max aspect-square"
                 onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
                 style={{ boxShadow: shadow, zIndex: 10 }}
                 >
                   <Board />

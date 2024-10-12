@@ -93,11 +93,11 @@ export default function Square({uid}: Props) {
             const centerY = offsetHeight / 2;
     
             // Compute the shadow values based on the distance from the center of the square
-            const shadowX = -((x - centerX) / offsetWidth) * 8; // Control the strength of the shadow here
-            const shadowY = -((y - centerY) / offsetHeight) * 8;
+            const shadowX = -((x - centerX) / offsetWidth) * 30; // Control the strength of the shadow here
+            const shadowY = -((y - centerY) / offsetHeight) * 30;
     
             // Set the new shadow
-            setShadow(`${shadowX}px ${shadowY}px 15px rgba(0, 0, 0, 0.5)`);
+            setShadow(`${shadowX}px ${shadowY}px 50px rgba(8, 103, 136, 0.5)`); // Opacity changed to 0.3
         }
     };
 
@@ -112,36 +112,36 @@ export default function Square({uid}: Props) {
         const selectedCellBG = (filteredAnchors.length == 0 
                                 && (isEditable === tileType.WRONG) 
                                 ) 
-                                ? 'bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue animate-pulse-shadow' 
-                                : 'bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue shadow-custom-inner';
+                                ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow ' 
+                                : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner';
         // anchors
         if (highlightedCells.anchors.has(uid)) {
-            backGroundClassRes ='bg-dark-mode-1-dull-light-blue dark:bg-dark-mode-1-dull-dk-blue'
-            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : '' }
+            backGroundClassRes ='bg-light-anchor dark:bg-dark-anchor'
+            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : ' shadow-custom-inner' }
         // same number cells highlight
         else if (squareValue > 0 
             && (squareValue === boardValues[selectedCell].squareValue 
             || (highlightedCells.anchorNums.get(squareValue) || 0) > 0)
         ) {
         backGroundClassRes += (index !== selectedCell) 
-            ? 'bg-theme-1-jonquil shadow-custom-inner dark:bg-slate-500'
+            ? 'bg-light-same-num-highlight shadow-custom-inner dark:bg-dark-same-num-highlight'
             : selectedCellBG;
         } 
         else if (filteredAnchors.length == 0 && highlightedCells.neighborhood.includes(index)) {
         backGroundClassRes += index === selectedCell
             ? selectedCellBG
             : (lenAnchors == 0) 
-                ? 'bg-dark-mode-1-blue-white dark:bg-slate-800'
-                : 'bg-gray-100 dark:bg-slate-900';
+                ? 'bg-light-nbhd-highlight dark:bg-dark-nbhd-highlight'
+                : 'bg-light-square dark:bg-dark-square';
         } else {
-            backGroundClassRes += 'bg-gray-100 dark:bg-slate-900'
+            backGroundClassRes += 'bg-light-square dark:bg-dark-square'
         }
 
-        return backGroundClassRes
+        return backGroundClassRes 
     }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
 
     return (    
-        <div className="w-full h-full dark:bg-white select-none" 
+        <div className="w-full h-full select-none rounded-sm" 
             onMouseMove={handleMouseMove}
             style={{
                 boxShadow: (highlightedCells.anchors.size == 0 && selectedCell === uid) ? shadow : 'none',
@@ -155,7 +155,7 @@ export default function Square({uid}: Props) {
               tabIndex={-1}
         >
             <div 
-                className={`select-none w-full h-full transition-all ${getBackgroundClasses(uid)} duration-150 ease-in-out`}
+                className={`select-none w-full h-full rounded-sm ${getBackgroundClasses(uid)} ${!anchorMode ? 'transition-colors duration-200 ease-out' : 'transition-none'}`}
                 tabIndex={-1}
                 >
                 {

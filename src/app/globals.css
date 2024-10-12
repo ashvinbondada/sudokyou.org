@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+/* button {
+    cursor: none !important;
+  } */

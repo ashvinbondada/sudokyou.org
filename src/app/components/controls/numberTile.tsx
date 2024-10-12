@@ -28,7 +28,7 @@ type Props = {
 
   return (
     <button
-        className={`h-full w-full flex flex-col items-center justify-center sm:text-3xl md:text-4xl select-none transition-all duration-300 relative group hover:shadow-custom-inner rounded-md
+        className={`h-full w-full flex flex-col items-center justify-center sm:text-3xl md:text-4xl select-none relative group hover:shadow-custom-inner rounded-md
           ${
             quantity === 9 
             ? 'text-gray-400 bg-gray-200 dark:bg-slate-800 shadow-custom-inner pointer-events-none' 
@@ -37,8 +37,8 @@ type Props = {
                     || notesMode 
                     || boardValues[selectedCell].isEditable !== tileType.WRONG
                     || highlightedCells.anchors.size > 1)
-                    ? 'text-white bg-theme-1-pacific-cyan'
-                    : 'text-white bg-theme-2-pantone'
+                    ? 'text-white bg-light-right dark:bg-dark-right'
+                    : 'text-white bg-light-wrong dark:bg-dark-wrong'
                 : 'text-theme-1-pacific-cyan bg-gray-100 dark:bg-slate-900 hover:bg-gray-200 dark:hover:dark:bg-slate-800'
           }`}
         onClick={quantity < 9 ? handleClick : () => {}}
