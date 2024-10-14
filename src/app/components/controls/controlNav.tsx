@@ -65,8 +65,8 @@ export default function ControlNav() {
               });
             for (const anchor of filteredAnchors) {
                 const newClearTile = clearTile(nextBoardValues[anchor]) 
-                const squareValue = nextBoardValues[anchor].squareValue
-                if (squareValue > 0) {
+                const {squareValue, isEditable} = nextBoardValues[anchor]
+                if (squareValue > 0 && isEditable !== tileType.RIGHT ) {
                     const currentValue = newAnchorNums.get(squareValue) || 0;
                     newAnchorNums.set(nextBoardValues[anchor].squareValue, currentValue > 0 ? currentValue - 1 : 0);
 
@@ -79,8 +79,8 @@ export default function ControlNav() {
         else if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
             const newClearTile = clearTile(boardValues[selectedCell])
             // nextBoardValues = boardValues.slice()
-            const squareValue = boardValues[selectedCell].squareValue
-            if (squareValue > 0) {
+                const {squareValue, isEditable} = nextBoardValues[selectedCell]
+                if (squareValue > 0 && isEditable === tileType.RIGHT ) {
                 const currentQuantity = nextNumToQuantity.get(squareValue) || 0;
                 nextNumToQuantity.set(squareValue, currentQuantity-1) 
             }
