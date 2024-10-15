@@ -38,14 +38,15 @@ type HighlightedCells = {
 
 type GameSnapShot  = {
     // saves cell edited at the time
-    selectedCell    : number;
+    selectedCell            : number;
     // saved baord values at time
-    boardValues     : Tile[];
+    boardValues             : Tile[];
     // saved auto notes mode. see control-bar branch for more info
-    autoNotesMode   : boolean;
-
-    anchors         ?: number[];
-    numToQuantity   : Map<number, number>;
+    autoNotesMode           : boolean;
+    // snapshot of the highlighted cells
+    // especially with the anchors  
+    highlightedCellsSnap    : HighlightedCells;
+    numToQuantity           : Map<number, number>;
 
 }
 
@@ -55,8 +56,10 @@ interface GameInterface {
     notesMode           : boolean;
     // undo mode toggle
     undoMode            : boolean;
-    // anchor 
-    anchorMode          : boolean;
+    // toggle for anchor key type in common.ts
+    anchorPress         : any;
+    // anchor mode, values in anchorType enum in common.ts
+    anchorMode          : any;  
     // auto candidates toggle to take off notes
     autoNotesMode       : boolean;
     // backspace toggle 

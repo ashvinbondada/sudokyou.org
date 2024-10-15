@@ -7,7 +7,7 @@ import Board from "./board";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells,} from "@/lib/tileEffects";
-import { tileType } from "@/lib/common";
+import { anchorType, key, tileType } from "@/lib/common";
 import ControlNav from "../controls/controlNav";
 
 type Props = {
@@ -71,7 +71,8 @@ export default function Game({newSudoku, newGame}: Props) {
       if (event.key === "Meta") {
         setGameData((prevState) => ({
           ...prevState,
-          anchorMode: false
+          anchorPress: key.OFF,
+          // anchorMode: anchorType.NONE
         }))
       }
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
@@ -104,7 +105,8 @@ export default function Game({newSudoku, newGame}: Props) {
   useKeyboardShortcut(["Meta"], () => {
     setGameData((prevState) => ({
       ...prevState,
-      anchorMode: true
+      anchorPress: key.ON,
+      // anchorMode: anchorType.PRESSED
     }))
   })
 
@@ -413,6 +415,8 @@ export default function Game({newSudoku, newGame}: Props) {
     setInputSource("keyboard")
   });
 
+  // ANCHOR MODE UPDATING?
+
   // BOARD SHADOW EFFECT
   useEffect(() => {
     if (inputSource === "keyboard") {
@@ -430,14 +434,23 @@ export default function Game({newSudoku, newGame}: Props) {
     }
   }, [gameData.selectedCell, inputSource]);
 
+  // HIGHLIGHTED CELLS
   useEffect(() => {
-    const {neighborhood} = calculateHighlightCells(gameData.selectedCell)
-    setGameData((prevState) => ({
-      ...prevState,
-      highlightedCells: {...prevState.highlightedCells, neighborhood}
-    }))
+    // const anchorsArray = Array.from(gameData.highlightedCells.anchors);
+    // Filter anchors where isEditable is tileType.WRONG
+    // const filteredAnchors = anchorsArray.filter(anchor => {
+    //   const { isEditable } = boardData.boardValues[anchor];
+    //   return isEditable === tileType.WRONG;
+    // });
+    // if (gameData.anchorMode === anchorType.NONE) {
+      const {neighborhood} = calculateHighlightCells(gameData.selectedCell)
+      setGameData((prevState) => ({
+        ...prevState,
+        highlightedCells: {...prevState.highlightedCells, neighborhood}
+      }))
+    // }
 
-  }, [gameData.selectedCell])
+  }, [gameData.selectedCell, gameData.highlightedCells.anchors, boardData.boardValues, gameData.anchorMode])
 
   // NOTES SQUARE HANDLING
   const handleSquareNotesInput = useCallback((input: number, inputList: number[]) => {
@@ -473,7 +486,7 @@ export default function Game({newSudoku, newGame}: Props) {
 
     if (nextIsEditable === tileType.RIGHT) {
       // Iterate over the neighborhood and remove inputValue from their notes
-      gameData.highlightedCells.neighborhood.forEach((cellIndex) => { //       // Skip the currently selected cell //       if (cellIndex !== selectedCell) {
+      gameData.highlightedCells.neighborhood.forEach((cellIndex) => {       
         const cell = nextBoardValues[cellIndex];
         const nextSquareNotes = cell.squareNotes.map(note => (note === input ? 0 : note)); // Remove the input from the notes
         nextBoardValues[cellIndex] = {
@@ -506,11 +519,11 @@ export default function Game({newSudoku, newGame}: Props) {
           const { isEditable } = boardData.boardValues[anchor];
           return isEditable === tileType.WRONG;
         });
-        if (filteredAnchors.length > 1) {
+        if (gameData.anchorMode === anchorType.MULTI) {
           const input = inputValue - 1;
           finalBoardValues = handleSquareNotesInput(input, filteredAnchors);
         } 
-        else if (filteredAnchors.length === 1) {
+        else if (gameData.anchorMode === anchorType.SINGLE && filteredAnchors[0]) {
             const index = filteredAnchors[0];
             const { isEditable } = boardData.boardValues[index];
             
@@ -519,7 +532,8 @@ export default function Game({newSudoku, newGame}: Props) {
                 const input = inputValue - 1;
                 finalBoardValues = handleSquareNotesInput(input, [index]);
               } else {
-                const {nextNumToQuantity, nextBoardValues} = handleRegularSquareInput(inputValue, index);
+                const {nextNumToQuantity, nextBoardValues} = 
+                  handleRegularSquareInput(inputValue, index);
                 finalBoardValues = nextBoardValues
                 finalNumToQuantity = nextNumToQuantity
               }
@@ -539,29 +553,77 @@ export default function Game({newSudoku, newGame}: Props) {
             }
           }
         
-        setBoardData((prevBoardData) => ({
-          ...prevBoardData,
-          boardValues: finalBoardValues
-        }));
-        setGameData((prevGameData) => {
-          const nextGameHistory = [
-            ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
-            {
-              selectedCell: prevGameData.selectedCell,
-              boardValues: finalBoardValues, // Use the updated boardValues
-              autoNotesMode: prevGameData.autoNotesMode,
-              numToQuantity: finalNumToQuantity
-            },
-          ];
-    
-          return {
-            ...prevGameData,
-            gameHistory: nextGameHistory,
-            moveCount: nextGameHistory.length - 1,
-            numToQuantity: finalNumToQuantity
-          };
+        // const anchorsArray = Array.from(gameData.highlightedCells.anchors);
+        const newFilteredAnchors = anchorsArray.filter(anchor => {
+          const { isEditable } = finalBoardValues[anchor];
+          return isEditable === tileType.WRONG;
         });
+        const newAnchorMode = newFilteredAnchors.length == 0 
+                    ? anchorType.NONE 
+                    : (filteredAnchors.length == 1)
+                        ? anchorType.SINGLE
+                        : anchorType.MULTI
+
+        // if (
+        //   finalBoardValues[selectedCell].squareValue !== boardData.boardValues[selectedCell].squareValue
+        // || finalBoardValues[selectedCell].squareNotes !== boardData.boardValues[selectedCell].squareNotes
+        // || finalBoardValues[filteredAnchors[0]].squareValue !== boardData.boardValues[filteredAnchors[0]].squareValue
+        // || finalBoardValues[filteredAnchors[0]].squareNotes !== boardData.boardValues[filteredAnchors[0]].squareNotes
+        // ) {
+          setBoardData((prevBoardData) => ({
+            ...prevBoardData,
+            boardValues: finalBoardValues
+          }));
+          setGameData((prevGameData) => {
+            const nextGameHistory = [
+              ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
+              {
+                selectedCell: prevGameData.selectedCell,
+                boardValues: finalBoardValues, // Use the updated boardValues
+                autoNotesMode: prevGameData.autoNotesMode,
+                highlightedCellsSnap: highlightedCells,
+                numToQuantity: finalNumToQuantity,
+              },
+            ];
+
+
+      
+            return {
+              ...prevGameData,
+              gameHistory: nextGameHistory,
+              moveCount: nextGameHistory.length - 1,
+              numToQuantity: finalNumToQuantity,
+              anchorMode: newAnchorMode
+            };
+          });
         }
+        // setBoardData((prevBoardData) => ({
+        //   ...prevBoardData,
+        //   boardValues: finalBoardValues
+        // }));
+        // setGameData((prevGameData) => {
+        //   const nextGameHistory = [
+        //     ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
+        //     {
+        //       selectedCell: prevGameData.selectedCell,
+        //       boardValues: finalBoardValues, // Use the updated boardValues
+        //       autoNotesMode: prevGameData.autoNotesMode,
+        //       highlightedCellsSnap: highlightedCells,
+        //       numToQuantity: finalNumToQuantity,
+        //     },
+        //   ];
+
+
+    
+        //   return {
+        //     ...prevGameData,
+        //     gameHistory: nextGameHistory,
+        //     moveCount: nextGameHistory.length - 1,
+        //     numToQuantity: finalNumToQuantity,
+        //     anchorMode: newAnchorMode
+        //   };
+        // });
+        // }
       }, [gameData.inputValue, gameData.selectedCell]);    
   
 

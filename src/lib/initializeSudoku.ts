@@ -2,7 +2,7 @@
 
 import { doc, DocumentData, getDoc } from "@firebase/firestore";
 import { db } from '../app/firebase'; // Import Firestore instance
-import { tileType, GameStatus } from "./common";
+import { tileType, GameStatus, anchorType, key } from "./common";
 
 export function PuzzleStringToSudokuInterface(initial: string, solution: string) {
     const sudoku: SudokuInterface = {
@@ -49,7 +49,8 @@ export function newGameInterface(initialBoardValues: Tile[]) {
         inputValue: 0,
         selectedCell: 40,
         numToQuantity: numToQuantity,
-        anchorMode: false,
+        anchorPress: key.OFF,
+        anchorMode: anchorType.NONE,
         highlightedCells: { 
             neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
             anchors: new Set<number>(),
@@ -63,7 +64,11 @@ export function newGameInterface(initialBoardValues: Tile[]) {
             selectedCell: 40,            
             boardValues: initialBoardValues,
             autoNotesMode: false,
-            anchors: [],
+            highlightedCellsSnap: { 
+                neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
+                anchors: new Set<number>(),
+                anchorNums: anchorNums
+            },
             numToQuantity: numToQuantity
         }],
         // updateGameInterface: () => {}

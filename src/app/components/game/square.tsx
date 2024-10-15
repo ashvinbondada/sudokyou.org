@@ -4,7 +4,7 @@ import {useCallback, useContext, useState } from "react"
 import RegularSquare from "./regularSquare";
 import NotesSquare from "./notesSquare";
 import { BoardContext, GameContext } from "../../../lib/context";
-import { tileType } from "@/lib/common";
+import { anchorType, key, tileType } from "@/lib/common";
 
 type Props = {
     uid: number,
@@ -13,7 +13,7 @@ type Props = {
 export default function Square({uid}: Props) {
     const [shadow, setShadow] = useState("none");
 
-    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode, anchorMode, numToQuantity} = useContext(GameContext)
+    const {notesMode, selectedCell, highlightedCells, gameHistory, moveCount, updateGameInterface, autoNotesMode, anchorMode,anchorPress, numToQuantity} = useContext(GameContext)
     const {boardValues, updateSudokuInterface} = useContext(BoardContext);
     const {isEditable, squareValue, squareNotes} = boardValues[uid]
 
@@ -38,6 +38,7 @@ export default function Square({uid}: Props) {
                     selectedCell,
                     boardValues: nextBoardValues,
                     autoNotesMode,
+                    highlightedCellsSnap: highlightedCells,
                     numToQuantity 
                 }]
                 updateGameInterface({
@@ -53,29 +54,54 @@ export default function Square({uid}: Props) {
     const handleRegularSquareClick = () => {
         const newAnchors = new Set(highlightedCells.anchors); 
         const newAnchorNums = new Map(highlightedCells.anchorNums)
-        if (anchorMode && !newAnchors.has(uid) || newAnchors.size == 0) {
+        // let newSelectedCell = selectedCell
+        // META key pressed (anchorMode) and active list present or empty list
+        // implies we're trying to increase our selection
+        if (anchorPress === key.ON && !newAnchors.has(uid) || newAnchors.size == 0) {
             newAnchors.add(uid);
             if (squareValue > 0)
                 newAnchorNums.set(squareValue, (newAnchorNums.get(squareValue) || 0) + 1);
+
+            // else
+            //     // subtle but set selected cell to the last cell which is empty
+            //     newSelectedCell = uid 
         } 
-        else if (anchorMode && newAnchors.has(uid)) {
+        // META key pressed yet we click on the same square implies
+        // a decrement of the square pressed
+        else if (anchorPress === key.ON && newAnchors.has(uid)) {
             newAnchors.delete(uid)
             if (squareValue > 0) {
                 const currentValue = newAnchorNums.get(squareValue) || 0;
                 newAnchorNums.set(squareValue, currentValue > 0 ? currentValue - 1 : 0);
             }
+            // we keep the selected cell always to the last element
+            // else if (newAnchors.size > 0) {
+            //     newSelectedCell  = Array.from(newAnchors).pop();
+            // }
         }
+        // in all other cases just clear the list
         else {
             newAnchors.clear()
             newAnchorNums.forEach((_, key) => newAnchorNums.set(key, 0));
         }
         if (updateGameInterface) {
+            const anchorsArray = Array.from(newAnchors);
+            const filteredAnchors = anchorsArray.filter(anchor => {
+                const { isEditable } = boardValues[anchor];
+                return isEditable === tileType.WRONG;
+            });
             updateGameInterface({
                 highlightedCells: {
                     ...highlightedCells,
                     anchors: newAnchors,
                     anchorNums: newAnchorNums
                 },
+                anchorMode: 
+                    filteredAnchors.length == 0 
+                        ? anchorType.NONE 
+                        : (filteredAnchors.length == 1)
+                            ? anchorType.SINGLE
+                            : anchorType.MULTI
             });
         }
     }
@@ -101,19 +127,14 @@ export default function Square({uid}: Props) {
         }
     };
 
-    const getBackgroundClasses = useCallback((index: number) => {
+    const getBackgroundClasses = useCallback(() => {
         let backGroundClassRes = ''
         const lenAnchors = highlightedCells.anchors.size
-        const anchorsArray = Array.from(highlightedCells.anchors);
-        const filteredAnchors = anchorsArray.filter(anchor => {
-          const { isEditable } = boardValues[anchor];
-          return isEditable === tileType.WRONG;
-        });
-        const selectedCellBG = (filteredAnchors.length == 0 
+        const selectedCellBG = (anchorMode === anchorType.NONE 
                                 && (isEditable === tileType.WRONG) 
                                 ) 
                                 ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow ' 
-                                : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner';
+                                : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner ';
         // anchors
         if (highlightedCells.anchors.has(uid)) {
             backGroundClassRes ='bg-light-anchor dark:bg-dark-anchor'
@@ -123,12 +144,12 @@ export default function Square({uid}: Props) {
             && (squareValue === boardValues[selectedCell].squareValue 
             || (highlightedCells.anchorNums.get(squareValue) || 0) > 0)
         ) {
-        backGroundClassRes += (index !== selectedCell) 
+        backGroundClassRes += (uid !== selectedCell) 
             ? 'bg-light-same-num-highlight shadow-custom-inner dark:bg-dark-same-num-highlight'
             : selectedCellBG;
         } 
-        else if (filteredAnchors.length == 0 && highlightedCells.neighborhood.includes(index)) {
-        backGroundClassRes += index === selectedCell
+        else if (anchorMode === anchorType.NONE && highlightedCells.neighborhood.includes(uid)) {
+        backGroundClassRes += uid === selectedCell
             ? selectedCellBG
             : (lenAnchors == 0) 
                 ? 'bg-light-nbhd-highlight dark:bg-dark-nbhd-highlight'
@@ -138,7 +159,7 @@ export default function Square({uid}: Props) {
         }
 
         return backGroundClassRes 
-    }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid]);
+    }, [boardValues, highlightedCells, isEditable, selectedCell, squareValue, uid, anchorMode]);
 
     return (    
         <div className="w-full h-full select-none rounded-sm" 
@@ -155,7 +176,7 @@ export default function Square({uid}: Props) {
               tabIndex={-1}
         >
             <div 
-                className={`select-none w-full h-full rounded-sm ${getBackgroundClasses(uid)} ${!anchorMode ? 'transition-colors duration-200 ease-out' : 'transition-none'}`}
+                className={`select-none w-full h-full rounded-sm ${getBackgroundClasses()} ${!(anchorPress === key.ON) ? 'transition-colors duration-200 ease-out' : 'transition-none'}`}
                 tabIndex={-1}
                 >
                 {

@@ -1,5 +1,5 @@
 import { createContext} from "react";
-import { tileType, GameStatus } from "./common";
+import { tileType, GameStatus, anchorType, key } from "./common";
 // Define the initial default state for the Sudoku board
 const defaultBoardState = {
     initial: "",
@@ -17,7 +17,8 @@ const defaultBoardState = {
 const defaultGameState = {
     notesMode: false,
     undoMode: false,
-    anchorMode: false,
+    anchorPress: key.OFF,
+    anchorMode: anchorType.NONE,
     autoNotesMode: false,
     backspaceMode: false,
     inputValue: 0,
@@ -40,7 +41,11 @@ const defaultGameState = {
             squareNotes: Array(9).fill(0), 
         }),
         autoNotesMode: false,
-        anchors: [],
+        highlightedCellsSnap: { 
+            neighborhood: [4, 13, 22, 36, 37, 38, 58, 67, 76, 42, 43, 44],
+            anchors: new Set<number>(),
+            anchorNums: new Map<number, number>()
+        },
         numToQuantity: new Map<number, number>(),
     }],
     updateGameInterface: () => {}
