@@ -1,6 +1,7 @@
 'use client'
-import { anchorType, tileType } from "@/lib/common";
+import { tileType } from "@/lib/common";
 import { BoardContext, GameContext } from "@/lib/context";
+import { notFound } from "next/navigation";
 import { useCallback, useContext, useState } from "react";
 
 type Props = {
@@ -10,8 +11,14 @@ type Props = {
   
   export default function NumberTile({ squareValue, quantity}: Props) {
     const [clicked, setClicked] = useState(false)
-    const {boardValues, solution} = useContext(BoardContext)
-    const {inputValue, notesMode, selectedCell, updateGameInterface, highlightedCells, anchorMode} = useContext(GameContext)
+    const {boardValues, solution, getHoveringCell, selectedCells} = useContext(BoardContext)
+    const {inputValue, notesMode, updateGameInterface} = useContext(GameContext)
+
+    if (getHoveringCell === undefined
+      || updateGameInterface === undefined
+    ) {
+      notFound()
+    }
 
     const handleClick = () => {
       setClicked(true);
@@ -38,10 +45,15 @@ type Props = {
       else if (clicked || squareValue === inputValue) {
         // if we 1) selected right number, 2) in notes mode
         // 3) entering on a solved/given square 4) in anchor mode
-        if (squareValue === Number(solution[selectedCell]) 
-                      || notesMode 
-                      || boardValues[selectedCell].isEditable !== tileType.WRONG
-                      || (anchorMode === anchorType.SINGLE)
+        const anchors = selectedCells.slice(1)
+        const filteredAnchors = anchors.slice(1).filter(
+            (cell) => {return boardValues[cell].isEditable === tileType.WRONG}
+        )
+        if ( notesMode
+              || (filteredAnchors.length === 0 && boardValues[getHoveringCell()].isEditable !== tileType.WRONG)
+              || (filteredAnchors.length === 0 && squareValue === Number(solution[getHoveringCell()]))
+              || (filteredAnchors.length === 1 && squareValue === Number(solution[filteredAnchors[0]]))
+              || (anchors.length > 0)
         ) {
           backGroundClassRes += 'text-white bg-light-right dark:bg-dark-right'
         } else {
@@ -52,7 +64,7 @@ type Props = {
       }
 
       return backGroundClassRes
-    }, [quantity, clicked, squareValue, inputValue, solution, selectedCell, notesMode, boardValues, highlightedCells.anchors.size])
+    }, [quantity, clicked, squareValue, inputValue, selectedCells, notesMode, boardValues, getHoveringCell, solution])
 
     return (
       <button

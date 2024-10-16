@@ -1,14 +1,25 @@
 // Interface responsible for a tile
 // containing relevant value, notes, 
 // and meta data regarding its state.
-
 interface Tile {
     // given or user entered status 
     isEditable  : any; // tileType in lib/common.ts
-    // current value of square ranging from -1 (backspace), 0 (default) and 1-9 numbers
+    // current value of square ranging from -1 (backspace), 0 (default) 
+    //  and 1-9 numbers
     squareValue : number;
     // current notes applied on square
     squareNotes : number[]; // 9 note boxes
+}
+
+// Meta data responsible for contain information
+//  about all tiles to shadow, highlight and apply
+//  special affect to
+type HighlightedCells = {
+    // rows, columns, and grid colored with respect to selectedCell
+    neighborhood    : number[] 
+    // anchoredCells that have a positive squareValue that 
+    //  will trigger highlighting of same numbered cells
+    anchorNums          : Map<number, number>
 }
 
 // Interface responsible for informing and 
@@ -20,34 +31,26 @@ interface SudokuInterface {
     solution                : string;
     // current board values
     boardValues             : Tile[];
+    // current cells to edit
+    selectedCells        : number[];  
+    // highlighted Cells
+    highlightedCells    : HighlightedCells;
     // helper function to update Sudoku data
-    updateSudokuInterface   ?: (newState: Partial<SudokuInterface>) => void;
+    updateSudokuInterface   ?: (newState: Partial<SudokuInterface>) => void; 
+    updateHoveringCell      ?: (selectedCell: number) => void;
+    addAnchor               ?: (anchor: number) => void;
+    deleteAnchor            ?: (anchor: number) => void;
+    clearAnchor             ?: () => void;
+    getHoveringCell         ?: () => number
 }
 
 
-// Meta data responsible for contain information
-// about all tiles to shadow, highlight and apply
-// special affect to
-type HighlightedCells = {
-    // rows, columns, and grid colored with respect to selectedCell
-    neighborhood    : number[] 
-    // cells selected for group action
-    anchors             : Set<number>
-    anchorNums          : Map<number, number>
-}
 
-type GameSnapShot  = {
+type GameSnapShot = {
     // saves cell edited at the time
-    selectedCell            : number;
+    selectedCells            : number[];
     // saved baord values at time
     boardValues             : Tile[];
-    // saved auto notes mode. see control-bar branch for more info
-    autoNotesMode           : boolean;
-    // snapshot of the highlighted cells
-    // especially with the anchors  
-    highlightedCellsSnap    : HighlightedCells;
-    numToQuantity           : Map<number, number>;
-
 }
 
 // Interface responsible for definin
@@ -57,21 +60,13 @@ interface GameInterface {
     // undo mode toggle
     undoMode            : boolean;
     // toggle for anchor key type in common.ts
-    anchorPress         : any;
-    // anchor mode, values in anchorType enum in common.ts
-    anchorMode          : any;  
-    // auto candidates toggle to take off notes
-    autoNotesMode       : boolean;
+    anchorMode         : boolean;
     // backspace toggle 
     backspaceMode       : boolean;
     // input value entered in selected tile
     inputValue          : number;
-    // tile that user is choosing to edit
-    selectedCell        : number;  
-    // quantity of each number
+    // quantity of each number shown in the number tiles
     numToQuantity       : Map<number, number>;
-    // tiles higlighted for user, unable to edit atm
-    highlightedCells    : HighlightedCells;
     // status of the game 
     gameStatus          : GameStatus;
     // time user takes to complete puzzle

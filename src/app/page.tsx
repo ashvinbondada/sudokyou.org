@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Game from "./components/game/game";
-import { newGameInterface, getNewPuzzle, } from "@/lib/initializeSudoku";
+import { newGameInterface, getNewPuzzle} from "@/lib/initializeSudoku";
 
 export default async function Home() {
   const newSudoku = await getNewPuzzle("easy")

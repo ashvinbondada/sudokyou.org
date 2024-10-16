@@ -38,7 +38,7 @@ const config: Config = {
           "same-num-highlight": "#FFDE64", // jonquil-yellow
           "notebox-hover": "#FFDE64", // 
           "same-num-notebox": "#FFDE64",
-          "anchor": "#06AED5",
+          "anchor": "#049dbf",
           "selected-cell": "#06AED5",
         },
         "dark": {
@@ -53,7 +53,7 @@ const config: Config = {
           "notebox": "#e2e8f0",
           "notebox-hover": "#64748B",
           "same-num-notebox": "#64748B",
-          "anchor": "#A480CF",
+          "anchor": "#6950A1",
           "selected-cell": "#A480CF",
         },
         "theme-1" : {

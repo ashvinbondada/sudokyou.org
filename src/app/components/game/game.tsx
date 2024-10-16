@@ -7,8 +7,9 @@ import Board from "./board";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import DifficultySelector from "../difficultyTimer";
 import { calculateHighlightCells,} from "@/lib/tileEffects";
-import { anchorType, key, tileType } from "@/lib/common";
+import { tileType } from "@/lib/common";
 import ControlNav from "../controls/controlNav";
+import { libAddAnchors, libClearAnchor, libDeleteAnchor, libUpdateHoveringCell } from "@/lib/gameUtilities";
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -20,10 +21,7 @@ export default function Game({newSudoku, newGame}: Props) {
   const [shadow, setShadow] = useState("0px 0px 15px rgba(0, 0, 0, 0.5)");
 
   // CONTEXT SETUP
-  const [boardData, setBoardData] = useState<SudokuInterface>({
-    ...newSudoku,
-    updateSudokuInterface: () => {}
-  });
+  const [boardData, setBoardData] = useState<SudokuInterface>({...newSudoku});
 
   const updateSudokuInterface = (newState: Partial<SudokuInterface>) => {
     setBoardData((prevState) => ({
@@ -32,10 +30,7 @@ export default function Game({newSudoku, newGame}: Props) {
     }))
   }
 
-  const [gameData, setGameData] = useState<GameInterface>({
-    ...newGame,
-    updateGameInterface: () => {}
-  })
+  const [gameData, setGameData] = useState<GameInterface>({...newGame})
 
   const updateGameInterface = (newState: Partial<GameInterface>) => {
     setGameData((prevState) => ({
@@ -43,6 +38,25 @@ export default function Game({newSudoku, newGame}: Props) {
       ...newState,
     }))
   }
+
+  const updateHoveringCell = (hoveringCell: number) => {
+    setBoardData((prevState) => libUpdateHoveringCell(prevState,hoveringCell))}
+
+  const getHoveringCell = useCallback(() => {
+    return boardData.selectedCells[0]}, [boardData.selectedCells])
+
+  const addAnchor = (anchor: number) => {
+    setBoardData((prevState) => libAddAnchors(prevState, anchor))}
+
+  const deleteAnchor = (anchor: number) => {
+    setBoardData((prevState) => libDeleteAnchor(prevState, anchor))}
+
+  const clearAnchor = () => {
+    setBoardData((prevState) => libClearAnchor(prevState))}
+
+  useEffect(() => {
+    console.log(boardData.selectedCells)
+  }, [boardData.selectedCells])
 
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
@@ -71,8 +85,7 @@ export default function Game({newSudoku, newGame}: Props) {
       if (event.key === "Meta") {
         setGameData((prevState) => ({
           ...prevState,
-          anchorPress: key.OFF,
-          // anchorMode: anchorType.NONE
+          anchorMode: false,
         }))
       }
       if (!["Shift", "ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(event.key)) {
@@ -105,8 +118,7 @@ export default function Game({newSudoku, newGame}: Props) {
   useKeyboardShortcut(["Meta"], () => {
     setGameData((prevState) => ({
       ...prevState,
-      anchorPress: key.ON,
-      // anchorMode: anchorType.PRESSED
+      anchorMode: true,
     }))
   })
 
@@ -336,81 +348,57 @@ export default function Game({newSudoku, newGame}: Props) {
 
   // MOVEMENT INPUT HANDLING
   useKeyboardShortcut(["ArrowUp"], () => {
-    if (gameData.selectedCell >= 9) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 9,
-      }));
+    if (getHoveringCell() >= 9) {
+      updateHoveringCell(getHoveringCell()-9)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["k"], () => {
-    if (gameData.selectedCell >= 9) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 9,
-      }));
+    if (getHoveringCell() >= 9) {
+      updateHoveringCell(getHoveringCell()-9)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["ArrowDown"], () => {
-    if (gameData.selectedCell <= 71) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 9,
-      }));
+    if (getHoveringCell() <= 71) {
+      updateHoveringCell(getHoveringCell()+9)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["j"], () => {
-    if (gameData.selectedCell <= 71) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 9,
-      }));
+    if (getHoveringCell() <= 71) {
+      updateHoveringCell(getHoveringCell()+9)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["ArrowLeft"], () => {
-    if (gameData.selectedCell % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 1,
-      }));
+    if (getHoveringCell() % 9 !== 0) {
+      updateHoveringCell(getHoveringCell() - 1)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["h"], () => {
-    if (gameData.selectedCell % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell - 1,
-      }));
+    if (getHoveringCell() % 9 !== 0) {
+      updateHoveringCell(getHoveringCell()-1)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["ArrowRight"], () => {
-    if ((gameData.selectedCell + 1) % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 1,
-      }));
+    if ((getHoveringCell() + 1) % 9 !== 0) {
+      updateHoveringCell(getHoveringCell()+1)
     }
     setInputSource("keyboard")
   });
 
   useKeyboardShortcut(["l"], () => {
-    if ((gameData.selectedCell + 1) % 9 !== 0) {
-      setGameData((prevState) => ({
-        ...prevState,
-        selectedCell: prevState.selectedCell + 1,
-      }));
+    if ((getHoveringCell() + 1) % 9 !== 0) {
+      updateHoveringCell(getHoveringCell()+1)
     }
     setInputSource("keyboard")
   });
@@ -420,9 +408,10 @@ export default function Game({newSudoku, newGame}: Props) {
   // BOARD SHADOW EFFECT
   useEffect(() => {
     if (inputSource === "keyboard") {
+      console.log(getHoveringCell())
       const centerCell = Math.floor(81 / 2); // Center of the grid (cell 40)
-      const selectedRow = Math.floor(gameData.selectedCell / 9);
-      const selectedCol = gameData.selectedCell % 9;
+      const selectedRow = Math.floor(getHoveringCell() / 9);
+      const selectedCol = getHoveringCell() % 9;
       const centerRow = Math.floor(centerCell / 9);
       const centerCol = centerCell % 9;
 
@@ -432,25 +421,44 @@ export default function Game({newSudoku, newGame}: Props) {
 
       setShadow(`${shadowX}px ${shadowY}px 20px rgba(0, 0, 0, 0.5)`);
     }
-  }, [gameData.selectedCell, inputSource]);
+  }, [inputSource, getHoveringCell]);
 
   // HIGHLIGHTED CELLS
   useEffect(() => {
-    // const anchorsArray = Array.from(gameData.highlightedCells.anchors);
-    // Filter anchors where isEditable is tileType.WRONG
-    // const filteredAnchors = anchorsArray.filter(anchor => {
-    //   const { isEditable } = boardData.boardValues[anchor];
-    //   return isEditable === tileType.WRONG;
-    // });
-    // if (gameData.anchorMode === anchorType.NONE) {
-      const {neighborhood} = calculateHighlightCells(gameData.selectedCell)
-      setGameData((prevState) => ({
+    // position the neighborhood only around the cells that
+    // we are editing
+    const filteredAnchors = boardData.selectedCells.slice(1).filter(
+        (cell) => {return boardData.boardValues[cell].isEditable === tileType.WRONG}
+    )
+    // we have no playable anchored selectedCells to enter into base 
+    // neighborhood from hovering cell
+    if (filteredAnchors.length === 0) {
+      const {neighborhood} = calculateHighlightCells(getHoveringCell())
+      setBoardData((prevState) => ({
         ...prevState,
         highlightedCells: {...prevState.highlightedCells, neighborhood}
       }))
-    // }
+    } 
+    // we have only 1 playable anchored selectedCell and always base
+    // neighborhood off of that
+    else if (filteredAnchors.length === 1) {
+      const {neighborhood} = calculateHighlightCells(filteredAnchors[0])
+      setBoardData((prevState) => ({
+        ...prevState,
+        highlightedCells: {...prevState.highlightedCells, neighborhood}
+      }))
+    } 
+    // there are multiple anchored selectedCells and we don't require
+    // a neighborhood since we're inputting in notes mode or entering
+    // regular numbers without a distinct pattern
+    else {
+      setBoardData((prevState) => ({
+        ...prevState,
+        highlightedCells: {...prevState.highlightedCells, neighborhood: []}
+      }))
+    }
 
-  }, [gameData.selectedCell, gameData.highlightedCells.anchors, boardData.boardValues, gameData.anchorMode])
+  }, [boardData.selectedCells, boardData.boardValues, getHoveringCell])
 
   // NOTES SQUARE HANDLING
   const handleSquareNotesInput = useCallback((input: number, inputList: number[]) => {
@@ -479,14 +487,14 @@ export default function Game({newSudoku, newGame}: Props) {
     const nextValue = (squareValue === input) ? 0 : input;
     const nextIsEditable = nextValue === Number(boardData.solution[index]) ? tileType.RIGHT : tileType.WRONG
     nextBoardValues[index] = {
-    ...boardData.boardValues[index],
-    isEditable: nextIsEditable,
-    squareValue: nextValue,
+      ...boardData.boardValues[index],
+      isEditable: nextIsEditable,
+      squareValue: nextValue,
     };
 
     if (nextIsEditable === tileType.RIGHT) {
       // Iterate over the neighborhood and remove inputValue from their notes
-      gameData.highlightedCells.neighborhood.forEach((cellIndex) => {       
+      boardData.highlightedCells.neighborhood.forEach((cellIndex) => {       
         const cell = nextBoardValues[cellIndex];
         const nextSquareNotes = cell.squareNotes.map(note => (note === input ? 0 : note)); // Remove the input from the notes
         nextBoardValues[cellIndex] = {
@@ -505,25 +513,25 @@ export default function Game({newSudoku, newGame}: Props) {
     
     return {nextNumToQuantity: gameData.numToQuantity , nextBoardValues: nextBoardValues}
 
-  }, [boardData, gameData.highlightedCells, gameData.numToQuantity]);
+  }, [boardData, gameData.numToQuantity]);
 
    
     useEffect(() => {
-      const { inputValue, selectedCell, highlightedCells, notesMode } = gameData;
+      const { inputValue, notesMode } = gameData;
       let finalBoardValues: Tile[] = boardData.boardValues.slice();
       let finalNumToQuantity: Map<number, number> = new Map(gameData.numToQuantity)
       if (inputValue > 0) {
-        const anchorsArray = Array.from(highlightedCells.anchors);
+        const anchors = boardData.selectedCells.slice(1)
         // Filter anchors where isEditable is tileType.WRONG
-        const filteredAnchors = anchorsArray.filter(anchor => {
+        const filteredAnchors = anchors.filter(anchor => {
           const { isEditable } = boardData.boardValues[anchor];
           return isEditable === tileType.WRONG;
         });
-        if (gameData.anchorMode === anchorType.MULTI) {
+        if (filteredAnchors.length > 1) {
           const input = inputValue - 1;
           finalBoardValues = handleSquareNotesInput(input, filteredAnchors);
         } 
-        else if (gameData.anchorMode === anchorType.SINGLE && filteredAnchors[0]) {
+        else if (filteredAnchors.length === 1) {
             const index = filteredAnchors[0];
             const { isEditable } = boardData.boardValues[index];
             
@@ -540,36 +548,21 @@ export default function Game({newSudoku, newGame}: Props) {
             }
           } 
           else {
-            const { isEditable } = boardData.boardValues[selectedCell];
+            const { isEditable } = boardData.boardValues[getHoveringCell()];
             if (isEditable === tileType.WRONG) {
               if (notesMode) {
                 const input = inputValue - 1;
-                finalBoardValues = handleSquareNotesInput(input, [selectedCell]);
+                finalBoardValues = handleSquareNotesInput(input, [getHoveringCell()]);
               } else {
-                const {nextNumToQuantity, nextBoardValues} = handleRegularSquareInput(inputValue, selectedCell);
+                const {nextNumToQuantity, nextBoardValues} = handleRegularSquareInput(inputValue, getHoveringCell());
                 finalBoardValues = nextBoardValues
                 finalNumToQuantity = nextNumToQuantity
               }
             }
           }
         
-        // const anchorsArray = Array.from(gameData.highlightedCells.anchors);
-        const newFilteredAnchors = anchorsArray.filter(anchor => {
-          const { isEditable } = finalBoardValues[anchor];
-          return isEditable === tileType.WRONG;
-        });
-        const newAnchorMode = newFilteredAnchors.length == 0 
-                    ? anchorType.NONE 
-                    : (filteredAnchors.length == 1)
-                        ? anchorType.SINGLE
-                        : anchorType.MULTI
+          // TODO: replace with a hashing function call object-hash
 
-        // if (
-        //   finalBoardValues[selectedCell].squareValue !== boardData.boardValues[selectedCell].squareValue
-        // || finalBoardValues[selectedCell].squareNotes !== boardData.boardValues[selectedCell].squareNotes
-        // || finalBoardValues[filteredAnchors[0]].squareValue !== boardData.boardValues[filteredAnchors[0]].squareValue
-        // || finalBoardValues[filteredAnchors[0]].squareNotes !== boardData.boardValues[filteredAnchors[0]].squareNotes
-        // ) {
           setBoardData((prevBoardData) => ({
             ...prevBoardData,
             boardValues: finalBoardValues
@@ -578,11 +571,8 @@ export default function Game({newSudoku, newGame}: Props) {
             const nextGameHistory = [
               ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
               {
-                selectedCell: prevGameData.selectedCell,
+                selectedCells: boardData.selectedCells,
                 boardValues: finalBoardValues, // Use the updated boardValues
-                autoNotesMode: prevGameData.autoNotesMode,
-                highlightedCellsSnap: highlightedCells,
-                numToQuantity: finalNumToQuantity,
               },
             ];
 
@@ -593,38 +583,10 @@ export default function Game({newSudoku, newGame}: Props) {
               gameHistory: nextGameHistory,
               moveCount: nextGameHistory.length - 1,
               numToQuantity: finalNumToQuantity,
-              anchorMode: newAnchorMode
             };
           });
         }
-        // setBoardData((prevBoardData) => ({
-        //   ...prevBoardData,
-        //   boardValues: finalBoardValues
-        // }));
-        // setGameData((prevGameData) => {
-        //   const nextGameHistory = [
-        //     ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
-        //     {
-        //       selectedCell: prevGameData.selectedCell,
-        //       boardValues: finalBoardValues, // Use the updated boardValues
-        //       autoNotesMode: prevGameData.autoNotesMode,
-        //       highlightedCellsSnap: highlightedCells,
-        //       numToQuantity: finalNumToQuantity,
-        //     },
-        //   ];
-
-
-    
-        //   return {
-        //     ...prevGameData,
-        //     gameHistory: nextGameHistory,
-        //     moveCount: nextGameHistory.length - 1,
-        //     numToQuantity: finalNumToQuantity,
-        //     anchorMode: newAnchorMode
-        //   };
-        // });
-        // }
-      }, [gameData.inputValue, gameData.selectedCell]);    
+      }, [gameData.inputValue]);    
   
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -651,8 +613,8 @@ export default function Game({newSudoku, newGame}: Props) {
   }
 
   return (
-      <GameContext.Provider value={{...gameData, updateGameInterface: updateGameInterface}}>
-        <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface }}>
+      <GameContext.Provider value={{...gameData, updateGameInterface}}>
+        <BoardContext.Provider value={{ ...boardData, updateSudokuInterface: updateSudokuInterface, updateHoveringCell, getHoveringCell, addAnchor, deleteAnchor, clearAnchor }}>
           <div className="w-full h-max" tabIndex={-1}>
             <div className="w-full flex md:flex-row sm:justify-start justify-center gap-1">
               <div className="w-full sm:w-2/3 flex flex-col p-2">
@@ -673,5 +635,5 @@ export default function Game({newSudoku, newGame}: Props) {
           </div>
         </BoardContext.Provider>
       </GameContext.Provider>
-);
+  );
 }
