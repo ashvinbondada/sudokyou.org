@@ -39,7 +39,6 @@ export const calculateHighlightCells = (
   const combinedCells = Array.from(new Set([...blockCells, ...rowCells, ...colCells]));
   const highlightedCells: HighlightedCells = {
     neighborhood: combinedCells,
-    anchors: new Set(),
     anchorNums: new Map<number, number>()
   }
     return highlightedCells
@@ -49,6 +48,7 @@ export function calculateAutoCandidates(boardValues: Tile[]): Tile[] {
   // start with an array of 81 Tile[] with all notes filled in
   const completeNotes: Tile[] = Array.from({ length: 81 }, () => ({
     isEditable: tileType.WRONG,
+    isAnchored: false,
     squareValue: 0,
     squareNotes: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   }));

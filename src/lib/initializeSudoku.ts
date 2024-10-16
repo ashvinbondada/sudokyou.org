@@ -2,17 +2,26 @@
 
 import { doc, DocumentData, getDoc } from "@firebase/firestore";
 import { db } from '../app/firebase'; // Import Firestore instance
-import { tileType, GameStatus } from "./common";
+import { tileType, GameStatus} from "./common";
 
 export function PuzzleStringToSudokuInterface(initial: string, solution: string) {
+    const anchorNums = new Map<number, number>(
+        Array.from({ length: 9 }, (_, i) => [i + 1, 0])
+    );
     const sudoku: SudokuInterface = {
+
         initial: initial,
         solution: solution,
         boardValues: initial.split('').map((char: string) => ({
             isEditable: char === '.' ? tileType.WRONG : tileType.GIVEN, // Assuming these tiles are not editable
             squareValue: char === '.' ? 0 : Number(char), // Handle '-' for empty squares as 0, otherwise convert char to number
             squareNotes:  Array(9).fill(0) // Default notes as an empty array
-        }))
+        })),
+        highlightedCells: { 
+            neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
+            anchorNums: anchorNums
+        },
+        selectedCells: [40]
     }
     return sudoku
 }
@@ -37,36 +46,22 @@ export function newGameInterface(initialBoardValues: Tile[]) {
             numToQuantity.set(tile.squareValue, currentQuantity + 1);
         }
     });
-    const anchorNums = new Map<number, number>(
-        Array.from({ length: 9 }, (_, i) => [i + 1, 0])
-      );
 
     const newGame: GameInterface = {
         notesMode: false,
         undoMode: false,
-        autoNotesMode: false,
         backspaceMode: false,
         inputValue: 0,
-        selectedCell: 40,
         numToQuantity: numToQuantity,
         anchorMode: false,
-        highlightedCells: { 
-            neighborhood: [30, 31, 32, 39, 40, 41, 48, 49, 50, 36, 37, 38, 42, 43, 44, 4, 13, 22, 58, 67, 76],
-            anchors: new Set<number>(),
-            anchorNums: anchorNums
-        },
         gameStatus: GameStatus.BORN, 
         timer: undefined,
         mistakesCount: 0,
         moveCount: 0,
         gameHistory: [{
-            selectedCell: 40,            
+            selectedCells: [40],            
             boardValues: initialBoardValues,
-            autoNotesMode: false,
-            anchors: [],
-            numToQuantity: numToQuantity
         }],
-        // updateGameInterface: () => {}
     }
 
     return newGame
@@ -95,7 +90,6 @@ export async function getNewPuzzle(difficulty: string): Promise<SudokuInterface 
     } catch (error) {
         // Handle errors
         console.error('Error fetching document:', error);
-        // return new Response("Internal Server Error", { status: 500 });
         return undefined
     }
 }
@@ -151,18 +145,11 @@ export async function getNewPuzzleById(difficulty: string): Promise<SudokuInterf
         }
 
 
-    // Return the document data
+        // Return the document data
         const puzzleData = puzzleDoc.data();
         // console.log(puzzleDataString)
         const newPuzzle: SudokuInterface = PuzzleResponseToSudokuInterface(puzzleData)
-        // const puzzle: PuzzleString = {
-        //     id: puzzleDoc.id, // Use the doc ID from Firestore
-        //     level: puzzleData.level, // Ensure these fields exist in your Firestore document
-        //     initial: puzzleData.initial,
-        //     solution: puzzleData.solution,
-        // };
         return newPuzzle
-        // return new Response(JSON.stringify(puzzleData), { status: 200 });
 
     } catch (error) {
         // Handle errors

@@ -20,101 +20,97 @@ import { BoardContext, GameContext } from "@/lib/context";
 import { calculateAutoCandidates, clearAutoCandidates, clearTile } from "@/lib/tileEffects";
 import { newGameInterface, PuzzleStringToSudokuInterface } from "@/lib/initializeSudoku";
 import { tileType } from "@/lib/common";
+import { notFound } from "next/navigation";
 
 export default function ControlNav() {
     const [isSettingsClicked, setIsSettingsClicked] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
-    const {initial, solution, boardValues, updateSudokuInterface} = useContext(BoardContext)
-    const {selectedCell, moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, autoNotesMode, highlightedCells, numToQuantity } = useContext(GameContext)
+    const {initial, solution, getHoveringCell, boardValues, selectedCells, updateSudokuInterface, highlightedCells} = useContext(BoardContext)
+    const {moveCount, backspaceMode, notesMode, undoMode, gameHistory, updateGameInterface, numToQuantity } = useContext(GameContext)
+    if (getHoveringCell === undefined
+        || updateSudokuInterface === undefined
+        || updateGameInterface === undefined
+    )
+        notFound()
 
     const handleAutoNotes = () => {
-        let nextBoardValues: Tile[] = []
-        if (!autoNotesMode) {
-            nextBoardValues = calculateAutoCandidates(boardValues)
-        } else {
-            nextBoardValues = clearAutoCandidates(boardValues)
+        let hasEmptyNoteSquare = false
+        let nextBoardValues = boardValues.slice()
+        for (const tile of nextBoardValues) {
+            if (tile.squareValue == 0 && tile.squareNotes.filter(note => note !== 0).length === 0) {
+                hasEmptyNoteSquare = true
+                break;
+            }
         }
 
-        if (updateSudokuInterface) {
-            updateSudokuInterface({boardValues: nextBoardValues})
-        }
-        if (updateGameInterface) {
-            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-                selectedCell,
-                boardValues: nextBoardValues,
-                autoNotesMode,
-                numToQuantity
-            }]
-            updateGameInterface({
-                moveCount: nextGameHistory.length-1, 
-                gameHistory: nextGameHistory,
-                autoNotesMode: !autoNotesMode
-            })
-        }
+        if (hasEmptyNoteSquare) 
+            nextBoardValues = calculateAutoCandidates(nextBoardValues)
+        else 
+            nextBoardValues = clearAutoCandidates(nextBoardValues)
+
+        updateSudokuInterface({boardValues: nextBoardValues})
+        const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
+            selectedCells,
+            boardValues: nextBoardValues,
+            numToQuantity
+        }]
+        updateGameInterface({
+            moveCount: nextGameHistory.length-1, 
+            gameHistory: nextGameHistory,
+        })
     }
 
     const handleDelete = () => {
-        const nextBoardValues = boardValues.slice()
+        const nextBoardValues = boardValues.slice();
         const nextNumToQuantity = new Map(numToQuantity);
-        if (highlightedCells.anchors.size >= 1) {
-            const anchorsArray = Array.from(highlightedCells.anchors);
-            const newAnchorNums = new Map(highlightedCells.anchorNums)
-            const filteredAnchors = anchorsArray.filter(anchor => {
-                const { isEditable } = boardValues[anchor];
-                return isEditable === tileType.WRONG;
-              });
-            for (const anchor of filteredAnchors) {
-                const newClearTile = clearTile(nextBoardValues[anchor]) 
-                const squareValue = nextBoardValues[anchor].squareValue
-                if (squareValue > 0) {
-                    const currentValue = newAnchorNums.get(squareValue) || 0;
-                    newAnchorNums.set(nextBoardValues[anchor].squareValue, currentValue > 0 ? currentValue - 1 : 0);
+        const newAnchorNums = new Map(highlightedCells.anchorNums);
+    
+        const processAnchor = (anchor: number) => {
+            const newClearTile = clearTile(nextBoardValues[anchor]);
+            const { squareValue, isEditable } = nextBoardValues[anchor];
+            if (isEditable === tileType.RIGHT) {
+                const currentValue = newAnchorNums.get(squareValue) || 0;
+                newAnchorNums.set(nextBoardValues[anchor].squareValue, currentValue > 0 ? currentValue - 1 : 0);
 
-                    const currentQuantity = nextNumToQuantity.get(squareValue) || 0;
-                    nextNumToQuantity.set(squareValue, currentQuantity-1) 
-                }
-                nextBoardValues[anchor] = newClearTile
-            }
-        }
-        else if (boardValues[selectedCell].squareValue > 0 || boardValues[selectedCell].squareNotes.some((note) => {return note > 0})) {
-            const newClearTile = clearTile(boardValues[selectedCell])
-            // nextBoardValues = boardValues.slice()
-            const squareValue = boardValues[selectedCell].squareValue
-            if (squareValue > 0) {
                 const currentQuantity = nextNumToQuantity.get(squareValue) || 0;
-                nextNumToQuantity.set(squareValue, currentQuantity-1) 
+                nextNumToQuantity.set(squareValue, currentQuantity - 1);
             }
-            nextBoardValues[selectedCell] = newClearTile
-        }
-
-        if (updateSudokuInterface) {
-            updateSudokuInterface({boardValues: nextBoardValues})
-        }
-        if (updateGameInterface) {
-            const nextGameHistory = [...gameHistory.slice(0, moveCount + 1), {
-                selectedCell,
+            nextBoardValues[anchor] = newClearTile;
+        };
+    
+        if (selectedCells.length > 1) 
+            selectedCells.slice(1).forEach(anchor => processAnchor(anchor));
+        else
+            processAnchor(getHoveringCell());
+    
+        updateSudokuInterface({ boardValues: nextBoardValues, highlightedCells: {
+            ...highlightedCells,
+            anchorNums: newAnchorNums
+        } });
+    
+        const nextGameHistory = [
+            ...gameHistory.slice(0, moveCount + 1),
+            {
+                selectedCells,
                 boardValues: nextBoardValues,
-                autoNotesMode,
                 numToQuantity: nextNumToQuantity
-            }]
-            updateGameInterface({
-                moveCount: nextGameHistory.length-1, 
-                gameHistory: nextGameHistory,
-                autoNotesMode: !autoNotesMode,
-                numToQuantity: nextNumToQuantity
-            })
-        }
-    }
-
+            }
+        ];
+    
+        updateGameInterface({
+            moveCount: nextGameHistory.length - 1,
+            gameHistory: nextGameHistory,
+        });
+    };
+    
     useEffect(() => {
         if (backspaceMode)
             handleDelete()
     }, [backspaceMode])
 
     const handleNotes = () => {
-        if (updateGameInterface) {
+        if (updateGameInterface) 
             updateGameInterface({notesMode: !notesMode })
-        }
     }
 
     const handleRestart = () => {
@@ -127,29 +123,52 @@ export default function ControlNav() {
     }
 
     const handleUndo = () => {
-        const { selectedCell: prevSelectedTile } = gameHistory[gameHistory.length - 1]
-        if (gameHistory.length == 1) {
-            if (updateGameInterface)
-                updateGameInterface({selectedCell: prevSelectedTile})
-        } else {
-            const { 
-                    boardValues: prevBoardValues,
-                    autoNotesMode: prevAutoNotesMode,
-                    numToQuantity: prevNumToQuantity
-            } = gameHistory[gameHistory.length - 2]
-            if (updateSudokuInterface) {
-                updateSudokuInterface({boardValues: prevBoardValues})
+        const { 
+            selectedCells: nextSelectedCells, 
+        } = gameHistory[gameHistory.length - 1]
+
+        const newAnchorNums = new Map<number, number>(
+            Array.from({ length: 9 }, (_, i) => [i + 1, 0])
+        );
+        if (gameHistory.length > 1) {
+            const {boardValues: nextBoardValues} = gameHistory[gameHistory.length - 2]
+
+            const anchors = nextSelectedCells.slice(1)
+            for (const anchor in anchors) {
+                const squareValue = nextBoardValues[anchor].squareValue
+                if (squareValue > 0)
+                    newAnchorNums.set(squareValue, (newAnchorNums.get(squareValue) || 0) + 1);
             }
-            if (updateGameInterface) {
-                const nextGameHistory = [...gameHistory.slice(0, moveCount)]
-                updateGameInterface({
-                    moveCount: nextGameHistory.length-1, 
-                    gameHistory: nextGameHistory,
-                    selectedCell: prevSelectedTile,
-                    autoNotesMode: prevAutoNotesMode,
-                    numToQuantity: prevNumToQuantity
-            })}
+            updateSudokuInterface({
+                boardValues: nextBoardValues,
+                selectedCells: nextSelectedCells,
+                highlightedCells: {
+                    ...highlightedCells,
+                    anchorNums: newAnchorNums
+                }
+            })
+
+            const nextGameHistory = [...gameHistory.slice(0, moveCount)]
+
+            const nextNumToQuantity = new Map<number, number>();
+            nextBoardValues.forEach((tile) => {
+                if (tile.squareValue > 0) {
+                    const currentQuantity = nextNumToQuantity.get(tile.squareValue) || 0;
+                    nextNumToQuantity.set(tile.squareValue, currentQuantity + 1);
+                }
+            });
+            updateGameInterface({
+                moveCount: nextGameHistory.length-1, 
+                gameHistory: nextGameHistory,
+                numToQuantity: nextNumToQuantity,
+            })
+        } else {
+            updateSudokuInterface({
+                selectedCells: nextSelectedCells, 
+                highlightedCells: {...highlightedCells, anchorNums: newAnchorNums}
+            })
         }
+
     }
 
     useEffect(() => {
@@ -187,7 +206,7 @@ export default function ControlNav() {
                         <div className="grid grid-cols-3 flex-none gap-2 w-full h-full p-2">
                             <IconSquare icon={PiPencilSimple}
                             pressedIcon={PiPencilSimpleFill} label="notes" 
-                            handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode || highlightedCells.anchors.size > 1}/>
+                            handleMe={handleNotes} isToggle={true} keyBoardClick={notesMode || selectedCells.length > 2}/>
                             <IconSquare icon={PiNotePencil} 
                             pressedIcon={PiNotePencil} label="auto" 
                             handleMe={handleAutoNotes}/>
