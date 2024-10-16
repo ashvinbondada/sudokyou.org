@@ -65,18 +65,26 @@ interface GameInterface {
     backspaceMode       : boolean;
     // input value entered in selected tile
     inputValue          : number;
+
+
     // quantity of each number shown in the number tiles
     numToQuantity       : Map<number, number>;
     // status of the game 
     gameStatus          : GameStatus;
-    // time user takes to complete puzzle
-    timer              ?: number; 
     // mistakes before game is terminated
     mistakesCount       : number; // max 3
+
+
+    // time user takes to complete puzzle
+    timer              ?: number; 
+
+
     // current move count
     moveCount           : number; 
     // game history 
     gameHistory         : GameSnapShot[];
+
+
     // helper function to update Game data
     updateGameInterface ?: (newState: Partial<GameInterface>) => void;
 }

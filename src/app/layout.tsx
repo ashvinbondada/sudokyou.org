@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-screen overflow-hidden ">
-      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-black overflow-hidden">
+    <html lang="en" className="h-screen ">
+      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-black overflow-scroll">
         <Navbar />
           {/* Outer flex container */}
           <div className="h-full w-full flex flex-row justify-center">
@@ -24,7 +24,7 @@ export default function RootLayout({
             <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row justify-center ">
 
               {/* Main content area */}
-              <div className="h-full lg:w-[1024px] w-full p-1 overflow-hidden">
+              <div className="h-max lg:w-[1024px] w-full p-1 overflow-scroll">
                 {children}
               </div>
 

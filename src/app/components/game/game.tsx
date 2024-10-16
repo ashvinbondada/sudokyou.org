@@ -430,6 +430,7 @@ export default function Game({newSudoku, newGame}: Props) {
     const filteredAnchors = boardData.selectedCells.slice(1).filter(
         (cell) => {return boardData.boardValues[cell].isEditable === tileType.WRONG}
     )
+
     // we have no playable anchored selectedCells to enter into base 
     // neighborhood from hovering cell
     if (filteredAnchors.length === 0) {
@@ -586,6 +587,8 @@ export default function Game({newSudoku, newGame}: Props) {
             };
           });
         }
+      // only run this hook when we input something
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [gameData.inputValue]);    
   
 
