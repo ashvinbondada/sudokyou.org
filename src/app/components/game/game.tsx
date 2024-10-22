@@ -587,9 +587,7 @@ export default function Game({newSudoku, newGame}: Props) {
             };
           });
         }
-      // only run this hook when we input something
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [gameData.inputValue]);    
+      }, [gameData.inputValue, boardData.selectedCells[0]]);    
   
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
