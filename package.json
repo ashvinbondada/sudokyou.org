@@ -17,6 +17,7 @@
     "fs": "^0.0.1-security",
     "lodash": "^4.17.21",
     "next": "14.2.11",
+    "object-hash": "^3.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20",
+    "@types/object-hash": "^3.0.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

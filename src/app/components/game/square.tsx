@@ -90,20 +90,21 @@ export default function Square({uid}: Props) {
     };
 
     const getBackgroundClasses = useCallback(() => {
-        let backGroundClassRes = ''
         const anchors = new Set(selectedCells.slice(1))
         const filteredAnchors = selectedCells.slice(1).filter(
             (cell) => {return boardValues[cell].isEditable === tileType.WRONG}
         )
         const selectedCellBG = (filteredAnchors.length === 0 && isEditable === tileType.WRONG) 
-            ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow ' 
-            : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner '
+            ? 'bg-light-selected-cell dark:bg-dark-selected-cell animate-pulse-shadow' + ' '
+            : 'bg-light-selected-cell dark:bg-dark-selected-cell shadow-custom-inner' + ' '
 
         // PRIORITY: anchors > hovered cell > same numbered > neighborhood
         // anchors
+        let backGroundClassRes = ''
         if (anchors.has(uid)) {
             backGroundClassRes ='bg-light-anchor dark:bg-dark-anchor'
-            backGroundClassRes += (isEditable === tileType.WRONG) ? ' animate-pulse-shadow' : ' shadow-custom-inner' 
+            backGroundClassRes += " " + ((isEditable === tileType.WRONG) ? 'animate-pulse-shadow' : 'shadow-custom-inner')
+            console.log(backGroundClassRes)
         } 
         // hovered Cell Priority 
         else if (uid === getHoveringCell() && filteredAnchors.length === 0) {
@@ -125,7 +126,7 @@ export default function Square({uid}: Props) {
                 : 'bg-light-nbhd-highlight dark:bg-dark-nbhd-highlight'
             
         } else {
-            backGroundClassRes += 'bg-light-square dark:bg-dark-square'
+            backGroundClassRes = 'bg-light-square dark:bg-dark-square'
         }
 
         return backGroundClassRes 
@@ -136,7 +137,7 @@ export default function Square({uid}: Props) {
             className={`select-none w-full h-full rounded-sm ${getBackgroundClasses()} ${!(anchorMode)? 'transition-colors duration-200 ease-out' : 'transition-none'}`}
             onMouseMove={handleMouseMove}
             style={{
-                boxShadow: (selectedCells.length-1 === 0 && getHoveringCell() === uid) ? shadow : 'none',
+                boxShadow: (selectedCells.length === 1 && getHoveringCell() === uid) ? shadow : 'none',
                 zIndex: getHoveringCell() === uid ? 10 : 1,
                 }} 
                 onPointerEnter={() => {updateHoveringCell(uid)}}
