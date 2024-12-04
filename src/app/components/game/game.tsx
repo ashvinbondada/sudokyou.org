@@ -619,6 +619,7 @@ export default function Game({newSudoku, newGame}: Props) {
   };
 
   const handleMouseLeave = () => {
+    setShadow("0px 0px 15px rgba(8, 103, 136, 0.5)");
     setGameData((prevState) => ({
       ...prevState,
       inputValue: 0

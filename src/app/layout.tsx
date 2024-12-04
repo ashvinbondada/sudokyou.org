@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-screen ">
-      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-black overflow-scroll">
+      <body className="w-full h-screen flex flex-col items-center bg-white dark:bg-black overflow-y-auto">
         <Navbar />
           {/* Outer flex container */}
           <div className="h-full w-full flex flex-row justify-center">
@@ -24,12 +24,12 @@ export default function RootLayout({
             <div className="h-full xl:w-[1280px] lg:w-[1024px] w-full flex flex-row justify-center ">
 
               {/* Main content area */}
-              <div className="h-max lg:w-[1024px] w-full p-1 overflow-scroll">
+              <div className="h-max lg:w-[1024px] w-full p-1 ">
                 {children}
               </div>
 
               {/* Right component */}
-              <div className="h-full lg:w-[256px] hidden lg:block pt-2 pb-2 select-none overflow-y-scroll">
+              <div className="h-full lg:w-[256px] hidden lg:block pt-2 pb-2 select-none scrollbar-none">
                 <Instructions />
               </div>
             </div>
