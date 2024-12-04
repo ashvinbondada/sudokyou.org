@@ -10,6 +10,7 @@ import { calculateHighlightCells,} from "@/lib/tileEffects";
 import { tileType } from "@/lib/common";
 import ControlNav from "../controls/controlNav";
 import { libAddAnchors, libClearAnchor, libDeleteAnchor, libUpdateHoveringCell } from "@/lib/gameUtilities";
+import hash from 'object-hash'
 
 type Props = {
     newSudoku: SudokuInterface,
@@ -53,10 +54,6 @@ export default function Game({newSudoku, newGame}: Props) {
 
   const clearAnchor = () => {
     setBoardData((prevState) => libClearAnchor(prevState))}
-
-  useEffect(() => {
-    console.log(boardData.selectedCells)
-  }, [boardData.selectedCells])
 
   useEffect(() => {
     function handleKeyUp(event: KeyboardEvent) {
@@ -521,75 +518,88 @@ export default function Game({newSudoku, newGame}: Props) {
       const { inputValue, notesMode } = gameData;
       let finalBoardValues: Tile[] = boardData.boardValues.slice();
       let finalNumToQuantity: Map<number, number> = new Map(gameData.numToQuantity)
-      if (inputValue > 0) {
-        const anchors = boardData.selectedCells.slice(1)
-        // Filter anchors where isEditable is tileType.WRONG
-        const filteredAnchors = anchors.filter(anchor => {
-          const { isEditable } = boardData.boardValues[anchor];
-          return isEditable === tileType.WRONG;
-        });
-        if (filteredAnchors.length > 1) {
-          const input = inputValue - 1;
-          finalBoardValues = handleSquareNotesInput(input, filteredAnchors);
-        } 
-        else if (filteredAnchors.length === 1) {
-            const index = filteredAnchors[0];
-            const { isEditable } = boardData.boardValues[index];
-            
-            if (isEditable === tileType.WRONG) {
-              if (notesMode) {
-                const input = inputValue - 1;
-                finalBoardValues = handleSquareNotesInput(input, [index]);
-              } else {
-                const {nextNumToQuantity, nextBoardValues} = 
-                  handleRegularSquareInput(inputValue, index);
-                finalBoardValues = nextBoardValues
-                finalNumToQuantity = nextNumToQuantity
-              }
-            }
+
+      if (!inputValue)
+        return
+
+      const anchors = boardData.selectedCells.slice(1)
+
+      // Filter anchors where isEditable is tileType.WRONG
+      const filteredAnchors = anchors.filter(anchor => {
+        const { isEditable } = boardData.boardValues[anchor];
+        return isEditable === tileType.WRONG;
+      });
+
+      if (filteredAnchors.length > 1) {
+        // multiple anchored cells to edit
+        const input = inputValue - 1;
+        finalBoardValues = handleSquareNotesInput(input, filteredAnchors);
+      } 
+      else if (filteredAnchors.length === 1) {
+        // single anchored cell to edit
+        const index = filteredAnchors[0];
+        const { isEditable } = boardData.boardValues[index];
+        
+        if (isEditable === tileType.WRONG) {
+          if (notesMode) {
+            const input = inputValue - 1;
+            finalBoardValues = handleSquareNotesInput(input, [index]);
           } 
           else {
-            const { isEditable } = boardData.boardValues[getHoveringCell()];
-            if (isEditable === tileType.WRONG) {
-              if (notesMode) {
-                const input = inputValue - 1;
-                finalBoardValues = handleSquareNotesInput(input, [getHoveringCell()]);
-              } else {
-                const {nextNumToQuantity, nextBoardValues} = handleRegularSquareInput(inputValue, getHoveringCell());
-                finalBoardValues = nextBoardValues
-                finalNumToQuantity = nextNumToQuantity
-              }
-            }
+            const {nextNumToQuantity, nextBoardValues} = 
+              handleRegularSquareInput(inputValue, index);
+            finalBoardValues = nextBoardValues
+            finalNumToQuantity = nextNumToQuantity
           }
-        
-          // TODO: replace with a hashing function call object-hash
-
-          setBoardData((prevBoardData) => ({
-            ...prevBoardData,
-            boardValues: finalBoardValues
-          }));
-          setGameData((prevGameData) => {
-            const nextGameHistory = [
-              ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
-              {
-                selectedCells: boardData.selectedCells,
-                boardValues: finalBoardValues, // Use the updated boardValues
-              },
-            ];
-
-
-      
-            return {
-              ...prevGameData,
-              gameHistory: nextGameHistory,
-              moveCount: nextGameHistory.length - 1,
-              numToQuantity: finalNumToQuantity,
-            };
-          });
         }
-      // only run this hook when we input something
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [gameData.inputValue]);    
+      } 
+      else {
+        // editing the hovering cell
+        const { isEditable } = boardData.boardValues[getHoveringCell()];
+
+        if (isEditable === tileType.WRONG) {
+          if(notesMode) {
+            const input = inputValue - 1;
+            finalBoardValues = handleSquareNotesInput(input, [getHoveringCell()]);
+          }
+          else {
+            const {nextNumToQuantity, nextBoardValues} = 
+              handleRegularSquareInput(inputValue, getHoveringCell());
+            finalBoardValues = nextBoardValues
+            finalNumToQuantity = nextNumToQuantity
+          }
+        }
+      }
+
+      // DONT UPDATE IF BOARD STILL SAME AS BEFORE      
+      const oldBoard = hash(boardData.boardValues);
+      const newBoard = hash(finalBoardValues)
+      if (oldBoard === newBoard)
+        return
+
+      setBoardData((prevBoardData) => ({
+        ...prevBoardData,
+        boardValues: finalBoardValues
+      }));
+
+      setGameData((prevGameData) => {
+        const nextGameHistory = [
+          ...prevGameData.gameHistory.slice(0, prevGameData.moveCount + 1),
+          {
+            selectedCells: boardData.selectedCells,
+            boardValues: finalBoardValues, // Use the updated boardValues
+          },
+        ];
+
+        return {
+          ...prevGameData,
+          gameHistory: nextGameHistory,
+          moveCount: nextGameHistory.length - 1,
+          numToQuantity: finalNumToQuantity,
+        };
+      });
+
+    }, [gameData.inputValue, boardData.selectedCells[0]]);    
   
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -609,6 +619,7 @@ export default function Game({newSudoku, newGame}: Props) {
   };
 
   const handleMouseLeave = () => {
+    setShadow("0px 0px 15px rgba(8, 103, 136, 0.5)");
     setGameData((prevState) => ({
       ...prevState,
       inputValue: 0
